@@ -1,0 +1,186 @@
+/* --- Variables de Color y Fuentes --- */
+:root {
+    --color-background: #0d0d1a; /* Azul noche muy oscuro / casi negro */
+    --color-container-bg: rgba(26, 26, 46, 0.85); /* Morado oscuro semi-transparente */
+    --color-neon-cyan: #00ffff;
+    --color-neon-magenta: #ff00ff;
+    --color-neon-pink: #f857a6;
+    --color-neon-yellow: #fff200;
+    --color-text-light: #e0e0e0; /* Gris claro para texto normal */
+    --color-text-medium: #a0a0c0; /* Gris azulado para texto secundario */
+
+    --font-pixel: 'Press Start 2P', cursive;
+    --font-blocky: 'Bungee', cursive;
+    --font-readable-pixel: 'VT323', monospace;
+    --font-sans: 'Arial', sans-serif; /* Fallback */
+}
+
+/* --- Estilos Base --- */
+body {
+    font-family: var(--font-readable-pixel);
+    background-color: var(--color-background);
+    color: var(--color-text-light);
+    margin: 0;
+    padding: 15px; /* Reducido un poco para móviles, el container tendrá su propio padding */
+    display: flex;
+    flex-direction: column; /* Para que el contenido se alinee bien si es muy largo */
+    align-items: center;
+    min-height: 100vh;
+    box-sizing: border-box; /* Importante para el padding */
+}
+
+.container {
+    background-color: var(--color-container-bg);
+    border: 2px solid var(--color-neon-cyan); /* Borde un poco más delgado para pantallas pequeñas */
+    border-radius: 10px; /* Un poco menos redondeado */
+    box-shadow: 0 0 10px var(--color-neon-cyan), 0 0 20px var(--color-neon-cyan), inset 0 0 8px rgba(0, 255, 255, 0.25);
+    padding: 20px 15px; /* Padding ajustado para móviles */
+    max-width: 600px; /* Un poco más estrecho para mejorar la lectura en pantallas más grandes */
+    width: 100%; /* Ocupa todo el ancho disponible en móviles */
+    margin: 20px 0; /* Margen superior e inferior, sin margen lateral ya que body lo maneja */
+    text-align: center;
+    box-sizing: border-box;
+}
+
+/* --- Títulos y Texto --- */
+.header-title {
+    margin-bottom: 15px;
+}
+
+.header-title .sub-header-text {
+    font-family: var(--font-readable-pixel);
+    color: var(--color-text-medium);
+    font-size: 0.9em; /* Ligeramente más pequeño */
+    margin: 3px 0;
+    text-transform: uppercase;
+}
+
+h1 { /* "NIVEL CUMPLEAÑOS" */
+    font-family: var(--font-blocky);
+    color: var(--color-neon-pink);
+    font-size: clamp(1.8em, 6vw, 3em); /* Ajustado el clamp */
+    margin: 0 0 8px 0;
+    text-shadow: 0 0 3px #fff,
+                 0 0 7px var(--color-neon-pink),
+                 0 0 12px var(--color-neon-magenta); /* Sombras ajustadas */
+    line-height: 1.1;
+}
+
+h2 { /* "SANTIAGO ALFARO" */
+    font-family: var(--font-pixel);
+    color: var(--color-neon-cyan);
+    font-size: clamp(1.6em, 5vw, 2.5em); /* Ajustado el clamp */
+    margin-top: 0;
+    margin-bottom: 20px;
+    /* Ajuste de text-shadow para mayor nitidez */
+    text-shadow: 0 0 2px rgba(255,255,255,0.7), /* Blanco más sutil y cercano */
+                 0 0 5px var(--color-neon-cyan),   /* Glow principal más ajustado */
+                 0 0 8px var(--color-neon-cyan);   /* Glow secundario un poco más amplio pero no excesivo */
+    letter-spacing: 1px;
+}
+
+h3 { /* "CONFIRMA TU ASISTENCIA" */
+    font-family: var(--font-blocky);
+    color: var(--color-neon-yellow);
+    font-size: clamp(1.3em, 4vw, 2em); /* Ajustado el clamp */
+    margin-top: 25px;
+    margin-bottom: 8px;
+    text-shadow: 0 0 3px #000, 0 0 8px var(--color-neon-yellow);
+}
+
+p.main-text {
+    font-size: clamp(0.95em, 2.5vw, 1.1em); /* Ajustado el clamp */
+    line-height: 1.5;
+    color: var(--color-text-light);
+    margin-bottom: 15px;
+}
+
+p.rsvp-text strong {
+    color: var(--color-neon-pink);
+    font-weight: normal;
+}
+
+/* --- Detalles de la Fiesta --- */
+.details {
+    background-color: rgba(0,0,0,0.25);
+    border: 1px dashed var(--color-neon-magenta);
+    padding: 12px;
+    border-radius: 8px;
+    margin: 20px auto;
+    display: inline-block;
+    text-align: left;
+    box-shadow: 0 0 8px rgba(255, 0, 255, 0.25);
+    max-width: 100%; /* Asegura que no se desborde */
+}
+
+.details p {
+    font-size: clamp(0.85em, 2.2vw, 1em); /* Ajustado el clamp */
+    margin: 6px 0;
+    color: var(--color-text-light);
+}
+
+.details strong {
+    color: var(--color-neon-cyan);
+    font-weight: normal;
+}
+
+.icon {
+    margin-right: 6px;
+    font-size: 1.1em;
+    vertical-align: middle;
+}
+
+/* --- Imagen de Perfil --- */
+.profile-image {
+    max-width: 120px; /* Ligeramente más pequeño para móviles */
+    border-radius: 50%;
+    border: 2px solid var(--color-neon-magenta);
+    box-shadow: 0 0 8px var(--color-neon-magenta);
+    margin-bottom: 15px;
+    display: block; /* Para centrarlo fácilmente con margin auto si es necesario */
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* --- Formulario de Google --- */
+.google-form {
+    border-radius: 6px;
+    margin-top: 12px;
+    margin-bottom: 25px;
+    max-width: 100%; /* Asegura que el iframe no se desborde */
+    /* El height se mantiene del HTML, pero puedes ajustarlo si es necesario */
+}
+
+/* --- Texto Final --- */
+.footer-text {
+    font-family: var(--font-pixel);
+    color: var(--color-neon-yellow);
+    font-size: clamp(0.9em, 2.5vw, 1.2em); /* Ajustado el clamp */
+    margin-top: 15px;
+    text-shadow: 0 0 3px #000, 0 0 6px var(--color-neon-yellow);
+}
+
+/* --- Media Query para pantallas más grandes (opcional, para refinar) --- */
+/* Si queremos que en desktop sea un poco más ancho, podemos añadir: */
+@media (min-width: 601px) { /* A partir de 601px */
+    .container {
+        padding: 30px 25px;
+        border-width: 3px; /* Borde original para pantallas más grandes */
+    }
+    .profile-image {
+        max-width: 150px; /* Tamaño original para pantallas más grandes */
+    }
+}
+
+/* La media query que ya tenías, la he integrado en los estilos de arriba
+   haciendo que los estilos base sean "mobile-first" y luego se ajusten
+   para pantallas más grandes si es necesario.
+   Si necesitas overrides MUY específicos para pantallas pequeñas, puedes mantenerla.
+   Por ejemplo:
+*/
+@media (max-width: 360px) { /* Para pantallas muy pequeñas */
+    h1 { font-size: 1.6em; } /* Reducir aún más si es necesario */
+    h2 { font-size: 1.4em; }
+    .details p { font-size: 0.8em; }
+    p.main-text { font-size: 0.9em; }
+}
