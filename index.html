@@ -9,6 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Bungee&family=VT323&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <style>
+        /* Estilos inline básicos que ya tenías y el del botón de sonido */
         .confetti { position: fixed; width: 10px; height: 10px; top: -10px; border-radius: 50%; animation: confetti-fall 5s linear forwards; z-index: 1000; }
         @keyframes confetti-fall { 0% { transform: translateY(0) rotate(0deg); opacity: 1; } 100% { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
         .name-prompt { max-width: 600px; margin: 20% auto; background-color: rgba(30, 30, 50, 0.95); border: 4px solid #ff3377; box-shadow: 0 0 20px #ff3377; padding: 20px; border-radius: 15px; text-align: center; }
@@ -20,10 +21,53 @@
         .tutorial-step { display: flex; align-items: center; margin: 15px 0; justify-content: center; }
         .tutorial-icon { font-size: 2rem; margin-right: 15px; animation: pulse 1.5s infinite; }
         @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
-        .sound-control { position: fixed; top: 20px; right: 20px; z-index: 1001; }
-        .sound-button { background-color: #44ddff; color: var(--color-background); font-family: 'Press Start 2P', cursive; font-size: 1.2rem; padding: 8px 10px; border: 3px outset #66ffff; border-bottom: 3px outset #00aaaa; border-right: 3px outset #00aaaa; border-radius: 5px; cursor: pointer; transition: all 0.1s; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; text-shadow: 1px 1px 0px rgba(0,0,0,0.3); }
+        
+        .sound-control {
+            position: fixed;
+            top: 20px;
+            left: 20px; /* Movido a la izquierda */
+            z-index: 1001;
+        }
+        .sound-button {
+            background-color: #44ddff; color: var(--color-background, #0d0d1a); /* Fallback por si var no carga */
+            font-family: 'Press Start 2P', cursive; font-size: 1.2rem;
+            padding: 8px 10px; border: 3px outset #66ffff;
+            border-bottom: 3px outset #00aaaa; border-right: 3px outset #00aaaa;
+            border-radius: 5px; cursor: pointer; transition: all 0.1s;
+            width: 50px; height: 50px; display: flex;
+            align-items: center; justify-content: center;
+            text-shadow: 1px 1px 0px rgba(0,0,0,0.3);
+        }
         .sound-button:hover { background-color: #66ffff; transform: scale(1.05); }
         .sound-button:active { border-style: inset; transform: scale(0.95) translateY(1px); }
+
+        .minigame-notice {
+            position: fixed;
+            bottom: 70px; 
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--color-neon-yellow, #fff200); /* Fallback */
+            color: var(--color-background, #0d0d1a); /* Fallback */
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-family: var(--font-readable-pixel, 'VT323', monospace); /* Fallback */
+            font-size: 0.9rem;
+            box-shadow: 0 0 15px var(--color-neon-yellow, #fff200); /* Fallback */
+            z-index: 1002;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+            pointer-events: none;
+        }
+        .minigame-notice.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(-10px);
+        }
+        .minigame-notice::after {
+            content: ''; position: absolute; bottom: -8px; left: 50%;
+            transform: translateX(-50%); width: 0; height: 0;
+            border-left: 8px solid transparent; border-right: 8px solid transparent;
+            border-top: 8px solid var(--color-neon-yellow, #fff200); /* Fallback */
+        }
     </style>
 </head>
 <body>
@@ -42,12 +86,12 @@
             <img id="randomGif" src="" alt="GIF Sorpresa" class="game-gif">
         </div>
         
-        <p class="main-text">¡Un momento especial para compartir y celebrar juntos en el cole!</p>
+        <p class="main-text">¡Un momento especial para compartir y celebrar juntos en la Escuela!</p>
 
         <div class="details">
             <p><span class="icon">🗓️</span> <strong>FECHA:</strong> Viernes, 16 de Mayo</p>
             <p><span class="icon">🕒</span> <strong>HORA:</strong> 13:30 hs.</p>
-            <p><span class="icon">📍</span> <strong>LUGAR:</strong> Gral. Elizardo Aquino (En el colegio)</p>
+            <p><span class="icon">📍</span> <strong>LUGAR:</strong> Gral. Elizardo Aquino</p>
         </div>
 
         <div class="game-activities">
@@ -67,6 +111,7 @@
         <p class="footer-text">¡TE ESPERAMOS PARA CELEBRAR JUNTOS! <span class="icon">🎂🎈🎉</span></p>
         
         <button id="secretButton" class="secret-button">¡JUEGA UN MINIJUEGO!</button>
+        <div id="minigameNotice" class="minigame-notice">¡Psst! ¡Prueba el minijuego! 👇</div>
     </div>
 
     <div id="namePrompt" class="name-prompt" style="display:none;">
@@ -93,7 +138,7 @@
     </div>
 
     <div class="sound-control">
-        <button id="soundButton" class="sound-button" title="Activar/Desactivar música">🔊</button>
+        <button id="soundButton" class="sound-button" title="Activar/Desactivar música">🔇</button> <!-- Inicia como muteado -->
     </div>
 
     <div id="gameContainer" class="game-container" style="display:none;">
@@ -123,37 +168,10 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
 
-            const gifs = [
-                "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExaGZqOXBidXhheTEwcGdhaDhsbGg2aGt1djdmZG52NGVjOGFyY2M0dCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/jIptvbaCKDs6VrCPPG/giphy.gif",
-                "https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExZW41dml1cnQyMmVvbWJxZ2M0eTlqd2Y0ZGg0ZHhybmVjM2x2amJqNyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/XOf2mdbvIkjhbnlDwQ/giphy.gif",
-                "https://media.giphy.com/media/EktbegF3J8QIo/giphy.gif?cid=ecf05e47h7cbcgt6ys5irnucqbv8rz5if4zbwro3r5lusovf&ep=v1_gifs_search&rid=giphy.gif&ct=g",
-                "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExdThkcWg1czBtcmZxNmRqMXRoN3dha3U1cmZ6dWNvcHVnOW82ZWRtcCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/WS6EEr4nIrJvuyZE0X/giphy.gif",
-                "https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExeGU2OGNpZWl6YzJxeXl6MGZrNTdiZXYzMTVjNDlyZXMxeHIxb3k2bSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/17EvcNvlvZ63ueEC7j/giphy.gif"
-            ];
-            
-            const characters = [ "mario", "sonic", "pikachu", "steve", "roblox" ];
-            
+            // --- DECLARACIÓN DE ELEMENTOS DEL DOM ---
             const randomGifImgElement = document.getElementById("randomGif");
-            if (randomGifImgElement) {
-                const randomGifUrl = gifs[Math.floor(Math.random() * gifs.length)];
-                randomGifImgElement.src = randomGifUrl;
-            } else { console.error("Elemento con ID 'randomGif' no encontrado."); }
-            
             const characterDiv = document.getElementById("character");
-            if (characterDiv) {
-                const randomCharacterName = characters[Math.floor(Math.random() * characters.length)];
-                characterDiv.className = 'character'; 
-                characterDiv.classList.add(randomCharacterName);
-                characterDiv.setAttribute("title", "¡Juega con " + randomCharacterName + "!");
-            } else { console.error("Elemento con ID 'character' no encontrado."); }
-            
             const playerNameElement = document.getElementById("playerName");
-            if (playerNameElement) {
-                const visitorNames = ["Jugador", "Aventurero", "Explorador", "Gamer", "Campeón"];
-                const visitorName = visitorNames[Math.floor(Math.random() * visitorNames.length)];
-                playerNameElement.innerHTML = "SANTIAGO ALFARO<br><span class='player-title'>" + visitorName + " Nivel 7</span>";
-            } else { console.error("Elemento con ID 'playerName' no encontrado."); }
-
             const gameContainer = document.getElementById("gameContainer");
             const invitacionContainer = document.getElementById("invitacionContainer");
             const gameArea = document.getElementById("gameArea");
@@ -166,12 +184,27 @@
             const endGameButton = document.getElementById("endGameButton");
             const backToInvitationButton = document.getElementById("backToInvitationButton");
             const soundButton = document.getElementById("soundButton");
-            let playerNameInput = document.getElementById("playerNameInput");
-            let startWithNameButton = document.getElementById("startWithNameButton");
-            let namePrompt = document.getElementById("namePrompt");
+            const playerNameInput = document.getElementById("playerNameInput"); // Se usa 'let' si se reasigna, 'const' si no.
+            const startWithNameButton = document.getElementById("startWithNameButton");
+            const namePrompt = document.getElementById("namePrompt");
             const tutorial = document.getElementById("tutorial");
             const startAfterTutorial = document.getElementById("startAfterTutorial");
+            const minigameNoticeElement = document.getElementById("minigameNotice");
+            const powerUpElement = document.getElementById("powerUp");
 
+
+            // --- CONFIGURACIÓN INICIAL Y DATOS ---
+            const gifs = [
+                "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExaGZqOXBidXhheTEwcGdhaDhsbGg2aGt1djdmZG52NGVjOGFyY2M0dCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/jIptvbaCKDs6VrCPPG/giphy.gif",
+                "https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExZW41dml1cnQyMmVvbWJxZ2M0eTlqd2Y0ZGg0ZHhybmVjM2x2amJqNyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/XOf2mdbvIkjhbnlDwQ/giphy.gif",
+                "https://media.giphy.com/media/EktbegF3J8QIo/giphy.gif?cid=ecf05e47h7cbcgt6ys5irnucqbv8rz5if4zbwro3r5lusovf&ep=v1_gifs_search&rid=giphy.gif&ct=g",
+                "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExdThkcWg1czBtcmZxNmRqMXRoN3dha3U1cmZ6dWNvcHVnOW82ZWRtcCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/WS6EEr4nIrJvuyZE0X/giphy.gif",
+                "https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExeGU2OGNpZWl6YzJxeXl6MGZrNTdiZXYzMTVjNDlyZXMxeHIxb3k2bSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/17EvcNvlvZ63ueEC7j/giphy.gif"
+            ];
+            const characters = [ "mario", "sonic", "pikachu", "steve", "roblox" ]; // 'steve' necesita CSS
+            const visitorNames = ["Jugador", "Aventurero", "Explorador", "Gamer", "Campeón"];
+
+            // --- ESTADO DEL JUEGO Y VARIABLES DE AUDIO ---
             let score = 0;
             let timeLeft = 30;
             let gameInterval;
@@ -187,11 +220,30 @@
             let startSoundEffect;
             let coinSoundEffect;
             let endSoundEffect;
-            let musicPlaying = false;
-            let wasMusicPlayingBeforeGame = false; // <--- VARIABLE PARA RECORDAR ESTADO DE MÚSICA
+            let musicPlaying = false; 
+            let wasMusicPlayingBeforeGame = false;
 
+            // --- INICIALIZACIÓN DE ELEMENTOS VISUALES ---
+            if (randomGifImgElement) {
+                const randomGifUrl = gifs[Math.floor(Math.random() * gifs.length)];
+                randomGifImgElement.src = randomGifUrl;
+            } else { console.error("Elemento con ID 'randomGif' no encontrado."); }
+            
+            if (characterDiv) {
+                const randomCharacterName = characters[Math.floor(Math.random() * characters.length)];
+                characterDiv.className = 'character'; 
+                characterDiv.classList.add(randomCharacterName);
+                characterDiv.setAttribute("title", "¡Juega con " + randomCharacterName + "!");
+            } else { console.error("Elemento con ID 'character' no encontrado."); }
+            
+            if (playerNameElement) {
+                const visitorName = visitorNames[Math.floor(Math.random() * visitorNames.length)];
+                playerNameElement.innerHTML = "SANTIAGO ALFARO<br><span class='player-title'>" + visitorName + " Nivel 7</span>";
+            } else { console.error("Elemento con ID 'playerName' no encontrado."); }
+
+            // --- INICIALIZACIÓN Y CONTROL DE MÚSICA DE FONDO ---
             try {
-                backgroundMusic = new Audio("audio/background-music.mp3"); // ASEGÚRATE DE TENER ESTE ARCHIVO
+                backgroundMusic = new Audio("audio/background-music.mp3");
                 backgroundMusic.loop = true;
                 backgroundMusic.volume = 0.2;
             } catch (e) {
@@ -221,70 +273,87 @@
                 }
             }
 
-            if (secretButton) secretButton.addEventListener("click", function() {
-                invitacionContainer.style.display = "none";
-                namePrompt.style.display = "block";
-            });
-            if (startWithNameButton) startWithNameButton.addEventListener("click", function() {
-                currentPlayerName = playerNameInput.value.trim() || "Invitado";
-                namePrompt.style.display = "none";
-                tutorial.style.display = "block";
-            });
-            if (startAfterTutorial) startAfterTutorial.addEventListener("click", function() {
-                tutorial.style.display = "none";
-                startGame();
-            });
+            // --- EVENT LISTENERS DE BOTONES DE NAVEGACIÓN ---
+            if (secretButton) {
+                secretButton.addEventListener("click", function() {
+                    if (invitacionContainer) invitacionContainer.style.display = "none";
+                    if (namePrompt) namePrompt.style.display = "block";
+                    if (minigameNoticeElement) minigameNoticeElement.classList.remove('show');
+                    if (secretButton) secretButton.classList.remove('highlight-game'); 
+                });
+            }
+            if (startWithNameButton) {
+                startWithNameButton.addEventListener("click", function() {
+                    if (playerNameInput) currentPlayerName = playerNameInput.value.trim() || "Invitado";
+                    if (namePrompt) namePrompt.style.display = "none";
+                    if (tutorial) tutorial.style.display = "block";
+                });
+            }
+            if (startAfterTutorial) {
+                startAfterTutorial.addEventListener("click", function() {
+                    if (tutorial) tutorial.style.display = "none";
+                    startGame();
+                });
+            }
             if (endGameButton) endGameButton.addEventListener("click", endGame);
             if (backToInvitationButton) backToInvitationButton.addEventListener("click", backToInvitation);
 
 
+            // --- FUNCIONES DEL JUEGO ---
             function startGame() {
                 stopSound(endSoundEffect);
-
-                // --- MANEJO DE MÚSICA DE FONDO AL INICIAR JUEGO ---
-                if (musicPlaying && backgroundMusic) { // Si la música está sonando y cargada
-                    wasMusicPlayingBeforeGame = true;
+                
+                wasMusicPlayingBeforeGame = musicPlaying; 
+                if (musicPlaying && backgroundMusic) {
                     backgroundMusic.pause();
-                } else {
-                    wasMusicPlayingBeforeGame = false;
                 }
-                // --- FIN MANEJO MÚSICA ---
 
-                invitacionContainer.style.display = "none";
-                gameContainer.style.display = "block";
-                gameResult.style.display = "none";
+                if (invitacionContainer) invitacionContainer.style.display = "none";
+                if (gameContainer) gameContainer.style.display = "block";
+                if (gameResult) gameResult.style.display = "none";
+                
                 score = 0; timeLeft = 30; gameActive = true;
-                gameScore.textContent = score; gameTimer.textContent = timeLeft;
+                if (gameScore) gameScore.textContent = score;
+                if (gameTimer) gameTimer.textContent = timeLeft;
+                
                 gameInterval = setInterval(createGift, 1000);
                 timerInterval = setInterval(updateTimer, 1000);
+                
                 startSoundEffect = new Audio("audio/Mario-coin-sound.mp3");
                 startSoundEffect.volume = 0.5;
                 startSoundEffect.play().catch(e => console.error("Error al reproducir sonido de inicio:", e));
             }
 
             function createGift() {
-                if (!gameActive) return;
+                if (!gameActive || !gameArea) return;
                 const gift = document.createElement("div");
                 gift.className = "game-gift";
                 const giftType = giftTypes[Math.floor(Math.random() * giftTypes.length)];
                 gift.textContent = giftType.emoji; gift.dataset.points = giftType.points;
+                
                 const gameAreaRect = gameArea.getBoundingClientRect();
-                const maxX = gameAreaRect.width - 50; const maxY = gameAreaRect.height - 50;
+                const maxX = gameAreaRect.width - 50; 
+                const maxY = gameAreaRect.height - 50;
                 const posX = Math.max(0, Math.floor(Math.random() * maxX));
                 const posY = Math.max(0, Math.floor(Math.random() * maxY));
                 gift.style.left = posX + "px"; gift.style.top = posY + "px";
+                
                 gift.addEventListener("click", function() {
                     if (!gameActive || gift.parentNode !== gameArea) return;
                     const points = parseInt(gift.dataset.points);
-                    score += points; gameScore.textContent = score;
+                    score += points; 
+                    if (gameScore) gameScore.textContent = score;
+                    
                     const pointsAnim = document.createElement("div");
                     pointsAnim.className = "points-animation"; pointsAnim.textContent = "+" + points;
                     pointsAnim.style.left = gift.style.left; pointsAnim.style.top = gift.style.top;
                     gameArea.appendChild(pointsAnim);
                     setTimeout(() => { if (pointsAnim.parentNode === gameArea) gameArea.removeChild(pointsAnim); }, 1000);
+                    
                     coinSoundEffect = new Audio("audio/smw_coin.mp3");
                     coinSoundEffect.volume = 0.5;
                     coinSoundEffect.play().catch(e => console.error("Error al reproducir sonido de moneda:", e));
+                    
                     gameArea.removeChild(gift);
                 });
                 gameArea.appendChild(gift);
@@ -294,7 +363,8 @@
             }
 
             function updateTimer() {
-                timeLeft--; gameTimer.textContent = timeLeft;
+                timeLeft--; 
+                if (gameTimer) gameTimer.textContent = timeLeft;
                 if (timeLeft <= 0) endGame();
             }
 
@@ -302,56 +372,46 @@
                 if (!gameActive) return;
                 stopSound(startSoundEffect); stopSound(coinSoundEffect);
                 clearInterval(gameInterval); clearInterval(timerInterval); gameActive = false;
-                while (gameArea.firstChild) gameArea.removeChild(gameArea.firstChild);
-                finalScore.textContent = score;
-                if (score >= 20) resultMessage.textContent = "¡INCREÍBLE! ¡Eres un experto atrapando regalos!";
-                else if (score >= 10) resultMessage.textContent = "¡MUY BIEN! ¡Santiago estará feliz!";
-                else resultMessage.textContent = "¡Gracias por jugar! ¡Nos vemos en la fiesta!";
-                gameResult.style.display = "block";
+                
+                if (gameArea) {
+                    while (gameArea.firstChild) gameArea.removeChild(gameArea.firstChild);
+                }
+                
+                if (finalScore) finalScore.textContent = score;
+                if (resultMessage) {
+                    if (score >= 20) resultMessage.textContent = "¡INCREÍBLE! ¡Eres un experto atrapando regalos!";
+                    else if (score >= 10) resultMessage.textContent = "¡MUY BIEN! ¡Santiago estará feliz!";
+                    else resultMessage.textContent = "¡Gracias por jugar! ¡Nos vemos en la fiesta!";
+                }
+                if (gameResult) gameResult.style.display = "block";
+                
                 endSoundEffect = new Audio("audio/smb_stage_clear.mp3");
                 endSoundEffect.volume = 0.5;
                 endSoundEffect.play().catch(e => console.error("Error al reproducir sonido de fin de juego:", e));
-                showConfetti(); saveHighScore(currentPlayerName, score);
-
-                // --- MANEJO DE MÚSICA DE FONDO AL FINALIZAR JUEGO ---
-                // (Este bloque ya no es estrictamente necesario aquí si backToInvitationButton lo maneja,
-                // pero lo dejamos por si el juego termina por tiempo y el usuario no interactúa más
-                // antes de que se llame a backToInvitation)
-                if (wasMusicPlayingBeforeGame && backgroundMusic && !musicPlaying) {
-                     // Solo reanudar si estaba sonando antes Y NO está sonando ahora (por si el usuario la activó manualmente mientras jugaba)
-                    backgroundMusic.play().catch(e => console.error("Error al reanudar música de fondo (endGame):", e));
-                    // No actualizamos musicPlaying ni el botón aquí, ya que el usuario puede volver con el botón
-                }
-                // --- FIN MANEJO MÚSICA ---
+                
+                showConfetti(); 
+                saveHighScore(currentPlayerName, score);
             }
 
             function backToInvitation() {
                 stopSound(startSoundEffect); stopSound(coinSoundEffect); stopSound(endSoundEffect);
 
-                // --- MANEJO DE MÚSICA DE FONDO AL VOLVER A INVITACIÓN ---
-                if (wasMusicPlayingBeforeGame && backgroundMusic && !musicPlaying) {
-                    // Solo reanudar si estaba sonando ANTES y NO está sonando AHORA
-                    // (por si el usuario la activó con el botón de sonido mientras estaba en la pantalla de resultados)
-                    backgroundMusic.play().catch(e => console.error("Error al reanudar música de fondo (backToInvitation):", e));
-                    // Si la música se reanuda aquí, el botón y musicPlaying ya reflejarían el estado correcto
-                    // si el usuario los tocó. Si no, se reanuda y el botón sigue 🔇 si la música no estaba sonando.
-                    // Para sincronizar el botón si la música se reanuda:
-                    // if (soundButton) soundButton.textContent = "🔊";
-                    // musicPlaying = true; // Esta lógica puede complicarse si el usuario interactúa con el botón de sonido en la pantalla de resultados.
-                                        // Por simplicidad, si estaba sonando antes, se reanuda. El usuario puede volver a pausarla.
+                if (wasMusicPlayingBeforeGame && backgroundMusic) {
+                    backgroundMusic.play().catch(e => console.error("Error al reanudar música de fondo:", e));
+                    musicPlaying = true; 
+                    if(soundButton) soundButton.textContent = "🔊";
                 }
-                 // --- FIN MANEJO MÚSICA ---
 
-
-                gameContainer.style.display = "none"; invitacionContainer.style.display = "block";
-                const powerUp = document.getElementById("powerUp");
-                if (powerUp) {
-                    powerUp.textContent = "+" + score + " XP";
-                    powerUp.style.display = "block";
-                    powerUp.classList.add("animate");
+                if (gameContainer) gameContainer.style.display = "none"; 
+                if (invitacionContainer) invitacionContainer.style.display = "block";
+                
+                if (powerUpElement) {
+                    powerUpElement.textContent = "+" + score + " XP";
+                    powerUpElement.style.display = "block";
+                    powerUpElement.classList.add("animate");
                     setTimeout(() => {
-                        powerUp.style.display = "none";
-                        powerUp.classList.remove("animate");
+                        powerUpElement.style.display = "none";
+                        powerUpElement.classList.remove("animate");
                     }, 2000);
                 }
             }
@@ -389,9 +449,22 @@
                 });
             }
             
+            // --- INICIALIZACIÓN FINAL ---
             updateHighScoresList();
-            if (soundButton && !musicPlaying) { // Establecer icono inicial del botón de sonido
-                soundButton.textContent = "🔇";
+
+            if (secretButton && minigameNoticeElement) {
+                setTimeout(() => {
+                    minigameNoticeElement.classList.add('show');
+                    secretButton.classList.add('highlight-game');
+                }, 1500); 
+                setTimeout(() => {
+                    minigameNoticeElement.classList.remove('show');
+                    secretButton.classList.remove('highlight-game');
+                }, 7000); 
+            }
+
+            if (soundButton) { // Actualizar el botón de sonido al estado inicial de musicPlaying
+                soundButton.textContent = musicPlaying ? "🔊" : "🔇";
             }
 
         });
