@@ -4,11 +4,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>¡Estás Invitado al Cumple de Santiago!</title>
-    <!-- Google Fonts - Press Start 2P (pixel) y Bungee (blocky/neon) o VT323 (pixel más legible) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Bungee&family=VT323&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css"> <!-- Enlazamos el CSS externo -->
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .confetti { position: fixed; width: 10px; height: 10px; top: -10px; border-radius: 50%; animation: confetti-fall 5s linear forwards; z-index: 1000; }
+        @keyframes confetti-fall { 0% { transform: translateY(0) rotate(0deg); opacity: 1; } 100% { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
+        .name-prompt { max-width: 600px; margin: 20% auto; background-color: rgba(30, 30, 50, 0.95); border: 4px solid #ff3377; box-shadow: 0 0 20px #ff3377; padding: 20px; border-radius: 15px; text-align: center; }
+        .name-prompt input { background-color: rgba(0, 0, 0, 0.5); border: 2px solid #44ddff; color: white; padding: 10px; font-size: 1.2rem; margin: 15px 0; border-radius: 5px; font-family: 'VT323', monospace; }
+        .high-scores { margin-top: 20px; border-top: 2px dashed #44ddff; padding-top: 10px; }
+        .high-scores h4 { color: #ff9900; margin-bottom: 5px; }
+        .high-scores ul { list-style: none; padding: 0; margin: 5px 0; font-size: 0.9rem; }
+        .tutorial { max-width: 600px; margin: 20% auto; background-color: rgba(30, 30, 50, 0.95); border: 4px solid #44ddff; box-shadow: 0 0 20px #44ddff; padding: 20px; border-radius: 15px; text-align: center; }
+        .tutorial-step { display: flex; align-items: center; margin: 15px 0; justify-content: center; }
+        .tutorial-icon { font-size: 2rem; margin-right: 15px; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
+        .sound-control { position: fixed; top: 20px; right: 20px; z-index: 1001; }
+        .sound-button { background-color: #44ddff; color: var(--color-background); font-family: 'Press Start 2P', cursive; font-size: 1.2rem; padding: 8px 10px; border: 3px outset #66ffff; border-bottom: 3px outset #00aaaa; border-right: 3px outset #00aaaa; border-radius: 5px; cursor: pointer; transition: all 0.1s; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; text-shadow: 1px 1px 0px rgba(0,0,0,0.3); }
+        .sound-button:hover { background-color: #66ffff; transform: scale(1.05); }
+        .sound-button:active { border-style: inset; transform: scale(0.95) translateY(1px); }
+    </style>
 </head>
 <body>
     <div class="container" id="invitacionContainer">
@@ -53,7 +69,33 @@
         <button id="secretButton" class="secret-button">¡JUEGA UN MINIJUEGO!</button>
     </div>
 
-    <!-- Área del minijuego (inicialmente oculta) -->
+    <div id="namePrompt" class="name-prompt" style="display:none;">
+        <h3>¿CÓMO TE LLAMAS?</h3>
+        <input type="text" id="playerNameInput" maxlength="10" placeholder="Tu nombre">
+        <button id="startWithNameButton" class="game-button">¡COMENZAR!</button>
+    </div>
+
+    <div id="tutorial" class="tutorial" style="display:none;">
+        <h3>¡VAMOS A JUGAR!</h3>
+        <div class="tutorial-step">
+            <div class="tutorial-icon">👆</div>
+            <p>Toca los regalos que aparecen</p>
+        </div>
+        <div class="tutorial-step">
+            <div class="tutorial-icon">⏱️</div>
+            <p>Tienes 30 segundos</p>
+        </div>
+        <div class="tutorial-step">
+            <div class="tutorial-icon">⭐</div>
+            <p>Las estrellas valen más puntos</p>
+        </div>
+        <button id="startAfterTutorial" class="game-button">¡ENTENDIDO!</button>
+    </div>
+
+    <div class="sound-control">
+        <button id="soundButton" class="sound-button" title="Activar/Desactivar música">🔊</button>
+    </div>
+
     <div id="gameContainer" class="game-container" style="display:none;">
         <div class="game-header">
             <h3>¡ATRAPA LOS REGALOS!</h3>
@@ -62,228 +104,297 @@
                 <p>Tiempo: <span id="gameTimer">30</span>s</p>
             </div>
         </div>
-        
-        <div id="gameArea" class="game-area">
-            <!-- Aquí aparecerán los regalos -->
-        </div>
-        
+        <div id="gameArea" class="game-area"></div>
         <div class="game-controls">
             <button id="endGameButton" class="game-button">TERMINAR JUEGO</button>
         </div>
-        
         <div id="gameResult" class="game-result" style="display:none;">
             <h3>¡JUEGO TERMINADO!</h3>
             <p>Atrapaste <span id="finalScore">0</span> regalos</p>
             <p id="resultMessage">¡Buen trabajo!</p>
             <button id="backToInvitationButton" class="game-button">VOLVER A LA INVITACIÓN</button>
+            <div class="high-scores">
+                <h4>MEJORES PUNTAJES</h4>
+                <ul id="highScoresList"></ul>
+            </div>
         </div>
     </div>
 
     <script>
-        // Lista de GIFs de videojuegos para niños
-        const gifs = [
-            "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExaGZqOXBidXhheTEwcGdhaDhsbGg2aGt1djdmZG52NGVjOGFyY2M0dCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/jIptvbaCKDs6VrCPPG/giphy.gif", // Mario Bros
-            "https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExZW41dml1cnQyMmVvbWJxZ2M0eTlqd2Y0ZGg0ZHhybmVjM2x2amJqNyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/XOf2mdbvIkjhbnlDwQ/giphy.gif", // Minecraft
-            "https://media.giphy.com/media/EktbegF3J8QIo/giphy.gif?cid=ecf05e47h7cbcgt6ys5irnucqbv8rz5if4zbwro3r5lusovf&ep=v1_gifs_search&rid=giphy.gif&ct=g", // Pikachu
-            "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExdThkcWg1czBtcmZxNmRqMXRoN3dha3U1cmZ6dWNvcHVnOW82ZWRtcCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/WS6EEr4nIrJvuyZE0X/giphy.gif", // Sonic
-            "https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExeGU2OGNpZWl6YzJxeXl6MGZrNTdiZXYzMTVjNDlyZXMxeHIxb3k2bSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/17EvcNvlvZ63ueEC7j/giphy.gif"  // Fortnite
-        ];
-        
-        // Lista de personajes de juegos populares
-        const characters = [
-            "mario", "sonic", "pikachu", "steve", "roblox"
-        ];
-        
-        // Seleccionar un GIF aleatorio
-        const randomGif = gifs[Math.floor(Math.random() * gifs.length)];
-        document.getElementById("randomGif").src = randomGif;
-        
-        // Cambiar el personaje para cada visitante
-        const randomCharacter = characters[Math.floor(Math.random() * characters.length)];
-        document.getElementById("character").classList.add(randomCharacter);
-        document.getElementById("character").setAttribute("title", "¡Juega con " + randomCharacter + "!");
-        
-        // Personalizar con el nombre del visitante (simulado)
-        const visitorNames = ["Jugador", "Aventurero", "Explorador", "Gamer", "Campeón"];
-        const visitorName = visitorNames[Math.floor(Math.random() * visitorNames.length)];
-        document.getElementById("playerName").innerHTML = "SANTIAGO ALFARO<br><span class='player-title'>" + visitorName + " Nivel 7</span>";
+        document.addEventListener('DOMContentLoaded', function() {
 
-        // Minijuego: Atrapa los regalos
-        const gameContainer = document.getElementById("gameContainer");
-        const invitacionContainer = document.getElementById("invitacionContainer");
-        const gameArea = document.getElementById("gameArea");
-        const gameScore = document.getElementById("gameScore");
-        const gameTimer = document.getElementById("gameTimer");
-        const gameResult = document.getElementById("gameResult");
-        const finalScore = document.getElementById("finalScore");
-        const resultMessage = document.getElementById("resultMessage");
-        const secretButton = document.getElementById("secretButton");
-        const endGameButton = document.getElementById("endGameButton");
-        const backToInvitationButton = document.getElementById("backToInvitationButton");
+            const gifs = [
+                "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExaGZqOXBidXhheTEwcGdhaDhsbGg2aGt1djdmZG52NGVjOGFyY2M0dCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/jIptvbaCKDs6VrCPPG/giphy.gif",
+                "https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExZW41dml1cnQyMmVvbWJxZ2M0eTlqd2Y0ZGg0ZHhybmVjM2x2amJqNyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/XOf2mdbvIkjhbnlDwQ/giphy.gif",
+                "https://media.giphy.com/media/EktbegF3J8QIo/giphy.gif?cid=ecf05e47h7cbcgt6ys5irnucqbv8rz5if4zbwro3r5lusovf&ep=v1_gifs_search&rid=giphy.gif&ct=g",
+                "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExdThkcWg1czBtcmZxNmRqMXRoN3dha3U1cmZ6dWNvcHVnOW82ZWRtcCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/WS6EEr4nIrJvuyZE0X/giphy.gif",
+                "https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExeGU2OGNpZWl6YzJxeXl6MGZrNTdiZXYzMTVjNDlyZXMxeHIxb3k2bSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/17EvcNvlvZ63ueEC7j/giphy.gif"
+            ];
+            
+            const characters = [ "mario", "sonic", "pikachu", "steve", "roblox" ];
+            
+            const randomGifImgElement = document.getElementById("randomGif");
+            if (randomGifImgElement) {
+                const randomGifUrl = gifs[Math.floor(Math.random() * gifs.length)];
+                randomGifImgElement.src = randomGifUrl;
+            } else { console.error("Elemento con ID 'randomGif' no encontrado."); }
+            
+            const characterDiv = document.getElementById("character");
+            if (characterDiv) {
+                const randomCharacterName = characters[Math.floor(Math.random() * characters.length)];
+                characterDiv.className = 'character'; 
+                characterDiv.classList.add(randomCharacterName);
+                characterDiv.setAttribute("title", "¡Juega con " + randomCharacterName + "!");
+            } else { console.error("Elemento con ID 'character' no encontrado."); }
+            
+            const playerNameElement = document.getElementById("playerName");
+            if (playerNameElement) {
+                const visitorNames = ["Jugador", "Aventurero", "Explorador", "Gamer", "Campeón"];
+                const visitorName = visitorNames[Math.floor(Math.random() * visitorNames.length)];
+                playerNameElement.innerHTML = "SANTIAGO ALFARO<br><span class='player-title'>" + visitorName + " Nivel 7</span>";
+            } else { console.error("Elemento con ID 'playerName' no encontrado."); }
 
-        let score = 0;
-        let timeLeft = 30;
-        let gameInterval;
-        let timerInterval;
-        let gameActive = false;
-        
-        // Tipos de regalos y sus puntos
-        const giftTypes = [
-            { emoji: "🎁", points: 1, speed: 3000 },
-            { emoji: "🎮", points: 2, speed: 2500 },
-            { emoji: "🎂", points: 3, speed: 2000 },
-            { emoji: "⭐", points: 5, speed: 1500 }
-        ];
+            const gameContainer = document.getElementById("gameContainer");
+            const invitacionContainer = document.getElementById("invitacionContainer");
+            const gameArea = document.getElementById("gameArea");
+            const gameScore = document.getElementById("gameScore");
+            const gameTimer = document.getElementById("gameTimer");
+            const gameResult = document.getElementById("gameResult");
+            const finalScore = document.getElementById("finalScore");
+            const resultMessage = document.getElementById("resultMessage");
+            const secretButton = document.getElementById("secretButton");
+            const endGameButton = document.getElementById("endGameButton");
+            const backToInvitationButton = document.getElementById("backToInvitationButton");
+            const soundButton = document.getElementById("soundButton");
+            let playerNameInput = document.getElementById("playerNameInput");
+            let startWithNameButton = document.getElementById("startWithNameButton");
+            let namePrompt = document.getElementById("namePrompt");
+            const tutorial = document.getElementById("tutorial");
+            const startAfterTutorial = document.getElementById("startAfterTutorial");
 
-        // Iniciar el juego
-        secretButton.addEventListener("click", startGame);
-        endGameButton.addEventListener("click", endGame);
-        backToInvitationButton.addEventListener("click", backToInvitation);
+            let score = 0;
+            let timeLeft = 30;
+            let gameInterval;
+            let timerInterval;
+            let gameActive = false;
+            let currentPlayerName = "Invitado";
+            const giftTypes = [
+                { emoji: "🎁", points: 1, speed: 3000 }, { emoji: "🎮", points: 2, speed: 2500 },
+                { emoji: "🎂", points: 3, speed: 2000 }, { emoji: "⭐", points: 5, speed: 1500 }
+            ];
 
-        function startGame() {
-            // Ocultar invitación, mostrar juego
-            invitacionContainer.style.display = "none";
-            gameContainer.style.display = "block";
-            gameResult.style.display = "none";
-            
-            // Reiniciar variables del juego
-            score = 0;
-            timeLeft = 30;
-            gameActive = true;
-            gameScore.textContent = score;
-            gameTimer.textContent = timeLeft;
-            
-            // Iniciar la aparición de regalos
-            gameInterval = setInterval(createGift, 1000);
-            
-            // Iniciar el temporizador
-            timerInterval = setInterval(updateTimer, 1000);
-            
-            // Reproducir sonido de inicio (opcional)
-            const startSound = new Audio("https://www.myinstants.com/media/sounds/Mario-coin-sound.mp3");
-            startSound.play();
-        }
+            let backgroundMusic;
+            let startSoundEffect;
+            let coinSoundEffect;
+            let endSoundEffect;
+            let musicPlaying = false;
+            let wasMusicPlayingBeforeGame = false; // <--- VARIABLE PARA RECORDAR ESTADO DE MÚSICA
 
-        function createGift() {
-            if (!gameActive) return;
+            try {
+                backgroundMusic = new Audio("audio/background-music.mp3"); // ASEGÚRATE DE TENER ESTE ARCHIVO
+                backgroundMusic.loop = true;
+                backgroundMusic.volume = 0.2;
+            } catch (e) {
+                console.error("No se pudo cargar la música de fondo:", e);
+                if (soundButton) soundButton.disabled = true;
+            }
+
+            if (soundButton) {
+                soundButton.addEventListener("click", function() {
+                    if (!backgroundMusic) return; 
+                    if (musicPlaying) {
+                        backgroundMusic.pause();
+                        soundButton.textContent = "🔇";
+                        musicPlaying = false;
+                    } else {
+                        backgroundMusic.play().catch(e => console.error("Error al reproducir música de fondo:", e));
+                        soundButton.textContent = "🔊";
+                        musicPlaying = true;
+                    }
+                });
+            }
             
-            // Crear un elemento de regalo
-            const gift = document.createElement("div");
-            gift.className = "game-gift";
-            
-            // Seleccionar un tipo de regalo aleatorio
-            const giftType = giftTypes[Math.floor(Math.random() * giftTypes.length)];
-            gift.textContent = giftType.emoji;
-            gift.dataset.points = giftType.points;
-            
-            // Posicionar el regalo aleatoriamente en el área de juego
-            const maxX = gameArea.clientWidth - 50;
-            const maxY = gameArea.clientHeight - 50;
-            const posX = Math.floor(Math.random() * maxX);
-            const posY = Math.floor(Math.random() * maxY);
-            
-            gift.style.left = posX + "px";
-            gift.style.top = posY + "px";
-            
-            // Añadir evento de clic para "atrapar" el regalo
-            gift.addEventListener("click", function() {
-                if (!gameActive) return;
-                
-                // Sumar puntos
-                const points = parseInt(gift.dataset.points);
-                score += points;
-                gameScore.textContent = score;
-                
-                // Mostrar animación de puntos
-                const pointsAnim = document.createElement("div");
-                pointsAnim.className = "points-animation";
-                pointsAnim.textContent = "+" + points;
-                pointsAnim.style.left = gift.style.left;
-                pointsAnim.style.top = gift.style.top;
-                gameArea.appendChild(pointsAnim);
-                
-                // Eliminar la animación después de completarse
-                setTimeout(() => {
-                    gameArea.removeChild(pointsAnim);
-                }, 1000);
-                
-                // Reproducir sonido
-                const coinSound = new Audio("https://www.myinstants.com/media/sounds/smw_coin.mp3");
-                coinSound.play();
-                
-                // Eliminar el regalo
-                gameArea.removeChild(gift);
-            });
-            
-            // Añadir el regalo al área de juego
-            gameArea.appendChild(gift);
-            
-            // Eliminar el regalo si no se atrapa a tiempo
-            setTimeout(() => {
-                if (gift.parentNode === gameArea) {
-                    gameArea.removeChild(gift);
+            function stopSound(soundInstance) {
+                if (soundInstance) {
+                    soundInstance.pause();
+                    soundInstance.currentTime = 0;
                 }
-            }, giftType.speed);
-        }
-
-        function updateTimer() {
-            timeLeft--;
-            gameTimer.textContent = timeLeft;
-            
-            if (timeLeft <= 0) {
-                endGame();
             }
-        }
 
-        function endGame() {
-            // Detener los intervalos
-            clearInterval(gameInterval);
-            clearInterval(timerInterval);
-            gameActive = false;
-            
-            // Eliminar todos los regalos restantes
-            while (gameArea.firstChild) {
-                gameArea.removeChild(gameArea.firstChild);
+            if (secretButton) secretButton.addEventListener("click", function() {
+                invitacionContainer.style.display = "none";
+                namePrompt.style.display = "block";
+            });
+            if (startWithNameButton) startWithNameButton.addEventListener("click", function() {
+                currentPlayerName = playerNameInput.value.trim() || "Invitado";
+                namePrompt.style.display = "none";
+                tutorial.style.display = "block";
+            });
+            if (startAfterTutorial) startAfterTutorial.addEventListener("click", function() {
+                tutorial.style.display = "none";
+                startGame();
+            });
+            if (endGameButton) endGameButton.addEventListener("click", endGame);
+            if (backToInvitationButton) backToInvitationButton.addEventListener("click", backToInvitation);
+
+
+            function startGame() {
+                stopSound(endSoundEffect);
+
+                // --- MANEJO DE MÚSICA DE FONDO AL INICIAR JUEGO ---
+                if (musicPlaying && backgroundMusic) { // Si la música está sonando y cargada
+                    wasMusicPlayingBeforeGame = true;
+                    backgroundMusic.pause();
+                } else {
+                    wasMusicPlayingBeforeGame = false;
+                }
+                // --- FIN MANEJO MÚSICA ---
+
+                invitacionContainer.style.display = "none";
+                gameContainer.style.display = "block";
+                gameResult.style.display = "none";
+                score = 0; timeLeft = 30; gameActive = true;
+                gameScore.textContent = score; gameTimer.textContent = timeLeft;
+                gameInterval = setInterval(createGift, 1000);
+                timerInterval = setInterval(updateTimer, 1000);
+                startSoundEffect = new Audio("audio/Mario-coin-sound.mp3");
+                startSoundEffect.volume = 0.5;
+                startSoundEffect.play().catch(e => console.error("Error al reproducir sonido de inicio:", e));
+            }
+
+            function createGift() {
+                if (!gameActive) return;
+                const gift = document.createElement("div");
+                gift.className = "game-gift";
+                const giftType = giftTypes[Math.floor(Math.random() * giftTypes.length)];
+                gift.textContent = giftType.emoji; gift.dataset.points = giftType.points;
+                const gameAreaRect = gameArea.getBoundingClientRect();
+                const maxX = gameAreaRect.width - 50; const maxY = gameAreaRect.height - 50;
+                const posX = Math.max(0, Math.floor(Math.random() * maxX));
+                const posY = Math.max(0, Math.floor(Math.random() * maxY));
+                gift.style.left = posX + "px"; gift.style.top = posY + "px";
+                gift.addEventListener("click", function() {
+                    if (!gameActive || gift.parentNode !== gameArea) return;
+                    const points = parseInt(gift.dataset.points);
+                    score += points; gameScore.textContent = score;
+                    const pointsAnim = document.createElement("div");
+                    pointsAnim.className = "points-animation"; pointsAnim.textContent = "+" + points;
+                    pointsAnim.style.left = gift.style.left; pointsAnim.style.top = gift.style.top;
+                    gameArea.appendChild(pointsAnim);
+                    setTimeout(() => { if (pointsAnim.parentNode === gameArea) gameArea.removeChild(pointsAnim); }, 1000);
+                    coinSoundEffect = new Audio("audio/smw_coin.mp3");
+                    coinSoundEffect.volume = 0.5;
+                    coinSoundEffect.play().catch(e => console.error("Error al reproducir sonido de moneda:", e));
+                    gameArea.removeChild(gift);
+                });
+                gameArea.appendChild(gift);
+                setTimeout(() => {
+                    if (gameActive && gift.parentNode === gameArea) gameArea.removeChild(gift);
+                }, giftType.speed);
+            }
+
+            function updateTimer() {
+                timeLeft--; gameTimer.textContent = timeLeft;
+                if (timeLeft <= 0) endGame();
+            }
+
+            function endGame() {
+                if (!gameActive) return;
+                stopSound(startSoundEffect); stopSound(coinSoundEffect);
+                clearInterval(gameInterval); clearInterval(timerInterval); gameActive = false;
+                while (gameArea.firstChild) gameArea.removeChild(gameArea.firstChild);
+                finalScore.textContent = score;
+                if (score >= 20) resultMessage.textContent = "¡INCREÍBLE! ¡Eres un experto atrapando regalos!";
+                else if (score >= 10) resultMessage.textContent = "¡MUY BIEN! ¡Santiago estará feliz!";
+                else resultMessage.textContent = "¡Gracias por jugar! ¡Nos vemos en la fiesta!";
+                gameResult.style.display = "block";
+                endSoundEffect = new Audio("audio/smb_stage_clear.mp3");
+                endSoundEffect.volume = 0.5;
+                endSoundEffect.play().catch(e => console.error("Error al reproducir sonido de fin de juego:", e));
+                showConfetti(); saveHighScore(currentPlayerName, score);
+
+                // --- MANEJO DE MÚSICA DE FONDO AL FINALIZAR JUEGO ---
+                // (Este bloque ya no es estrictamente necesario aquí si backToInvitationButton lo maneja,
+                // pero lo dejamos por si el juego termina por tiempo y el usuario no interactúa más
+                // antes de que se llame a backToInvitation)
+                if (wasMusicPlayingBeforeGame && backgroundMusic && !musicPlaying) {
+                     // Solo reanudar si estaba sonando antes Y NO está sonando ahora (por si el usuario la activó manualmente mientras jugaba)
+                    backgroundMusic.play().catch(e => console.error("Error al reanudar música de fondo (endGame):", e));
+                    // No actualizamos musicPlaying ni el botón aquí, ya que el usuario puede volver con el botón
+                }
+                // --- FIN MANEJO MÚSICA ---
+            }
+
+            function backToInvitation() {
+                stopSound(startSoundEffect); stopSound(coinSoundEffect); stopSound(endSoundEffect);
+
+                // --- MANEJO DE MÚSICA DE FONDO AL VOLVER A INVITACIÓN ---
+                if (wasMusicPlayingBeforeGame && backgroundMusic && !musicPlaying) {
+                    // Solo reanudar si estaba sonando ANTES y NO está sonando AHORA
+                    // (por si el usuario la activó con el botón de sonido mientras estaba en la pantalla de resultados)
+                    backgroundMusic.play().catch(e => console.error("Error al reanudar música de fondo (backToInvitation):", e));
+                    // Si la música se reanuda aquí, el botón y musicPlaying ya reflejarían el estado correcto
+                    // si el usuario los tocó. Si no, se reanuda y el botón sigue 🔇 si la música no estaba sonando.
+                    // Para sincronizar el botón si la música se reanuda:
+                    // if (soundButton) soundButton.textContent = "🔊";
+                    // musicPlaying = true; // Esta lógica puede complicarse si el usuario interactúa con el botón de sonido en la pantalla de resultados.
+                                        // Por simplicidad, si estaba sonando antes, se reanuda. El usuario puede volver a pausarla.
+                }
+                 // --- FIN MANEJO MÚSICA ---
+
+
+                gameContainer.style.display = "none"; invitacionContainer.style.display = "block";
+                const powerUp = document.getElementById("powerUp");
+                if (powerUp) {
+                    powerUp.textContent = "+" + score + " XP";
+                    powerUp.style.display = "block";
+                    powerUp.classList.add("animate");
+                    setTimeout(() => {
+                        powerUp.style.display = "none";
+                        powerUp.classList.remove("animate");
+                    }, 2000);
+                }
+            }
+
+            function showConfetti() {
+                for (let i = 0; i < 100; i++) {
+                    const confetti = document.createElement("div");
+                    confetti.className = "confetti";
+                    confetti.style.left = Math.random() * 100 + "vw";
+                    confetti.style.animationDelay = Math.random() * 5 + "s";
+                    confetti.style.backgroundColor = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff'][Math.floor(Math.random() * 5)];
+                    document.body.appendChild(confetti);
+                    setTimeout(() => { if (confetti.parentNode === document.body) document.body.removeChild(confetti); }, 5000);
+                }
             }
             
-            // Mostrar resultado
-            finalScore.textContent = score;
-            
-            // Mensaje personalizado según la puntuación
-            if (score >= 20) {
-                resultMessage.textContent = "¡INCREÍBLE! ¡Eres un experto atrapando regalos!";
-            } else if (score >= 10) {
-                resultMessage.textContent = "¡MUY BIEN! ¡Santiago estará feliz!";
-            } else {
-                resultMessage.textContent = "¡Gracias por jugar! ¡Nos vemos en la fiesta!";
+            function saveHighScore(name, scoreValue) {
+                let highScores = JSON.parse(localStorage.getItem('gameHighScores')) || [];
+                highScores.push({ name, score: scoreValue, date: new Date().toLocaleDateString() });
+                highScores.sort((a, b) => b.score - a.score);
+                highScores = highScores.slice(0, 5); 
+                localStorage.setItem('gameHighScores', JSON.stringify(highScores));
+                updateHighScoresList();
             }
             
-            // Mostrar panel de resultados
-            gameResult.style.display = "block";
+            function updateHighScoresList() {
+                const highScoresList = document.getElementById("highScoresList");
+                if (!highScoresList) return;
+                highScoresList.innerHTML = "";
+                const highScores = JSON.parse(localStorage.getItem('gameHighScores')) || [];
+                highScores.forEach((record, index) => {
+                    const li = document.createElement("li");
+                    li.textContent = `${index + 1}. ${record.name}: ${record.score} puntos`;
+                    highScoresList.appendChild(li);
+                });
+            }
             
-            // Reproducir sonido de fin de juego
-            const endSound = new Audio("https://www.myinstants.com/media/sounds/smb_stage_clear.mp3");
-            endSound.play();
-        }
+            updateHighScoresList();
+            if (soundButton && !musicPlaying) { // Establecer icono inicial del botón de sonido
+                soundButton.textContent = "🔇";
+            }
 
-        function backToInvitation() {
-            // Ocultar juego, mostrar invitación
-            gameContainer.style.display = "none";
-            invitacionContainer.style.display = "block";
-            
-            // Mostrar animación de poder
-            const powerUp = document.getElementById("powerUp");
-            powerUp.textContent = "+" + score + " XP";
-            powerUp.style.display = "block";
-            powerUp.classList.add("animate");
-            
-            // Ocultar la animación después de completarse
-            setTimeout(() => {
-                powerUp.style.display = "none";
-                powerUp.classList.remove("animate");
-                powerUp.textContent = "+1000 XP";
-            }, 2000);
-        }
+        });
     </script>
 </body>
 </html>
