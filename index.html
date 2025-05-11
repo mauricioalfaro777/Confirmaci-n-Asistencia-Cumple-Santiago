@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="style.css"> <!-- Enlazamos el CSS externo -->
 </head>
 <body>
-    <div class="container">
+    <div class="container" id="invitacionContainer">
         <div id="character" class="character"></div>
         
         <div class="header-title">
@@ -50,7 +50,33 @@
 
         <p class="footer-text">¡TE ESPERAMOS PARA CELEBRAR JUNTOS! <span class="icon">🎂🎈🎉</span></p>
         
-        <button id="secretButton" class="secret-button">PRESIONA PARA UNA SORPRESA</button>
+        <button id="secretButton" class="secret-button">¡JUEGA UN MINIJUEGO!</button>
+    </div>
+
+    <!-- Área del minijuego (inicialmente oculta) -->
+    <div id="gameContainer" class="game-container" style="display:none;">
+        <div class="game-header">
+            <h3>¡ATRAPA LOS REGALOS!</h3>
+            <div class="game-stats">
+                <p>Puntos: <span id="gameScore">0</span></p>
+                <p>Tiempo: <span id="gameTimer">30</span>s</p>
+            </div>
+        </div>
+        
+        <div id="gameArea" class="game-area">
+            <!-- Aquí aparecerán los regalos -->
+        </div>
+        
+        <div class="game-controls">
+            <button id="endGameButton" class="game-button">TERMINAR JUEGO</button>
+        </div>
+        
+        <div id="gameResult" class="game-result" style="display:none;">
+            <h3>¡JUEGO TERMINADO!</h3>
+            <p>Atrapaste <span id="finalScore">0</span> regalos</p>
+            <p id="resultMessage">¡Buen trabajo!</p>
+            <button id="backToInvitationButton" class="game-button">VOLVER A LA INVITACIÓN</button>
+        </div>
     </div>
 
     <script>
@@ -77,32 +103,187 @@
         document.getElementById("character").classList.add(randomCharacter);
         document.getElementById("character").setAttribute("title", "¡Juega con " + randomCharacter + "!");
         
-        // Añadir efecto al botón secreto
-        document.getElementById("secretButton").addEventListener("click", function() {
+        // Personalizar con el nombre del visitante (simulado)
+        const visitorNames = ["Jugador", "Aventurero", "Explorador", "Gamer", "Campeón"];
+        const visitorName = visitorNames[Math.floor(Math.random() * visitorNames.length)];
+        document.getElementById("playerName").innerHTML = "SANTIAGO ALFARO<br><span class='player-title'>" + visitorName + " Nivel 7</span>";
+
+        // Minijuego: Atrapa los regalos
+        const gameContainer = document.getElementById("gameContainer");
+        const invitacionContainer = document.getElementById("invitacionContainer");
+        const gameArea = document.getElementById("gameArea");
+        const gameScore = document.getElementById("gameScore");
+        const gameTimer = document.getElementById("gameTimer");
+        const gameResult = document.getElementById("gameResult");
+        const finalScore = document.getElementById("finalScore");
+        const resultMessage = document.getElementById("resultMessage");
+        const secretButton = document.getElementById("secretButton");
+        const endGameButton = document.getElementById("endGameButton");
+        const backToInvitationButton = document.getElementById("backToInvitationButton");
+
+        let score = 0;
+        let timeLeft = 30;
+        let gameInterval;
+        let timerInterval;
+        let gameActive = false;
+        
+        // Tipos de regalos y sus puntos
+        const giftTypes = [
+            { emoji: "🎁", points: 1, speed: 3000 },
+            { emoji: "🎮", points: 2, speed: 2500 },
+            { emoji: "🎂", points: 3, speed: 2000 },
+            { emoji: "⭐", points: 5, speed: 1500 }
+        ];
+
+        // Iniciar el juego
+        secretButton.addEventListener("click", startGame);
+        endGameButton.addEventListener("click", endGame);
+        backToInvitationButton.addEventListener("click", backToInvitation);
+
+        function startGame() {
+            // Ocultar invitación, mostrar juego
+            invitacionContainer.style.display = "none";
+            gameContainer.style.display = "block";
+            gameResult.style.display = "none";
+            
+            // Reiniciar variables del juego
+            score = 0;
+            timeLeft = 30;
+            gameActive = true;
+            gameScore.textContent = score;
+            gameTimer.textContent = timeLeft;
+            
+            // Iniciar la aparición de regalos
+            gameInterval = setInterval(createGift, 1000);
+            
+            // Iniciar el temporizador
+            timerInterval = setInterval(updateTimer, 1000);
+            
+            // Reproducir sonido de inicio (opcional)
+            const startSound = new Audio("https://www.myinstants.com/media/sounds/Mario-coin-sound.mp3");
+            startSound.play();
+        }
+
+        function createGift() {
+            if (!gameActive) return;
+            
+            // Crear un elemento de regalo
+            const gift = document.createElement("div");
+            gift.className = "game-gift";
+            
+            // Seleccionar un tipo de regalo aleatorio
+            const giftType = giftTypes[Math.floor(Math.random() * giftTypes.length)];
+            gift.textContent = giftType.emoji;
+            gift.dataset.points = giftType.points;
+            
+            // Posicionar el regalo aleatoriamente en el área de juego
+            const maxX = gameArea.clientWidth - 50;
+            const maxY = gameArea.clientHeight - 50;
+            const posX = Math.floor(Math.random() * maxX);
+            const posY = Math.floor(Math.random() * maxY);
+            
+            gift.style.left = posX + "px";
+            gift.style.top = posY + "px";
+            
+            // Añadir evento de clic para "atrapar" el regalo
+            gift.addEventListener("click", function() {
+                if (!gameActive) return;
+                
+                // Sumar puntos
+                const points = parseInt(gift.dataset.points);
+                score += points;
+                gameScore.textContent = score;
+                
+                // Mostrar animación de puntos
+                const pointsAnim = document.createElement("div");
+                pointsAnim.className = "points-animation";
+                pointsAnim.textContent = "+" + points;
+                pointsAnim.style.left = gift.style.left;
+                pointsAnim.style.top = gift.style.top;
+                gameArea.appendChild(pointsAnim);
+                
+                // Eliminar la animación después de completarse
+                setTimeout(() => {
+                    gameArea.removeChild(pointsAnim);
+                }, 1000);
+                
+                // Reproducir sonido
+                const coinSound = new Audio("https://www.myinstants.com/media/sounds/smw_coin.mp3");
+                coinSound.play();
+                
+                // Eliminar el regalo
+                gameArea.removeChild(gift);
+            });
+            
+            // Añadir el regalo al área de juego
+            gameArea.appendChild(gift);
+            
+            // Eliminar el regalo si no se atrapa a tiempo
+            setTimeout(() => {
+                if (gift.parentNode === gameArea) {
+                    gameArea.removeChild(gift);
+                }
+            }, giftType.speed);
+        }
+
+        function updateTimer() {
+            timeLeft--;
+            gameTimer.textContent = timeLeft;
+            
+            if (timeLeft <= 0) {
+                endGame();
+            }
+        }
+
+        function endGame() {
+            // Detener los intervalos
+            clearInterval(gameInterval);
+            clearInterval(timerInterval);
+            gameActive = false;
+            
+            // Eliminar todos los regalos restantes
+            while (gameArea.firstChild) {
+                gameArea.removeChild(gameArea.firstChild);
+            }
+            
+            // Mostrar resultado
+            finalScore.textContent = score;
+            
+            // Mensaje personalizado según la puntuación
+            if (score >= 20) {
+                resultMessage.textContent = "¡INCREÍBLE! ¡Eres un experto atrapando regalos!";
+            } else if (score >= 10) {
+                resultMessage.textContent = "¡MUY BIEN! ¡Santiago estará feliz!";
+            } else {
+                resultMessage.textContent = "¡Gracias por jugar! ¡Nos vemos en la fiesta!";
+            }
+            
+            // Mostrar panel de resultados
+            gameResult.style.display = "block";
+            
+            // Reproducir sonido de fin de juego
+            const endSound = new Audio("https://www.myinstants.com/media/sounds/smb_stage_clear.mp3");
+            endSound.play();
+        }
+
+        function backToInvitation() {
+            // Ocultar juego, mostrar invitación
+            gameContainer.style.display = "none";
+            invitacionContainer.style.display = "block";
+            
             // Mostrar animación de poder
             const powerUp = document.getElementById("powerUp");
+            powerUp.textContent = "+" + score + " XP";
             powerUp.style.display = "block";
             powerUp.classList.add("animate");
-            
-            // Sonido de videojuego (opcional)
-            const audio = new Audio("https://www.myinstants.com/media/sounds/super-mario-bros-coin-sound.mp3");
-            audio.play();
-            
-            // Cambiar el GIF
-            const newRandomGif = gifs[Math.floor(Math.random() * gifs.length)];
-            document.getElementById("randomGif").src = newRandomGif;
             
             // Ocultar la animación después de completarse
             setTimeout(() => {
                 powerUp.style.display = "none";
                 powerUp.classList.remove("animate");
+                powerUp.textContent = "+1000 XP";
             }, 2000);
-        });
-        
-        // Personalizar con el nombre del visitante (simulado)
-        const visitorNames = ["Jugador", "Aventurero", "Explorador", "Gamer", "Campeón"];
-        const visitorName = visitorNames[Math.floor(Math.random() * visitorNames.length)];
-        document.getElementById("playerName").innerHTML = "SANTIAGO ALFARO<br><span class='player-title'>" + visitorName + " Nivel 7</span>";
+        }
     </script>
 </body>
 </html>
