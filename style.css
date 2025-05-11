@@ -283,3 +283,163 @@ h3 {
         padding: 10px 15px;
     }
 }
+
+/* Estilos para el contenedor del juego */
+.game-container {
+    max-width: 600px;
+    margin: 0 auto;
+    background-color: rgba(30, 30, 50, 0.9);
+    border: 4px solid #00ffaa;
+    box-shadow: 0 0 20px #00ffaa, inset 0 0 10px rgba(0, 255, 170, 0.5);
+    padding: 20px;
+    border-radius: 15px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.game-header {
+    margin-bottom: 15px;
+}
+
+.game-header h3 {
+    margin: 5px 0;
+}
+
+.game-stats {
+    display: flex;
+    justify-content: space-around;
+    background-color: rgba(0, 0, 0, 0.4);
+    border-radius: 10px;
+    padding: 10px;
+    margin: 10px 0;
+}
+
+.game-stats p {
+    margin: 0;
+    font-size: 1.3rem;
+    font-family: 'Press Start 2P', cursive;
+}
+
+.game-area {
+    background-color: rgba(0, 0, 0, 0.4);
+    border: 3px solid #ff3377;
+    border-radius: 10px;
+    width: calc(100% - 20px);
+    height: 300px;
+    margin: 10px auto;
+    position: relative;
+    overflow: hidden;
+}
+
+.game-gift {
+    position: absolute;
+    font-size: 2.5rem;
+    cursor: pointer;
+    user-select: none;
+    transition: transform 0.1s;
+    filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.7));
+}
+
+.game-gift:hover {
+    transform: scale(1.2);
+}
+
+.game-controls {
+    margin: 15px 0;
+}
+
+.game-button {
+    background-color: #ff3377;
+    color: white;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.8rem;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 4px 0 #aa2255;
+}
+
+.game-button:hover {
+    background-color: #ff5599;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 0 #aa2255;
+}
+
+.game-button:active {
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 #aa2255;
+}
+
+.game-result {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(0, 0, 0, 0.9);
+    border: 3px solid #ffdd00;
+    border-radius: 10px;
+    padding: 20px;
+    width: 80%;
+    max-width: 400px;
+    text-align: center;
+    z-index: 10;
+}
+
+.game-result h3 {
+    color: #ffdd00;
+    margin-top: 0;
+}
+
+.game-result p {
+    font-size: 1.2rem;
+    margin: 10px 0;
+}
+
+#finalScore {
+    color: #ff3377;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.points-animation {
+    position: absolute;
+    color: #ffdd00;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 1.2rem;
+    animation: float-up 1s forwards;
+    z-index: 5;
+    pointer-events: none;
+}
+
+@keyframes float-up {
+    0% {
+        opacity: 0;
+        transform: translateY(0);
+    }
+    20% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+}
+
+/* Ajuste responsivo para el juego */
+@media (max-width: 600px) {
+    .game-area {
+        height: 250px;
+    }
+    
+    .game-gift {
+        font-size: 2rem;
+    }
+    
+    .game-button {
+        font-size: 0.7rem;
+        padding: 8px 12px;
+    }
+}
