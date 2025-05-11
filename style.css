@@ -157,25 +157,27 @@ h3 {
     to {transform: translateY(-10px);}
 }
 
+/* --- RUTAS DE IMÁGENES DE PERSONAJES MODIFICADAS --- */
+/* Asegúrate de tener estos archivos en una carpeta 'img/' o ajusta la ruta */
 .mario {
-    background-image: url('https://i.imgur.com/RLnWLM1.png');
+    background-image: url('img/mario_char.png');
 }
 
 .sonic {
-    background-image: url('https://i.imgur.com/w2YeISc.png');
+    background-image: url('img/sonic_char.png');
 }
 
 .pikachu {
-    background-image: url('https://i.imgur.com/EFJXbYi.png');
-}
-
-.steve {
-    background-image: url('https://i.imgur.com/K19sGXu.png');
+    background-image: url('img/pikachu_char.png');
 }
 
 .roblox {
-    background-image: url('https://i.imgur.com/tZ0gzzh.png');
+    background-image: url('img/roblox_char.png');
 }
+
+/* Si tenías una clase '.steve' necesitarías añadirla aquí con su imagen */
+/* .steve { background-image: url('img/steve_char.png'); } */
+
 
 .game-activities {
     background-color: rgba(0, 0, 0, 0.4);
@@ -325,11 +327,12 @@ h3 {
     background-color: rgba(0, 0, 0, 0.4);
     border: 3px solid #ff3377;
     border-radius: 10px;
-    width: calc(100% - 20px);
+    width: calc(100% - 20px); /* Considerar padding si existe */
     height: 300px;
     margin: 10px auto;
     position: relative;
     overflow: hidden;
+    box-sizing: border-box; /* Para que el borde no aumente el tamaño total */
 }
 
 .game-gift {
@@ -411,7 +414,7 @@ h3 {
     font-size: 1.2rem;
     animation: float-up 1s forwards;
     z-index: 5;
-    pointer-events: none;
+    pointer-events: none; /* Para que no interfiera con clics */
 }
 
 @keyframes float-up {
