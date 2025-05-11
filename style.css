@@ -17,170 +17,269 @@
 
 /* --- Estilos Base --- */
 body {
-    font-family: var(--font-readable-pixel);
-    background-color: var(--color-background);
-    color: var(--color-text-light);
+    background-color: #121212;
+    color: #ffffff;
+    font-family: 'VT323', monospace;
     margin: 0;
-    padding: 15px; /* Reducido un poco para móviles, el container tendrá su propio padding */
-    display: flex;
-    flex-direction: column; /* Para que el contenido se alinee bien si es muy largo */
-    align-items: center;
-    min-height: 100vh;
-    box-sizing: border-box; /* Importante para el padding */
+    padding: 20px;
+    background-image: radial-gradient(circle, #2b2b2b 10%, transparent 10%), radial-gradient(circle, #2b2b2b 10%, transparent 10%);
+    background-size: 30px 30px;
+    background-position: 0 0, 15px 15px;
+    animation: backgroundScroll 60s linear infinite;
+}
+
+@keyframes backgroundScroll {
+    from {background-position: 0 0, 15px 15px;}
+    to {background-position: 1000px 1000px, 1015px 1015px;}
 }
 
 .container {
-    background-color: var(--color-container-bg);
-    border: 2px solid var(--color-neon-cyan); /* Borde un poco más delgado para pantallas pequeñas */
-    border-radius: 10px; /* Un poco menos redondeado */
-    box-shadow: 0 0 10px var(--color-neon-cyan), 0 0 20px var(--color-neon-cyan), inset 0 0 8px rgba(0, 255, 255, 0.25);
-    padding: 20px 15px; /* Padding ajustado para móviles */
-    max-width: 600px; /* Un poco más estrecho para mejorar la lectura en pantallas más grandes */
-    width: 100%; /* Ocupa todo el ancho disponible en móviles */
-    margin: 20px 0; /* Margen superior e inferior, sin margen lateral ya que body lo maneja */
+    max-width: 600px;
+    margin: 0 auto;
+    background-color: rgba(30, 30, 50, 0.85);
+    border: 4px solid #00ffaa;
+    box-shadow: 0 0 20px #00ffaa, inset 0 0 10px rgba(0, 255, 170, 0.5);
+    padding: 20px;
+    border-radius: 15px;
     text-align: center;
-    box-sizing: border-box;
+    position: relative;
+    overflow: hidden;
 }
 
 /* --- Títulos y Texto --- */
 .header-title {
-    margin-bottom: 15px;
-}
-
-.header-title .sub-header-text {
-    font-family: var(--font-readable-pixel);
-    color: var(--color-text-medium);
-    font-size: 0.9em; /* Ligeramente más pequeño */
-    margin: 3px 0;
-    text-transform: uppercase;
-}
-
-h1 { /* "NIVEL CUMPLEAÑOS" */
-    font-family: var(--font-blocky);
-    color: var(--color-neon-pink);
-    font-size: clamp(1.8em, 6vw, 3em); /* Ajustado el clamp */
-    margin: 0 0 8px 0;
-    text-shadow: 0 0 3px #fff,
-                 0 0 7px var(--color-neon-pink),
-                 0 0 12px var(--color-neon-magenta); /* Sombras ajustadas */
-    line-height: 1.1;
-}
-
-h2 { /* "SANTIAGO ALFARO" */
-    font-family: var(--font-pixel);
-    color: var(--color-neon-cyan);
-    font-size: clamp(1.6em, 5vw, 2.5em); /* Ajustado el clamp */
-    margin-top: 0;
     margin-bottom: 20px;
-    /* Ajuste de text-shadow para mayor nitidez */
-    text-shadow: 0 0 2px rgba(255,255,255,0.7), /* Blanco más sutil y cercano */
-                 0 0 5px var(--color-neon-cyan),   /* Glow principal más ajustado */
-                 0 0 8px var(--color-neon-cyan);   /* Glow secundario un poco más amplio pero no excesivo */
-    letter-spacing: 1px;
 }
 
-h3 { /* "CONFIRMA TU ASISTENCIA" */
-    font-family: var(--font-blocky);
-    color: var(--color-neon-yellow);
-    font-size: clamp(1.3em, 4vw, 2em); /* Ajustado el clamp */
-    margin-top: 25px;
-    margin-bottom: 8px;
-    text-shadow: 0 0 3px #000, 0 0 8px var(--color-neon-yellow);
+h1 {
+    font-family: 'Press Start 2P', cursive;
+    color: #ffdd00;
+    font-size: 2rem;
+    text-shadow: 0 0 10px #ffaa00, 0 0 20px rgba(255, 170, 0, 0.5);
+    margin: 5px 0;
+    letter-spacing: -1px;
+    animation: glow 2s ease-in-out infinite alternate;
 }
 
-p.main-text {
-    font-size: clamp(0.95em, 2.5vw, 1.1em); /* Ajustado el clamp */
-    line-height: 1.5;
-    color: var(--color-text-light);
-    margin-bottom: 15px;
+@keyframes glow {
+    from {
+        text-shadow: 0 0 10px #ffaa00, 0 0 20px rgba(255, 170, 0, 0.5);
+    }
+    to {
+        text-shadow: 0 0 15px #ffaa00, 0 0 30px rgba(255, 170, 0, 0.8), 0 0 40px rgba(255, 170, 0, 0.4);
+    }
 }
 
-p.rsvp-text strong {
-    color: var(--color-neon-pink);
-    font-weight: normal;
+h2 {
+    font-family: 'Bungee', cursive;
+    color: #ff3377;
+    font-size: 1.8rem;
+    text-shadow: 3px 3px 0 #000000;
+    margin: 15px 0;
 }
 
-/* --- Detalles de la Fiesta --- */
+h3 {
+    font-family: 'Press Start 2P', cursive;
+    color: #44ddff;
+    font-size: 1.2rem;
+    margin: 20px 0 10px;
+    text-shadow: 2px 2px 0 #000000;
+}
+
+.sub-header-text {
+    font-family: 'VT323', monospace;
+    font-size: 1.3rem;
+    margin: 5px 0;
+    color: #cccccc;
+}
+
+.main-text {
+    font-size: 1.4rem;
+    line-height: 1.4;
+    margin: 15px 0;
+}
+
 .details {
-    background-color: rgba(0,0,0,0.25);
-    border: 1px dashed var(--color-neon-magenta);
-    padding: 12px;
-    border-radius: 8px;
-    margin: 20px auto;
-    display: inline-block;
-    text-align: left;
-    box-shadow: 0 0 8px rgba(255, 0, 255, 0.25);
-    max-width: 100%; /* Asegura que no se desborde */
+    background-color: rgba(0, 0, 0, 0.4);
+    padding: 15px;
+    border-radius: 10px;
+    margin: 20px 0;
+    border: 2px solid #44ddff;
 }
 
 .details p {
-    font-size: clamp(0.85em, 2.2vw, 1em); /* Ajustado el clamp */
-    margin: 6px 0;
-    color: var(--color-text-light);
-}
-
-.details strong {
-    color: var(--color-neon-cyan);
-    font-weight: normal;
+    font-size: 1.3rem;
+    margin: 8px 0;
 }
 
 .icon {
-    margin-right: 6px;
-    font-size: 1.1em;
+    font-size: 1.5rem;
+    margin-right: 8px;
     vertical-align: middle;
-}
-
-/* --- Imagen de Perfil --- */
-.profile-image {
-    max-width: 120px; /* Ligeramente más pequeño para móviles */
-    border-radius: 50%;
-    border: 2px solid var(--color-neon-magenta);
-    box-shadow: 0 0 8px var(--color-neon-magenta);
-    margin-bottom: 15px;
-    display: block; /* Para centrarlo fácilmente con margin auto si es necesario */
-    margin-left: auto;
-    margin-right: auto;
-}
-
-/* --- Formulario de Google --- */
-.google-form {
-    border-radius: 6px;
-    margin-top: 12px;
-    margin-bottom: 25px;
-    max-width: 100%; /* Asegura que el iframe no se desborde */
-    /* El height se mantiene del HTML, pero puedes ajustarlo si es necesario */
 }
 
 /* --- Texto Final --- */
 .footer-text {
-    font-family: var(--font-pixel);
-    color: var(--color-neon-yellow);
-    font-size: clamp(0.9em, 2.5vw, 1.2em); /* Ajustado el clamp */
-    margin-top: 15px;
-    text-shadow: 0 0 3px #000, 0 0 6px var(--color-neon-yellow);
+    margin-top: 25px;
+    font-size: 1.4rem;
+    color: #ffcc00;
+    font-weight: bold;
 }
 
-/* --- Media Query para pantallas más grandes (opcional, para refinar) --- */
-/* Si queremos que en desktop sea un poco más ancho, podemos añadir: */
-@media (min-width: 601px) { /* A partir de 601px */
-    .container {
-        padding: 30px 25px;
-        border-width: 3px; /* Borde original para pantallas más grandes */
+/* Nuevos estilos para los elementos interactivos */
+.gif-container {
+    margin: 15px auto;
+    max-width: 100%;
+    border: 3px solid #ff3377;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.game-gif {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.character {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 50px;
+    height: 50px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    animation: bounce 1s infinite alternate ease-in-out;
+}
+
+@keyframes bounce {
+    from {transform: translateY(0px);}
+    to {transform: translateY(-10px);}
+}
+
+.mario {
+    background-image: url('https://i.imgur.com/RLnWLM1.png');
+}
+
+.sonic {
+    background-image: url('https://i.imgur.com/w2YeISc.png');
+}
+
+.pikachu {
+    background-image: url('https://i.imgur.com/EFJXbYi.png');
+}
+
+.steve {
+    background-image: url('https://i.imgur.com/K19sGXu.png');
+}
+
+.roblox {
+    background-image: url('https://i.imgur.com/tZ0gzzh.png');
+}
+
+.game-activities {
+    background-color: rgba(0, 0, 0, 0.4);
+    padding: 15px;
+    border-radius: 10px;
+    margin: 20px 0;
+    border: 2px solid #ffdd00;
+}
+
+.game-activities ul {
+    list-style-type: none;
+    padding: 0;
+    text-align: left;
+    max-width: 80%;
+    margin: 0 auto;
+}
+
+.game-activities li {
+    font-size: 1.3rem;
+    margin: 10px 0;
+    padding-left: 10px;
+    border-left: 3px solid #44ddff;
+}
+
+.secret-button {
+    background-color: #ff3377;
+    color: white;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.9rem;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    margin-top: 20px;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 4px 0 #aa2255;
+}
+
+.secret-button:hover {
+    background-color: #ff5599;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 0 #aa2255;
+}
+
+.secret-button:active {
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 #aa2255;
+}
+
+.power-up {
+    display: none;
+    position: absolute;
+    font-family: 'Press Start 2P', cursive;
+    color: #ffdd00;
+    font-size: 1.5rem;
+    text-shadow: 2px 2px 0 #000000;
+}
+
+.power-up.animate {
+    display: block;
+    animation: flyUp 2s ease-out forwards;
+}
+
+@keyframes flyUp {
+    0% {
+        bottom: 30%;
+        left: 50%;
+        transform: translate(-50%, 0);
+        opacity: 0;
     }
-    .profile-image {
-        max-width: 150px; /* Tamaño original para pantallas más grandes */
+    20% {
+        opacity: 1;
+    }
+    100% {
+        bottom: 90%;
+        left: 50%;
+        transform: translate(-50%, 0);
+        opacity: 0;
     }
 }
 
-/* La media query que ya tenías, la he integrado en los estilos de arriba
-   haciendo que los estilos base sean "mobile-first" y luego se ajusten
-   para pantallas más grandes si es necesario.
-   Si necesitas overrides MUY específicos para pantallas pequeñas, puedes mantenerla.
-   Por ejemplo:
-*/
-@media (max-width: 360px) { /* Para pantallas muy pequeñas */
-    h1 { font-size: 1.6em; } /* Reducir aún más si es necesario */
-    h2 { font-size: 1.4em; }
-    .details p { font-size: 0.8em; }
-    p.main-text { font-size: 0.9em; }
+.player-title {
+    font-size: 1rem;
+    color: #44ddff;
+    display: block;
+    margin-top: 5px;
+}
+
+/* Diseño responsivo */
+@media (max-width: 600px) {
+    h1 {
+        font-size: 1.5rem;
+    }
+    
+    h2 {
+        font-size: 1.4rem;
+    }
+    
+    .main-text, .details p {
+        font-size: 1.2rem;
+    }
+    
+    .secret-button {
+        font-size: 0.7rem;
+        padding: 10px 15px;
+    }
 }

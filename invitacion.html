@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>¡Estás Invitado al Cumple de Santiago!</title>
+    <!-- Google Fonts - Press Start 2P (pixel) y Bungee (blocky/neon) o VT323 (pixel más legible) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Bungee&family=VT323&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css"> <!-- Enlazamos el CSS externo -->
+</head>
+<body>
+    <div class="container">
+        <div id="character" class="character"></div>
+        
+        <div class="header-title">
+            <p class="sub-header-text">¡Prepárate para el</p>
+            <h1>NIVEL CUMPLEAÑOS</h1>
+            <p class="sub-header-text">de nuestro</p>
+        </div>
+
+        <h2 id="playerName">SANTIAGO ALFARO</h2>
+
+        <div class="gif-container">
+            <img id="randomGif" src="" alt="GIF Sorpresa" class="game-gif">
+        </div>
+        
+        <p class="main-text">¡Un momento especial para compartir y celebrar juntos en el cole!</p>
+
+        <div class="details">
+            <p><span class="icon">🗓️</span> <strong>FECHA:</strong> Viernes, 16 de Mayo</p>
+            <p><span class="icon">🕒</span> <strong>HORA:</strong> 13:30 hs.</p>
+            <p><span class="icon">📍</span> <strong>LUGAR:</strong> Gral. Elizardo Aquino (En el colegio)</p>
+        </div>
+
+        <div class="game-activities">
+            <h3>¡COMPARTIREMOS JUNTOS!</h3>
+            <ul id="activities">
+                <li>🎂 Torta de cumpleaños</li>
+                <li>🧃 Refrescos y golosinas</li>
+                <li>🎉 Recreo con amigos</li>
+                <li>🎈 Fotos divertidas</li>
+            </ul>
+        </div>
+
+        <div class="animation-container">
+            <div id="powerUp" class="power-up">+1000 XP</div>
+        </div>
+
+        <p class="footer-text">¡TE ESPERAMOS PARA CELEBRAR JUNTOS! <span class="icon">🎂🎈🎉</span></p>
+        
+        <button id="secretButton" class="secret-button">PRESIONA PARA UNA SORPRESA</button>
+    </div>
+
+    <script>
+        // Lista de GIFs de videojuegos para niños
+        const gifs = [
+            "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExaGZqOXBidXhheTEwcGdhaDhsbGg2aGt1djdmZG52NGVjOGFyY2M0dCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/jIptvbaCKDs6VrCPPG/giphy.gif", // Mario Bros
+            "https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExZW41dml1cnQyMmVvbWJxZ2M0eTlqd2Y0ZGg0ZHhybmVjM2x2amJqNyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/XOf2mdbvIkjhbnlDwQ/giphy.gif", // Minecraft
+            "https://media.giphy.com/media/EktbegF3J8QIo/giphy.gif?cid=ecf05e47h7cbcgt6ys5irnucqbv8rz5if4zbwro3r5lusovf&ep=v1_gifs_search&rid=giphy.gif&ct=g", // Pikachu
+            "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExdThkcWg1czBtcmZxNmRqMXRoN3dha3U1cmZ6dWNvcHVnOW82ZWRtcCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/WS6EEr4nIrJvuyZE0X/giphy.gif", // Sonic
+            "https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExeGU2OGNpZWl6YzJxeXl6MGZrNTdiZXYzMTVjNDlyZXMxeHIxb3k2bSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/17EvcNvlvZ63ueEC7j/giphy.gif"  // Fortnite
+        ];
+        
+        // Lista de personajes de juegos populares
+        const characters = [
+            "mario", "sonic", "pikachu", "steve", "roblox"
+        ];
+        
+        // Seleccionar un GIF aleatorio
+        const randomGif = gifs[Math.floor(Math.random() * gifs.length)];
+        document.getElementById("randomGif").src = randomGif;
+        
+        // Cambiar el personaje para cada visitante
+        const randomCharacter = characters[Math.floor(Math.random() * characters.length)];
+        document.getElementById("character").classList.add(randomCharacter);
+        document.getElementById("character").setAttribute("title", "¡Juega con " + randomCharacter + "!");
+        
+        // Añadir efecto al botón secreto
+        document.getElementById("secretButton").addEventListener("click", function() {
+            // Mostrar animación de poder
+            const powerUp = document.getElementById("powerUp");
+            powerUp.style.display = "block";
+            powerUp.classList.add("animate");
+            
+            // Sonido de videojuego (opcional)
+            const audio = new Audio("https://www.myinstants.com/media/sounds/super-mario-bros-coin-sound.mp3");
+            audio.play();
+            
+            // Cambiar el GIF
+            const newRandomGif = gifs[Math.floor(Math.random() * gifs.length)];
+            document.getElementById("randomGif").src = newRandomGif;
+            
+            // Ocultar la animación después de completarse
+            setTimeout(() => {
+                powerUp.style.display = "none";
+                powerUp.classList.remove("animate");
+            }, 2000);
+        });
+        
+        // Personalizar con el nombre del visitante (simulado)
+        const visitorNames = ["Jugador", "Aventurero", "Explorador", "Gamer", "Campeón"];
+        const visitorName = visitorNames[Math.floor(Math.random() * visitorNames.length)];
+        document.getElementById("playerName").innerHTML = "SANTIAGO ALFARO<br><span class='player-title'>" + visitorName + " Nivel 7</span>";
+    </script>
+</body>
+</html>
