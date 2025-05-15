@@ -3,471 +3,538 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>¡Estás Invitado al Cumple de Santiago!</title>
+    <title>¡CONVOCATORIA ESTELAR: Cumple de Santiago!</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Bungee&family=VT323&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Oswald:wght@400;500;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <style>
-        /* Estilos inline básicos que ya tenías y el del botón de sonido */
+        /* Estilos inline básicos (confeti, name-prompt, tutorial, high-scores) - Se mantienen pero se adaptarán con el CSS general */
         .confetti { position: fixed; width: 10px; height: 10px; top: -10px; border-radius: 50%; animation: confetti-fall 5s linear forwards; z-index: 1000; }
         @keyframes confetti-fall { 0% { transform: translateY(0) rotate(0deg); opacity: 1; } 100% { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
-        .name-prompt { max-width: 600px; margin: 20% auto; background-color: rgba(30, 30, 50, 0.95); border: 4px solid #ff3377; box-shadow: 0 0 20px #ff3377; padding: 20px; border-radius: 15px; text-align: center; }
-        .name-prompt input { background-color: rgba(0, 0, 0, 0.5); border: 2px solid #44ddff; color: white; padding: 10px; font-size: 1.2rem; margin: 15px 0; border-radius: 5px; font-family: 'VT323', monospace; }
-        .high-scores { margin-top: 20px; border-top: 2px dashed #44ddff; padding-top: 10px; }
-        .high-scores h4 { color: #ff9900; margin-bottom: 5px; }
-        .high-scores ul { list-style: none; padding: 0; margin: 5px 0; font-size: 0.9rem; }
-        .tutorial { max-width: 600px; margin: 20% auto; background-color: rgba(30, 30, 50, 0.95); border: 4px solid #44ddff; box-shadow: 0 0 20px #44ddff; padding: 20px; border-radius: 15px; text-align: center; }
-        .tutorial-step { display: flex; align-items: center; margin: 15px 0; justify-content: center; }
-        .tutorial-icon { font-size: 2rem; margin-right: 15px; animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
+        
+        .name-prompt, .tutorial {
+            max-width: 500px; margin: 15% auto; /* Reducido margen superior */
+            background-color: var(--color-black-transparent);
+            border: 2px solid var(--color-primary-pink);
+            box-shadow: 0 0 20px var(--color-primary-pink-glow);
+            padding: 30px; border-radius: 12px; text-align: center;
+            color: var(--color-white);
+            position: relative; /* Para z-index si es necesario */
+            z-index: 1010; /* Asegurar que estén por encima de otros elementos */
+        }
+        .name-prompt input {
+            background-color: rgba(255, 255, 255, 0.1); border: 2px solid var(--color-primary-pink);
+            color: var(--color-white); padding: 12px 15px; font-size: 1.1rem; margin: 20px 0; border-radius: 8px;
+            font-family: 'Roboto', sans-serif; width: 85%; box-sizing: border-box;
+        }
+        .high-scores { margin-top: 25px; border-top: 2px dashed var(--color-primary-pink); padding-top: 20px; }
+        .high-scores h4 { color: var(--color-primary-pink); margin-bottom: 12px; font-family: 'Oswald', sans-serif; font-size: 1.3rem; }
+        .high-scores ul { list-style: none; padding: 0; margin: 8px 0; font-size: 1rem; }
+        
+        .tutorial-step { display: flex; align-items: center; margin: 18px 0; justify-content: center; font-size: 1.15rem; }
+        .tutorial-icon { font-size: 2rem; margin-right: 15px; animation: pulseSoccer 1.5s infinite; color: var(--color-primary-pink); }
+        @keyframes pulseSoccer { 0% { transform: scale(1); } 50% { transform: scale(1.15); } 100% { transform: scale(1); } }
         
         .sound-control {
-            position: fixed;
-            top: 20px;
-            left: 20px; /* Movido a la izquierda */
-            z-index: 1001;
+            position: fixed; top: 25px; right: 25px; /* Movido a la derecha */ z-index: 1001;
         }
         .sound-button {
-            background-color: #44ddff; color: var(--color-background, #0d0d1a); /* Fallback por si var no carga */
-            font-family: 'Press Start 2P', cursive; font-size: 1.2rem;
-            padding: 8px 10px; border: 3px outset #66ffff;
-            border-bottom: 3px outset #00aaaa; border-right: 3px outset #00aaaa;
-            border-radius: 5px; cursor: pointer; transition: all 0.1s;
+            background-color: var(--color-primary-pink); color: var(--color-black);
+            font-family: 'Anton', sans-serif; font-size: 1.6rem;
+            padding: 0; border: none;
+            border-radius: 50%; cursor: pointer; transition: all 0.2s ease-in-out;
             width: 50px; height: 50px; display: flex;
             align-items: center; justify-content: center;
-            text-shadow: 1px 1px 0px rgba(0,0,0,0.3);
+            box-shadow: 0 3px 8px rgba(0,0,0,0.4);
         }
-        .sound-button:hover { background-color: #66ffff; transform: scale(1.05); }
-        .sound-button:active { border-style: inset; transform: scale(0.95) translateY(1px); }
+        .sound-button:hover { background-color: var(--color-secondary-pink); transform: scale(1.1); }
+        .sound-button:active { transform: scale(0.98) translateY(1px); }
 
         .minigame-notice {
-            position: fixed;
-            bottom: 70px; 
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: var(--color-neon-yellow, #fff200); /* Fallback */
-            color: var(--color-background, #0d0d1a); /* Fallback */
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-family: var(--font-readable-pixel, 'VT323', monospace); /* Fallback */
-            font-size: 0.9rem;
-            box-shadow: 0 0 15px var(--color-neon-yellow, #fff200); /* Fallback */
-            z-index: 1002;
-            opacity: 0;
+            position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
+            background-color: var(--color-primary-pink); color: var(--color-black);
+            padding: 12px 25px; border-radius: 30px;
+            font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 1rem; text-transform: uppercase;
+            box-shadow: 0 0 20px var(--color-primary-pink-glow);
+            z-index: 1002; opacity: 0;
             transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
             pointer-events: none;
         }
-        .minigame-notice.show {
-            opacity: 1;
-            transform: translateX(-50%) translateY(-10px);
-        }
+        .minigame-notice.show { opacity: 1; transform: translateX(-50%) translateY(-10px); }
         .minigame-notice::after {
-            content: ''; position: absolute; bottom: -8px; left: 50%;
+            content: ''; position: absolute; bottom: -10px; left: 50%;
             transform: translateX(-50%); width: 0; height: 0;
-            border-left: 8px solid transparent; border-right: 8px solid transparent;
-            border-top: 8px solid var(--color-neon-yellow, #fff200); /* Fallback */
+            border-left: 10px solid transparent; border-right: 10px solid transparent;
+            border-top: 10px solid var(--color-primary-pink);
         }
     </style>
 </head>
 <body>
-    <div class="container" id="invitacionContainer">
-        <div id="character" class="character"></div>
-        
-        <div class="header-title">
-            <p class="sub-header-text">¡Prepárate para el</p>
-            <h1>NIVEL CUMPLEAÑOS</h1>
-            <p class="sub-header-text">de nuestro</p>
+    <div class="invitation-wrapper" id="invitacionContainer">
+        <header class="invitation-header">
+            <p class="sub-header-text">¡Has sido fichado para el</p>
+            <h1>CUMPLEAÑOS DE CAMPEÓN</h1>
+            <p class="sub-header-text">de nuestro NÚMERO 1</p>
+        </header>
+
+        <div class="player-card">
+            <h2 id="playerName" class="player-name">SANTIAGO ALFARO</h2>
+            <div class="player-image-container">
+                <img id="mainInvitationImage" src="img/placeholder-santiago-messi.png" alt="Celebración de Cumpleaños de Santiago" class="main-image">
+            </div>
+            <p class="main-text">¡Prepárate para un día lleno de fútbol, amigos y mucha diversión en la Escuela!</p>
         </div>
 
-        <h2 id="playerName">SANTIAGO ALFARO</h2>
+        <section class="details-section">
+            <h3>DETALLES DEL PARTIDO</h3>
+            <div class="details-grid">
+                <p><span class="icon">🗓️</span> <strong>FECHA:</strong> Viernes, 16 de Mayo</p>
+                <p><span class="icon">🕒</span> <strong>HORA:</strong> 13:30 hs.</p>
+                <p><span class="icon">📍</span> <strong>ESTADIO:</strong> Gral. Elizardo Aquino (¡La Cancha!)</p>
+            </div>
+        </section>
 
-        <div class="gif-container">
-            <img id="randomGif" src="" alt="GIF Sorpresa" class="game-gif">
-        </div>
-        
-        <p class="main-text">¡Un momento especial para compartir y celebrar juntos en la Escuela!</p>
-
-        <div class="details">
-            <p><span class="icon">🗓️</span> <strong>FECHA:</strong> Viernes, 16 de Mayo</p>
-            <p><span class="icon">🕒</span> <strong>HORA:</strong> 13:30 hs.</p>
-            <p><span class="icon">📍</span> <strong>LUGAR:</strong> Gral. Elizardo Aquino</p>
-        </div>
-
-        <div class="game-activities">
-            <h3>¡COMPARTIREMOS JUNTOS!</h3>
+        <section class="activities-section">
+            <h3>CRONOGRAMA DE LA JORNADA</h3>
             <ul id="activities">
-                <li>🎂 Torta de cumpleaños</li>
-                <li>🧃 Refrescos y golosinas</li>
-                <li>🎉 Recreo con amigos</li>
-                <li>🎈 Fotos divertidas</li>
+                <li><span class="li-icon">⚽</span> Calentamiento y partidito amistoso</li>
+                <li><span class="li-icon">🎂</span> Entrega de trofeos (¡y torta!) al cumpleañero</li>
+                <li><span class="li-icon">🥤</span> Hidratación y snacks en el vestuario</li>
+                <li><span class="li-icon">📸</span> Sesión de fotos con la estrella del día</li>
             </ul>
+        </section>
+        
+        <div class="gif-banner-container">
+            <img id="dynamicSoccerGif" src="" alt="Animación de fútbol" class="dynamic-gif">
         </div>
 
         <div class="animation-container">
-            <div id="powerUp" class="power-up">+1000 XP</div>
+            <div id="powerUp" class="power-up">+1 GOLAZO</div>
         </div>
 
-        <p class="footer-text">¡TE ESPERAMOS PARA CELEBRAR JUNTOS! <span class="icon">🎂🎈🎉</span></p>
+        <p class="footer-text">¡TU PRESENCIA ES CLAVE PARA LA VICTORIA! <span class="icon">🏆🎉⚽</span></p>
         
-        <button id="secretButton" class="secret-button">¡JUEGA UN MINIJUEGO!</button>
-        <div id="minigameNotice" class="minigame-notice">¡Psst! ¡Prueba el minijuego! 👇</div>
+        <button id="secretButton" class="action-button primary">¡MINIJUEGO: TIRO AL ARCO!</button>
+        <div id="minigameNotice" class="minigame-notice">¡Hey! ¡Prueba tu puntería! 👇</div>
     </div>
 
     <div id="namePrompt" class="name-prompt" style="display:none;">
-        <h3>¿CÓMO TE LLAMAS?</h3>
-        <input type="text" id="playerNameInput" maxlength="10" placeholder="Tu nombre">
-        <button id="startWithNameButton" class="game-button">¡COMENZAR!</button>
+        <h3>¡REGISTRA TU NOMBRE DE CRACK!</h3>
+        <input type="text" id="playerNameInput" maxlength="15" placeholder="Ej: ElPibeDeOro">
+        <button id="startWithNameButton" class="action-button">¡A LA CANCHA!</button>
     </div>
 
     <div id="tutorial" class="tutorial" style="display:none;">
-        <h3>¡VAMOS A JUGAR!</h3>
+        <h3>MINIJUEGO: ¡A METER GOLES!</h3>
         <div class="tutorial-step">
-            <div class="tutorial-icon">👆</div>
-            <p>Toca los regalos que aparecen</p>
+            <div class="tutorial-icon">🎯</div> <p>Apunta y haz clic en los objetivos.</p>
         </div>
         <div class="tutorial-step">
-            <div class="tutorial-icon">⏱️</div>
-            <p>Tienes 30 segundos</p>
+            <div class="tutorial-icon">⏱️</div> <p>Tienes 30 segundos para anotar.</p>
         </div>
         <div class="tutorial-step">
-            <div class="tutorial-icon">⭐</div>
-            <p>Las estrellas valen más puntos</p>
+            <div class="tutorial-icon">⭐</div> <p>¡Los objetivos dorados valen más puntos!</p>
         </div>
-        <button id="startAfterTutorial" class="game-button">¡ENTENDIDO!</button>
+        <button id="startAfterTutorial" class="action-button">¡VAMOS A JUGAR!</button>
     </div>
 
     <div class="sound-control">
-        <button id="soundButton" class="sound-button" title="Activar/Desactivar música">🔇</button> <!-- Inicia como muteado -->
+        <button id="soundButton" class="sound-button" title="Activar/Desactivar música">🔇</button>
     </div>
 
     <div id="gameContainer" class="game-container" style="display:none;">
         <div class="game-header">
-            <h3>¡ATRAPA LOS REGALOS!</h3>
+            <h3>¡DEMUESTRA TU PUNTERÍA!</h3>
             <div class="game-stats">
-                <p>Puntos: <span id="gameScore">0</span></p>
+                <p>Goles: <span id="gameScore">0</span></p>
                 <p>Tiempo: <span id="gameTimer">30</span>s</p>
             </div>
         </div>
-        <div id="gameArea" class="game-area"></div>
-        <div class="game-controls">
-            <button id="endGameButton" class="game-button">TERMINAR JUEGO</button>
+        <div id="gameArea" class="game-area">
         </div>
-        <div id="gameResult" class="game-result" style="display:none;">
-            <h3>¡JUEGO TERMINADO!</h3>
-            <p>Atrapaste <span id="finalScore">0</span> regalos</p>
-            <p id="resultMessage">¡Buen trabajo!</p>
-            <button id="backToInvitationButton" class="game-button">VOLVER A LA INVITACIÓN</button>
+        <div class="game-controls">
+            <button id="endGameButton" class="action-button secondary">TERMINAR PARTIDO</button>
+        </div>
+    </div>
+    <div id="gameResult" class="game-result" style="display:none;">
+        <div> 
+            <h3>¡PARTIDO FINALIZADO!</h3>
+            <p>Anotaste <span id="finalScoreDisplay">0</span> Goles</p>
+            <p id="resultMessage">¡Gran actuación!</p>
+            <button id="backToInvitationButton" class="action-button primary">VOLVER A LA INVITACIÓN</button>
             <div class="high-scores">
-                <h4>MEJORES PUNTAJES</h4>
+                <h4>TABLA DE GOLEADORES</h4>
                 <ul id="highScoresList"></ul>
             </div>
         </div>
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function() {
 
-            // --- DECLARACIÓN DE ELEMENTOS DEL DOM ---
-            const randomGifImgElement = document.getElementById("randomGif");
-            const characterDiv = document.getElementById("character");
-            const playerNameElement = document.getElementById("playerName");
-            const gameContainer = document.getElementById("gameContainer");
-            const invitacionContainer = document.getElementById("invitacionContainer");
-            const gameArea = document.getElementById("gameArea");
-            const gameScore = document.getElementById("gameScore");
-            const gameTimer = document.getElementById("gameTimer");
-            const gameResult = document.getElementById("gameResult");
-            const finalScore = document.getElementById("finalScore");
-            const resultMessage = document.getElementById("resultMessage");
-            const secretButton = document.getElementById("secretButton");
-            const endGameButton = document.getElementById("endGameButton");
-            const backToInvitationButton = document.getElementById("backToInvitationButton");
-            const soundButton = document.getElementById("soundButton");
-            const playerNameInput = document.getElementById("playerNameInput"); // Se usa 'let' si se reasigna, 'const' si no.
-            const startWithNameButton = document.getElementById("startWithNameButton");
-            const namePrompt = document.getElementById("namePrompt");
-            const tutorial = document.getElementById("tutorial");
-            const startAfterTutorial = document.getElementById("startAfterTutorial");
-            const minigameNoticeElement = document.getElementById("minigameNotice");
-            const powerUpElement = document.getElementById("powerUp");
+        // --- ELEMENTOS DEL DOM ---
+        const mainInvitationImage = document.getElementById("mainInvitationImage");
+        const dynamicSoccerGifElement = document.getElementById("dynamicSoccerGif");
+        const playerNameElement = document.getElementById("playerName");
+        const gameContainer = document.getElementById("gameContainer");
+        const invitacionContainer = document.getElementById("invitacionContainer");
+        const gameArea = document.getElementById("gameArea");
+        const gameScoreDisplay = document.getElementById("gameScore");
+        const gameTimerDisplay = document.getElementById("gameTimer");
+        const gameResultPopup = document.getElementById("gameResult");
+        const finalScoreDisplay = document.getElementById("finalScoreDisplay");
+        const resultMessage = document.getElementById("resultMessage");
+        const secretButton = document.getElementById("secretButton");
+        const endGameButton = document.getElementById("endGameButton");
+        const backToInvitationButton = document.getElementById("backToInvitationButton");
+        const soundButton = document.getElementById("soundButton");
+        const playerNameInput = document.getElementById("playerNameInput");
+        const startWithNameButton = document.getElementById("startWithNameButton");
+        const namePrompt = document.getElementById("namePrompt");
+        const tutorial = document.getElementById("tutorial");
+        const startAfterTutorial = document.getElementById("startAfterTutorial");
+        const minigameNoticeElement = document.getElementById("minigameNotice");
+        const powerUpElement = document.getElementById("powerUp");
 
+        // --- CONFIGURACIÓN Y DATOS ---
+        const dynamicGifs = [
+            "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExc3RpdTc5YzFpcHhiZTF6c3ExeG15d3U2ODd3ZnM2eW5vbXNsbHlmNSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/waCWiXgm8dDkTggARm/giphy.gif", 
+            "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExajgzdXVodGFidWlhcjExMDZqZXg2ZzhpNzBneWtnM3k2cWR1MmZsYyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/pN3fM4bIDBeBVTY6Sn/giphy.gif",
+            "https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExY25yajBqcnE2OWswdnQ1cGt5MHJwY2g1bzhncTV6b29wejczYXd1dyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/8OJvD6X5p7iS39PbK0/giphy.gif",
+            "https://media.giphy.com/media/85wLxLsRtrFHZcFmZk/giphy.gif?cid=ecf05e47o6id0go5gjzp0r5pcijukk630wz6pqdhnmycz8o5&ep=v1_gifs_search&rid=giphy.gif&ct=g"
+        ];
 
-            // --- CONFIGURACIÓN INICIAL Y DATOS ---
-            const gifs = [
-                "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExaGZqOXBidXhheTEwcGdhaDhsbGg2aGt1djdmZG52NGVjOGFyY2M0dCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/jIptvbaCKDs6VrCPPG/giphy.gif",
-                "https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExZW41dml1cnQyMmVvbWJxZ2M0eTlqd2Y0ZGg0ZHhybmVjM2x2amJqNyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/XOf2mdbvIkjhbnlDwQ/giphy.gif",
-                "https://media.giphy.com/media/EktbegF3J8QIo/giphy.gif?cid=ecf05e47h7cbcgt6ys5irnucqbv8rz5if4zbwro3r5lusovf&ep=v1_gifs_search&rid=giphy.gif&ct=g",
-                "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExdThkcWg1czBtcmZxNmRqMXRoN3dha3U1cmZ6dWNvcHVnOW82ZWRtcCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/WS6EEr4nIrJvuyZE0X/giphy.gif",
-                "https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExeGU2OGNpZWl6YzJxeXl6MGZrNTdiZXYzMTVjNDlyZXMxeHIxb3k2bSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/17EvcNvlvZ63ueEC7j/giphy.gif"
-            ];
-            const characters = [ "mario", "sonic", "pikachu", "steve", "roblox" ]; // 'steve' necesita CSS
-            const visitorNames = ["Jugador", "Aventurero", "Explorador", "Gamer", "Campeón"];
+        if (dynamicSoccerGifElement && dynamicGifs.length > 0) {
+            dynamicSoccerGifElement.src = dynamicGifs[Math.floor(Math.random() * dynamicGifs.length)];
+        } else if (dynamicSoccerGifElement) {
+            dynamicSoccerGifElement.style.display = 'none';
+        }
+        
+        let score = 0;
+        let timeLeft = 30;
+        let gameInterval;
+        let timerInterval;
+        let gameActive = false;
+        let currentPlayerName = "Jugador Estrella";
 
-            // --- ESTADO DEL JUEGO Y VARIABLES DE AUDIO ---
-            let score = 0;
-            let timeLeft = 30;
-            let gameInterval;
-            let timerInterval;
-            let gameActive = false;
-            let currentPlayerName = "Invitado";
-            const giftTypes = [
-                { emoji: "🎁", points: 1, speed: 3000 }, { emoji: "🎮", points: 2, speed: 2500 },
-                { emoji: "🎂", points: 3, speed: 2000 }, { emoji: "⭐", points: 5, speed: 1500 }
-            ];
+        const gameItems = [
+            { emoji: "⚽", points: 1, speed: 2200, itemClass: "target-ball" },
+            { emoji: "🎯", points: 2, speed: 1800, itemClass: "target-diana" },
+            { emoji: "⭐", points: 5, speed: 1500, itemClass: "target-star" }
+        ];
 
-            let backgroundMusic;
-            let startSoundEffect;
-            let coinSoundEffect;
-            let endSoundEffect;
-            let musicPlaying = false; 
-            let wasMusicPlayingBeforeGame = false;
+        // --- AUDIO ---
+        const musicPlaylist = [
+            'audio/eFootball 2025 Soundtrack - Manifest by Crystal Fighters.mp3',
+            'audio/eFootball 2025 Soundtrack - American Adrenaline by KAWALA.mp3',
+            'audio/All I Want - Lane 8 ft. Arctic Lake (FIFA 23 Official Soundtrack).mp3'
+        ];
+        let currentTrackIndex = 0; 
+        let audioPlayer = new Audio(); 
+        let musicPlaying = false; // Inicialmente la música no está sonando
+        let wasMusicPlayingBeforeGame = false;
 
-            // --- INICIALIZACIÓN DE ELEMENTOS VISUALES ---
-            if (randomGifImgElement) {
-                const randomGifUrl = gifs[Math.floor(Math.random() * gifs.length)];
-                randomGifImgElement.src = randomGifUrl;
-            } else { console.error("Elemento con ID 'randomGif' no encontrado."); }
-            
-            if (characterDiv) {
-                const randomCharacterName = characters[Math.floor(Math.random() * characters.length)];
-                characterDiv.className = 'character'; 
-                characterDiv.classList.add(randomCharacterName);
-                characterDiv.setAttribute("title", "¡Juega con " + randomCharacterName + "!");
-            } else { console.error("Elemento con ID 'character' no encontrado."); }
-            
-            if (playerNameElement) {
-                const visitorName = visitorNames[Math.floor(Math.random() * visitorNames.length)];
-                playerNameElement.innerHTML = "SANTIAGO ALFARO<br><span class='player-title'>" + visitorName + " Nivel 7</span>";
-            } else { console.error("Elemento con ID 'playerName' no encontrado."); }
+        let gameStartSound; 
+        let scoreSound;     
+        let gameEndSound;  
 
-            // --- INICIALIZACIÓN Y CONTROL DE MÚSICA DE FONDO ---
-            try {
-                backgroundMusic = new Audio("audio/background-music.mp3");
-                backgroundMusic.loop = true;
-                backgroundMusic.volume = 0.2;
-            } catch (e) {
-                console.error("No se pudo cargar la música de fondo:", e);
-                if (soundButton) soundButton.disabled = true;
+        function initializeAudioPlayer() {
+            if (musicPlaylist.length === 0) {
+                console.warn("La lista de reproducción de música está vacía.");
+                if(soundButton) soundButton.disabled = true;
+                return;
             }
+            try {
+                // Seleccionar pista inicial aleatoria
+                currentTrackIndex = Math.floor(Math.random() * musicPlaylist.length);
+                audioPlayer.src = musicPlaylist[currentTrackIndex];
+                audioPlayer.volume = 0.15;
+                audioPlayer.onended = playNextTrack; // Configurar para reproducir la siguiente al terminar
 
-            if (soundButton) {
-                soundButton.addEventListener("click", function() {
-                    if (!backgroundMusic) return; 
-                    if (musicPlaying) {
-                        backgroundMusic.pause();
-                        soundButton.textContent = "🔇";
+                // Intentar autoplay
+                const playPromise = audioPlayer.play();
+                if (playPromise !== undefined) {
+                    playPromise.then(_ => {
+                        // Autoplay iniciado con éxito
+                        musicPlaying = true;
+                        if (soundButton) soundButton.textContent = "🔊";
+                        console.log("Autoplay de música iniciado con: " + musicPlaylist[currentTrackIndex]);
+                    }).catch(error => {
+                        // Autoplay bloqueado o fallido
                         musicPlaying = false;
-                    } else {
-                        backgroundMusic.play().catch(e => console.error("Error al reproducir música de fondo:", e));
+                        if (soundButton) soundButton.textContent = "🔇";
+                        console.log("Autoplay de música bloqueado. El usuario debe interactuar primero. Error: ", error);
+                    });
+                }
+            } catch (e) {
+                console.error("Error al inicializar el reproductor de audio:", e);
+                if(soundButton) soundButton.disabled = true;
+                musicPlaying = false; // Asegurar que el estado sea falso
+                if (soundButton) soundButton.textContent = "🔇";
+            }
+        }
+
+        function playNextTrack() {
+            // Reproducción secuencial después de la primera pista aleatoria
+            currentTrackIndex = (currentTrackIndex + 1) % musicPlaylist.length;
+            audioPlayer.src = musicPlaylist[currentTrackIndex];
+            if (musicPlaying) { 
+                audioPlayer.play().catch(e => console.error("Error al reproducir la siguiente pista: " + musicPlaylist[currentTrackIndex], e));
+            }
+        }
+        
+        // Llama a initializeAudioPlayer aquí, después de que el DOM esté cargado.
+        // No es necesario llamarlo de nuevo en el event listener del botón de sonido a menos que falle la carga inicial.
+        initializeAudioPlayer(); 
+
+        if (soundButton) {
+            soundButton.addEventListener("click", function() {
+                if (musicPlaylist.length === 0) return; 
+
+                // Si el audioPlayer no tiene una fuente (caso raro, pero por si acaso)
+                if (!audioPlayer.src && musicPlaylist.length > 0) {
+                    console.log("Fuente de audio no encontrada, re-inicializando con pista aleatoria.");
+                    currentTrackIndex = Math.floor(Math.random() * musicPlaylist.length);
+                    audioPlayer.src = musicPlaylist[currentTrackIndex];
+                    audioPlayer.onended = playNextTrack;
+                    audioPlayer.volume = 0.15;
+                }
+                
+                if (musicPlaying) {
+                    audioPlayer.pause();
+                    soundButton.textContent = "🔇";
+                    musicPlaying = false;
+                } else {
+                    // Intenta reproducir la pista actual. Si falla (ej. por políticas del navegador aún sin interacción suficiente),
+                    // el catch lo manejará.
+                    audioPlayer.play().then(() => {
                         soundButton.textContent = "🔊";
                         musicPlaying = true;
-                    }
-                });
-            }
-            
-            function stopSound(soundInstance) {
-                if (soundInstance) {
-                    soundInstance.pause();
-                    soundInstance.currentTime = 0;
+                    }).catch(e => {
+                        console.error("Error al reproducir música por clic:", e);
+                        soundButton.textContent = "🔇"; 
+                        musicPlaying = false;
+                    });
                 }
+            });
+        }
+        
+        function stopSound(soundInstance) {
+            if (soundInstance) {
+                soundInstance.pause();
+                soundInstance.currentTime = 0;
             }
+        }
 
-            // --- EVENT LISTENERS DE BOTONES DE NAVEGACIÓN ---
-            if (secretButton) {
-                secretButton.addEventListener("click", function() {
-                    if (invitacionContainer) invitacionContainer.style.display = "none";
-                    if (namePrompt) namePrompt.style.display = "block";
-                    if (minigameNoticeElement) minigameNoticeElement.classList.remove('show');
-                    if (secretButton) secretButton.classList.remove('highlight-game'); 
-                });
-            }
-            if (startWithNameButton) {
-                startWithNameButton.addEventListener("click", function() {
-                    if (playerNameInput) currentPlayerName = playerNameInput.value.trim() || "Invitado";
-                    if (namePrompt) namePrompt.style.display = "none";
-                    if (tutorial) tutorial.style.display = "block";
-                });
-            }
-            if (startAfterTutorial) {
-                startAfterTutorial.addEventListener("click", function() {
-                    if (tutorial) tutorial.style.display = "none";
-                    startGame();
-                });
-            }
-            if (endGameButton) endGameButton.addEventListener("click", endGame);
-            if (backToInvitationButton) backToInvitationButton.addEventListener("click", backToInvitation);
-
-
-            // --- FUNCIONES DEL JUEGO ---
-            function startGame() {
-                stopSound(endSoundEffect);
-                
-                wasMusicPlayingBeforeGame = musicPlaying; 
-                if (musicPlaying && backgroundMusic) {
-                    backgroundMusic.pause();
-                }
-
+        // --- NAVEGACIÓN Y BOTONES ---
+        if (secretButton) {
+            secretButton.addEventListener("click", function() {
                 if (invitacionContainer) invitacionContainer.style.display = "none";
-                if (gameContainer) gameContainer.style.display = "block";
-                if (gameResult) gameResult.style.display = "none";
-                
-                score = 0; timeLeft = 30; gameActive = true;
-                if (gameScore) gameScore.textContent = score;
-                if (gameTimer) gameTimer.textContent = timeLeft;
-                
-                gameInterval = setInterval(createGift, 1000);
-                timerInterval = setInterval(updateTimer, 1000);
-                
-                startSoundEffect = new Audio("audio/Mario-coin-sound.mp3");
-                startSoundEffect.volume = 0.5;
-                startSoundEffect.play().catch(e => console.error("Error al reproducir sonido de inicio:", e));
-            }
+                if (namePrompt) namePrompt.style.display = "block";
+                if (minigameNoticeElement) minigameNoticeElement.classList.remove('show');
+                if (secretButton) secretButton.classList.remove('highlight-game'); 
+            });
+        }
+        if (startWithNameButton) {
+            startWithNameButton.addEventListener("click", function() {
+                currentPlayerName = playerNameInput.value.trim() || "Crack Anónimo";
+                if (namePrompt) namePrompt.style.display = "none";
+                if (tutorial) tutorial.style.display = "block";
+            });
+        }
+        if (startAfterTutorial) {
+            startAfterTutorial.addEventListener("click", function() {
+                if (tutorial) tutorial.style.display = "none";
+                startGame();
+            });
+        }
+        if (endGameButton) endGameButton.addEventListener("click", endGame);
+        if (backToInvitationButton) {
+            backToInvitationButton.addEventListener("click", function() {
+                if (gameResultPopup) gameResultPopup.style.display = "none";
+                backToInvitation();
+            });
+        }
 
-            function createGift() {
-                if (!gameActive || !gameArea) return;
-                const gift = document.createElement("div");
-                gift.className = "game-gift";
-                const giftType = giftTypes[Math.floor(Math.random() * giftTypes.length)];
-                gift.textContent = giftType.emoji; gift.dataset.points = giftType.points;
+        // --- LÓGICA DEL MINIJUEGO ---
+        function startGame() {
+            stopSound(gameEndSound);
+            wasMusicPlayingBeforeGame = musicPlaying; 
+            if (musicPlaying && audioPlayer) audioPlayer.pause();
+
+            if (invitacionContainer) invitacionContainer.style.display = "none";
+            if (gameContainer) gameContainer.style.display = "block";
+            if (gameResultPopup) gameResultPopup.style.display = "none";
+            
+            score = 0; timeLeft = 30; gameActive = true;
+            if (gameScoreDisplay) gameScoreDisplay.textContent = score;
+            if (gameTimerDisplay) gameTimerDisplay.textContent = timeLeft;
+            
+            if(gameArea) gameArea.innerHTML = '';
+            gameInterval = setInterval(createGameItem, 1100);
+            timerInterval = setInterval(updateTimer, 1000);
+            
+            gameStartSound = new Audio("audio/Mario-coin-sound.mp3"); 
+            gameStartSound.volume = 0.4;
+            gameStartSound.play().catch(e => console.error("Error al reproducir sonido de inicio de juego:", e));
+        }
+
+        function createGameItem() {
+            if (!gameActive || !gameArea) return;
+            const item = document.createElement("div");
+            const itemDetails = gameItems[Math.floor(Math.random() * gameItems.length)];
+            
+            item.className = "game-item " + (itemDetails.itemClass || "");
+            item.textContent = itemDetails.emoji;
+            item.dataset.points = itemDetails.points;
+            
+            const gameAreaRect = gameArea.getBoundingClientRect();
+            const itemSize = Math.min(gameAreaRect.width, gameAreaRect.height) * 0.15;
+            item.style.fontSize = `${itemSize}px`;
+
+            const maxX = gameAreaRect.width - itemSize * 1.2;
+            const maxY = gameAreaRect.height - itemSize * 1.2;
+            const posX = Math.max(0, Math.floor(Math.random() * maxX));
+            const posY = Math.max(0, Math.floor(Math.random() * maxY));
+            item.style.left = posX + "px"; 
+            item.style.top = posY + "px";
+            
+            item.addEventListener("click", function() {
+                if (!gameActive || !item.parentNode || item.parentNode !== gameArea) return;
+                const points = parseInt(item.dataset.points);
+                score += points; 
+                if (gameScoreDisplay) gameScoreDisplay.textContent = score;
                 
-                const gameAreaRect = gameArea.getBoundingClientRect();
-                const maxX = gameAreaRect.width - 50; 
-                const maxY = gameAreaRect.height - 50;
-                const posX = Math.max(0, Math.floor(Math.random() * maxX));
-                const posY = Math.max(0, Math.floor(Math.random() * maxY));
-                gift.style.left = posX + "px"; gift.style.top = posY + "px";
+                const pointsAnim = document.createElement("div");
+                pointsAnim.className = "points-animation"; 
+                pointsAnim.textContent = (points > 1) ? `¡GOLAZO! +${points}` : `¡GOL! +${points}`;
+                if (itemDetails.itemClass === "target-star") pointsAnim.classList.add("golden");
+                pointsAnim.style.left = item.style.left; 
+                pointsAnim.style.top = item.style.top;
+                gameArea.appendChild(pointsAnim);
+                setTimeout(() => { if (pointsAnim.parentNode === gameArea) gameArea.removeChild(pointsAnim); }, 1200);
                 
-                gift.addEventListener("click", function() {
-                    if (!gameActive || gift.parentNode !== gameArea) return;
-                    const points = parseInt(gift.dataset.points);
-                    score += points; 
-                    if (gameScore) gameScore.textContent = score;
-                    
-                    const pointsAnim = document.createElement("div");
-                    pointsAnim.className = "points-animation"; pointsAnim.textContent = "+" + points;
-                    pointsAnim.style.left = gift.style.left; pointsAnim.style.top = gift.style.top;
-                    gameArea.appendChild(pointsAnim);
-                    setTimeout(() => { if (pointsAnim.parentNode === gameArea) gameArea.removeChild(pointsAnim); }, 1000);
-                    
-                    coinSoundEffect = new Audio("audio/smw_coin.mp3");
-                    coinSoundEffect.volume = 0.5;
-                    coinSoundEffect.play().catch(e => console.error("Error al reproducir sonido de moneda:", e));
-                    
-                    gameArea.removeChild(gift);
-                });
-                gameArea.appendChild(gift);
+                scoreSound = new Audio("audio/smw_coin.mp3"); 
+                scoreSound.volume = 0.5;
+                scoreSound.play().catch(e => console.error("Error al reproducir sonido de gol:", e));
+                
+                gameArea.removeChild(item);
+            });
+            gameArea.appendChild(item);
+            setTimeout(() => {
+                if (gameActive && item.parentNode === gameArea) gameArea.removeChild(item);
+            }, itemDetails.speed);
+        }
+
+        function updateTimer() {
+            timeLeft--; 
+            if (gameTimerDisplay) gameTimerDisplay.textContent = timeLeft;
+            if (timeLeft <= 0) endGame();
+        }
+
+        function endGame() {
+            if (!gameActive) return;
+            stopSound(gameStartSound); stopSound(scoreSound);
+            clearInterval(gameInterval); clearInterval(timerInterval); gameActive = false;
+            
+            if (finalScoreDisplay) finalScoreDisplay.textContent = score;
+            if (resultMessage) {
+                if (score >= 15) resultMessage.textContent = "¡QUÉ CRACK! ¡Dominaste el área!";
+                else if (score >= 8) resultMessage.textContent = "¡BUENA DEFINICIÓN! ¡Santiago estará orgulloso!";
+                else resultMessage.textContent = "¡Gracias por participar! ¡Te esperamos en la fiesta!";
+            }
+            if (gameResultPopup) gameResultPopup.style.display = "flex";
+            
+            gameEndSound = new Audio("audio/smb_stage_clear.mp3"); 
+            gameEndSound.volume = 0.5;
+            gameEndSound.play().catch(e => console.error("Error al reproducir sonido de fin de juego:", e));
+            
+            showConfetti(); 
+            saveHighScore(currentPlayerName, score);
+        }
+
+        function backToInvitation() {
+            stopSound(gameStartSound); stopSound(scoreSound); stopSound(gameEndSound);
+
+            // Reanudar música si estaba sonando antes del juego
+            if (wasMusicPlayingBeforeGame && audioPlayer && audioPlayer.src) {
+                audioPlayer.play().catch(e => console.error("Error al reanudar música:", e));
+                // musicPlaying ya debería ser true en este caso
+            }
+            // Actualizar el icono del botón de sonido en base al estado actual de musicPlaying
+            if (soundButton) soundButton.textContent = musicPlaying ? "🔊" : "🔇";
+
+            if (gameContainer) gameContainer.style.display = "none"; 
+            if (invitacionContainer) invitacionContainer.style.display = "block";
+            
+            if (powerUpElement) {
+                powerUpElement.textContent = `+${score} GOLES!`;
+                powerUpElement.style.display = "block";
+                powerUpElement.classList.add("animate");
                 setTimeout(() => {
-                    if (gameActive && gift.parentNode === gameArea) gameArea.removeChild(gift);
-                }, giftType.speed);
+                    powerUpElement.style.display = "none";
+                    powerUpElement.classList.remove("animate");
+                }, 2000);
             }
+        }
 
-            function updateTimer() {
-                timeLeft--; 
-                if (gameTimer) gameTimer.textContent = timeLeft;
-                if (timeLeft <= 0) endGame();
+        function showConfetti() {
+            for (let i = 0; i < 100; i++) {
+                const confetti = document.createElement("div");
+                confetti.className = "confetti";
+                confetti.style.left = Math.random() * 100 + "vw";
+                confetti.style.animationDelay = Math.random() * 4 + "s";
+                confetti.style.backgroundColor = ['var(--color-primary-pink)', 'var(--color-black)', 'var(--color-white)', 'var(--color-gold-star)'][Math.floor(Math.random() * 4)];
+                document.body.appendChild(confetti);
+                setTimeout(() => { if (confetti.parentNode === document.body) document.body.removeChild(confetti); }, 4000);
             }
-
-            function endGame() {
-                if (!gameActive) return;
-                stopSound(startSoundEffect); stopSound(coinSoundEffect);
-                clearInterval(gameInterval); clearInterval(timerInterval); gameActive = false;
-                
-                if (gameArea) {
-                    while (gameArea.firstChild) gameArea.removeChild(gameArea.firstChild);
-                }
-                
-                if (finalScore) finalScore.textContent = score;
-                if (resultMessage) {
-                    if (score >= 20) resultMessage.textContent = "¡INCREÍBLE! ¡Eres un experto atrapando regalos!";
-                    else if (score >= 10) resultMessage.textContent = "¡MUY BIEN! ¡Santiago estará feliz!";
-                    else resultMessage.textContent = "¡Gracias por jugar! ¡Nos vemos en la fiesta!";
-                }
-                if (gameResult) gameResult.style.display = "block";
-                
-                endSoundEffect = new Audio("audio/smb_stage_clear.mp3");
-                endSoundEffect.volume = 0.5;
-                endSoundEffect.play().catch(e => console.error("Error al reproducir sonido de fin de juego:", e));
-                
-                showConfetti(); 
-                saveHighScore(currentPlayerName, score);
-            }
-
-            function backToInvitation() {
-                stopSound(startSoundEffect); stopSound(coinSoundEffect); stopSound(endSoundEffect);
-
-                if (wasMusicPlayingBeforeGame && backgroundMusic) {
-                    backgroundMusic.play().catch(e => console.error("Error al reanudar música de fondo:", e));
-                    musicPlaying = true; 
-                    if(soundButton) soundButton.textContent = "🔊";
-                }
-
-                if (gameContainer) gameContainer.style.display = "none"; 
-                if (invitacionContainer) invitacionContainer.style.display = "block";
-                
-                if (powerUpElement) {
-                    powerUpElement.textContent = "+" + score + " XP";
-                    powerUpElement.style.display = "block";
-                    powerUpElement.classList.add("animate");
-                    setTimeout(() => {
-                        powerUpElement.style.display = "none";
-                        powerUpElement.classList.remove("animate");
-                    }, 2000);
-                }
-            }
-
-            function showConfetti() {
-                for (let i = 0; i < 100; i++) {
-                    const confetti = document.createElement("div");
-                    confetti.className = "confetti";
-                    confetti.style.left = Math.random() * 100 + "vw";
-                    confetti.style.animationDelay = Math.random() * 5 + "s";
-                    confetti.style.backgroundColor = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff'][Math.floor(Math.random() * 5)];
-                    document.body.appendChild(confetti);
-                    setTimeout(() => { if (confetti.parentNode === document.body) document.body.removeChild(confetti); }, 5000);
-                }
-            }
-            
-            function saveHighScore(name, scoreValue) {
-                let highScores = JSON.parse(localStorage.getItem('gameHighScores')) || [];
-                highScores.push({ name, score: scoreValue, date: new Date().toLocaleDateString() });
-                highScores.sort((a, b) => b.score - a.score);
-                highScores = highScores.slice(0, 5); 
-                localStorage.setItem('gameHighScores', JSON.stringify(highScores));
-                updateHighScoresList();
-            }
-            
-            function updateHighScoresList() {
-                const highScoresList = document.getElementById("highScoresList");
-                if (!highScoresList) return;
-                highScoresList.innerHTML = "";
-                const highScores = JSON.parse(localStorage.getItem('gameHighScores')) || [];
+        }
+        
+        function saveHighScore(name, scoreValue) {
+            let highScores = JSON.parse(localStorage.getItem('soccerStarHighScores')) || [];
+            highScores.push({ name: name, score: scoreValue, date: new Date().toLocaleDateString() });
+            highScores.sort((a, b) => b.score - a.score);
+            highScores = highScores.slice(0, 5); 
+            localStorage.setItem('soccerStarHighScores', JSON.stringify(highScores));
+            updateHighScoresList();
+        }
+        
+        function updateHighScoresList() {
+            const highScoresList = document.getElementById("highScoresList");
+            if (!highScoresList) return;
+            highScoresList.innerHTML = "";
+            const highScores = JSON.parse(localStorage.getItem('soccerStarHighScores')) || [];
+            if (highScores.length === 0) {
+                const li = document.createElement("li");
+                li.textContent = "¡Sé el primero en anotar!";
+                highScoresList.appendChild(li);
+            } else {
                 highScores.forEach((record, index) => {
                     const li = document.createElement("li");
-                    li.textContent = `${index + 1}. ${record.name}: ${record.score} puntos`;
+                    li.textContent = `${index + 1}. ${record.name}: ${record.score} Goles`;
                     highScoresList.appendChild(li);
                 });
             }
-            
-            // --- INICIALIZACIÓN FINAL ---
-            updateHighScoresList();
+        }
+        
+        // --- INICIALIZACIÓN FINAL ---
+        updateHighScoresList(); 
 
-            if (secretButton && minigameNoticeElement) {
-                setTimeout(() => {
-                    minigameNoticeElement.classList.add('show');
-                    secretButton.classList.add('highlight-game');
-                }, 1500); 
-                setTimeout(() => {
-                    minigameNoticeElement.classList.remove('show');
-                    secretButton.classList.remove('highlight-game');
-                }, 7000); 
-            }
+        if (secretButton && minigameNoticeElement) {
+            setTimeout(() => {
+                minigameNoticeElement.classList.add('show');
+                if(secretButton) secretButton.classList.add('highlight-game');
+            }, 2500); 
+            setTimeout(() => {
+                minigameNoticeElement.classList.remove('show');
+                if(secretButton) secretButton.classList.remove('highlight-game');
+            }, 8000); 
+        }
 
-            if (soundButton) { // Actualizar el botón de sonido al estado inicial de musicPlaying
-                soundButton.textContent = musicPlaying ? "🔊" : "🔇";
-            }
-
-        });
+        // El estado inicial del botón de sonido se establece dentro de initializeAudioPlayer()
+        // después del intento de autoplay.
+    });
     </script>
 </body>
 </html>
