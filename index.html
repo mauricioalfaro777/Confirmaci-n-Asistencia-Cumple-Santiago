@@ -2,75 +2,18 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>¡CONVOCATORIA ESTELAR: Cumple de Santiago!</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- Fuentes para la Invitación y Tiro al Arco -->
     <link href="https://fonts.googleapis.com/css2?family=Anton&family=Oswald:wght@400;500;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Fuente para Dribbling Pro -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-    <style>
-        /* Estilos inline básicos (confeti, name-prompt, tutorial, high-scores) - Se mantienen pero se adaptarán con el CSS general */
-        .confetti { position: fixed; width: 10px; height: 10px; top: -10px; border-radius: 50%; animation: confetti-fall 5s linear forwards; z-index: 1000; }
-        @keyframes confetti-fall { 0% { transform: translateY(0) rotate(0deg); opacity: 1; } 100% { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
-        
-        .name-prompt, .tutorial {
-            max-width: 500px; margin: 15% auto; /* Reducido margen superior */
-            background-color: var(--color-black-transparent);
-            border: 2px solid var(--color-primary-pink);
-            box-shadow: 0 0 20px var(--color-primary-pink-glow);
-            padding: 30px; border-radius: 12px; text-align: center;
-            color: var(--color-white);
-            position: relative; /* Para z-index si es necesario */
-            z-index: 1010; /* Asegurar que estén por encima de otros elementos */
-        }
-        .name-prompt input {
-            background-color: rgba(255, 255, 255, 0.1); border: 2px solid var(--color-primary-pink);
-            color: var(--color-white); padding: 12px 15px; font-size: 1.1rem; margin: 20px 0; border-radius: 8px;
-            font-family: 'Roboto', sans-serif; width: 85%; box-sizing: border-box;
-        }
-        .high-scores { margin-top: 25px; border-top: 2px dashed var(--color-primary-pink); padding-top: 20px; }
-        .high-scores h4 { color: var(--color-primary-pink); margin-bottom: 12px; font-family: 'Oswald', sans-serif; font-size: 1.3rem; }
-        .high-scores ul { list-style: none; padding: 0; margin: 8px 0; font-size: 1rem; }
-        
-        .tutorial-step { display: flex; align-items: center; margin: 18px 0; justify-content: center; font-size: 1.15rem; }
-        .tutorial-icon { font-size: 2rem; margin-right: 15px; animation: pulseSoccer 1.5s infinite; color: var(--color-primary-pink); }
-        @keyframes pulseSoccer { 0% { transform: scale(1); } 50% { transform: scale(1.15); } 100% { transform: scale(1); } }
-        
-        .sound-control {
-            position: fixed; top: 25px; right: 25px; /* Movido a la derecha */ z-index: 1001;
-        }
-        .sound-button {
-            background-color: var(--color-primary-pink); color: var(--color-black);
-            font-family: 'Anton', sans-serif; font-size: 1.6rem;
-            padding: 0; border: none;
-            border-radius: 50%; cursor: pointer; transition: all 0.2s ease-in-out;
-            width: 50px; height: 50px; display: flex;
-            align-items: center; justify-content: center;
-            box-shadow: 0 3px 8px rgba(0,0,0,0.4);
-        }
-        .sound-button:hover { background-color: var(--color-secondary-pink); transform: scale(1.1); }
-        .sound-button:active { transform: scale(0.98) translateY(1px); }
-
-        .minigame-notice {
-            position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
-            background-color: var(--color-primary-pink); color: var(--color-black);
-            padding: 12px 25px; border-radius: 30px;
-            font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 1rem; text-transform: uppercase;
-            box-shadow: 0 0 20px var(--color-primary-pink-glow);
-            z-index: 1002; opacity: 0;
-            transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
-            pointer-events: none;
-        }
-        .minigame-notice.show { opacity: 1; transform: translateX(-50%) translateY(-10px); }
-        .minigame-notice::after {
-            content: ''; position: absolute; bottom: -10px; left: 50%;
-            transform: translateX(-50%); width: 0; height: 0;
-            border-left: 10px solid transparent; border-right: 10px solid transparent;
-            border-top: 10px solid var(--color-primary-pink);
-        }
-    </style>
 </head>
 <body>
+    <!-- Contenedor Principal de la Invitación -->
     <div class="invitation-wrapper" id="invitacionContainer">
         <header class="invitation-header">
             <p class="sub-header-text">¡Has sido fichado para el</p>
@@ -81,6 +24,7 @@
         <div class="player-card">
             <h2 id="playerName" class="player-name">SANTIAGO ALFARO</h2>
             <div class="player-image-container">
+                <!-- TODO: Reemplaza 'img/placeholder-santiago-messi.png' con tu imagen -->
                 <img id="mainInvitationImage" src="img/placeholder-santiago-messi.png" alt="Celebración de Cumpleaños de Santiago" class="main-image">
             </div>
             <p class="main-text">¡Prepárate para un día lleno de fútbol, amigos y mucha diversión en la Escuela!</p>
@@ -106,435 +50,500 @@
         </section>
         
         <div class="gif-banner-container">
+            <!-- TODO: Reemplaza con la URL de tu GIF dinámico si lo deseas -->
             <img id="dynamicSoccerGif" src="" alt="Animación de fútbol" class="dynamic-gif">
         </div>
 
-        <div class="animation-container">
+        <div class="animation-container"> <!-- Para la animación de puntos del minijuego desde la invitación -->
             <div id="powerUp" class="power-up">+1 GOLAZO</div>
         </div>
 
         <p class="footer-text">¡TU PRESENCIA ES CLAVE PARA LA VICTORIA! <span class="icon">🏆🎉⚽</span></p>
         
-        <button id="secretButton" class="action-button primary">¡MINIJUEGO: TIRO AL ARCO!</button>
-        <div id="minigameNotice" class="minigame-notice">¡Hey! ¡Prueba tu puntería! 👇</div>
+        <div class="minigame-buttons-container">
+            <button id="tiroAlArcoButton" class="action-button primary">¡TIRO AL ARCO!</button>
+            <button id="dribblingProButton" class="action-button primary">¡DRIBBLING PRO!</button>
+        </div>
+        <div id="minigameNotice" class="minigame-notice">¡Hey! ¡Elige tu desafío! 👇</div>
     </div>
 
-    <div id="namePrompt" class="name-prompt" style="display:none;">
-        <h3>¡REGISTRA TU NOMBRE DE CRACK!</h3>
-        <input type="text" id="playerNameInput" maxlength="15" placeholder="Ej: ElPibeDeOro">
-        <button id="startWithNameButton" class="action-button">¡A LA CANCHA!</button>
+    <!-- Popup para pedir nombre de jugador -->
+    <div id="namePrompt" class="popup-overlay" style="display:none;">
+        <div class="popup-content name-prompt-content">
+            <h3>¡REGISTRA TU NOMBRE DE CRACK!</h3>
+            <input type="text" id="playerNameInput" maxlength="15" placeholder="Ej: ElPibeDeOro">
+            <button id="startWithNameButton" class="action-button">¡A LA CANCHA!</button>
+        </div>
     </div>
 
-    <div id="tutorial" class="tutorial" style="display:none;">
-        <h3>MINIJUEGO: ¡A METER GOLES!</h3>
-        <div class="tutorial-step">
-            <div class="tutorial-icon">🎯</div> <p>Apunta y haz clic en los objetivos.</p>
+    <!-- Tutorial para Tiro al Arco -->
+    <div id="tutorialTiroAlArco" class="popup-overlay" style="display:none;">
+        <div class="popup-content tutorial-content">
+            <h3>MINIJUEGO: ¡A METER GOLES!</h3>
+            <div class="tutorial-step">
+                <div class="tutorial-icon">🎯</div> <p>Apunta y haz clic en los objetivos.</p>
+            </div>
+            <div class="tutorial-step">
+                <div class="tutorial-icon">⏱️</div> <p>Tienes 30 segundos para anotar.</p>
+            </div>
+            <div class="tutorial-step">
+                <div class="tutorial-icon">⭐</div> <p>¡Los objetivos dorados valen más puntos!</p>
+            </div>
+            <button id="startAfterTutorialTiroAlArco" class="action-button">¡VAMOS A JUGAR!</button>
         </div>
-        <div class="tutorial-step">
-            <div class="tutorial-icon">⏱️</div> <p>Tienes 30 segundos para anotar.</p>
-        </div>
-        <div class="tutorial-step">
-            <div class="tutorial-icon">⭐</div> <p>¡Los objetivos dorados valen más puntos!</p>
-        </div>
-        <button id="startAfterTutorial" class="action-button">¡VAMOS A JUGAR!</button>
     </div>
 
+    <!-- Tutorial para Dribbling Pro -->
+    <div id="tutorialDribblingPro" class="popup-overlay" style="display:none;">
+         <div class="popup-content tutorial-content">
+            <h3>MINIJUEGO: ¡DRIBBLING PRO!</h3>
+            <div class="tutorial-step">
+                <div class="tutorial-icon">🏃</div> <p>Usa ◄ y ► para esquivar los conos.</p>
+            </div>
+            <div class="tutorial-step">
+                <div class="tutorial-icon">💥</div> <p>¡No choques con los conos!</p>
+            </div>
+            <div class="tutorial-step">
+                <div class="tutorial-icon">🏆</div> <p>¡Intenta superar tu récord!</p>
+            </div>
+            <button id="startAfterTutorialDribblingPro" class="action-button">¡A DRIBLAR!</button>
+        </div>
+    </div>
+
+    <!-- Control de Sonido -->
     <div class="sound-control">
         <button id="soundButton" class="sound-button" title="Activar/Desactivar música">🔇</button>
     </div>
 
-    <div id="gameContainer" class="game-container" style="display:none;">
-        <div class="game-header">
-            <h3>¡DEMUESTRA TU PUNTERÍA!</h3>
-            <div class="game-stats">
-                <p>Goles: <span id="gameScore">0</span></p>
-                <p>Tiempo: <span id="gameTimer">30</span>s</p>
+    <!-- Contenedor Minijuego 1: Tiro al Arco -->
+    <div id="tiroAlArcoContainer" class="game-module-container" style="display:none;">
+        <div class="game-content-wrapper tiro-al-arco-wrapper">
+            <div class="game-header">
+                <h3>¡DEMUESTRA TU PUNTERÍA!</h3>
+                <div class="game-stats">
+                    <p>Goles: <span id="tiroAlArcoScore">0</span></p>
+                    <p>Tiempo: <span id="tiroAlArcoTimer">30</span>s</p>
+                </div>
+            </div>
+            <div id="tiroAlArcoGameArea" class="game-area">
+                <!-- Objetivos se generan con JS -->
+            </div>
+            <div class="game-controls">
+                <button id="endTiroAlArcoButton" class="action-button secondary">TERMINAR PARTIDO</button>
             </div>
         </div>
-        <div id="gameArea" class="game-area">
-        </div>
-        <div class="game-controls">
-            <button id="endGameButton" class="action-button secondary">TERMINAR PARTIDO</button>
+    </div>
+    
+    <!-- Contenedor Minijuego 2: Dribbling Pro! -->
+    <div id="dribblingProContainer" class="game-module-container" style="display:none;">
+        <div class="dp-game-wrapper"> 
+            <h1 class="dp-h1">⚽ Dribbling Pro! ⚽</h1>
+            <div class="dp-game-info">
+                Puntos: <span id="dp_score">0</span>
+                | Récord: <span id="dp_highScore">0</span>
+            </div>
+            <div class="dp-game-area" id="dp_gameArea">
+                <div class="dp-player" id="dp_player"></div>
+                <!-- Conos se generan con JS -->
+            </div>
+            <div class="dp-controls">
+                <button id="dp_moveLeftButton" class="dp-control-button">◄</button>
+                <button id="dp_moveRightButton" class="dp-control-button">►</button>
+            </div>
+            <button id="dp_startButton" class="dp-action-button">Iniciar Juego</button>
+            <div id="dp_gameOverMessage" class="dp-message dp-hidden">
+                <p>¡Juego Terminado!</p>
+                <p>Tu puntuación: <span id="dp_finalScore">0</span></p>
+                <button id="dp_restartButton" class="dp-action-button">Jugar de Nuevo</button>
+                <button id="dp_backToInvitationButton" class="dp-action-button dp-secondary" style="margin-top: 10px;">Volver a Invitación</button>
+            </div>
+            <p class="dp-instructions">¡Toca los botones para moverte!</p>
         </div>
     </div>
-    <div id="gameResult" class="game-result" style="display:none;">
-        <div> 
-            <h3>¡PARTIDO FINALIZADO!</h3>
-            <p>Anotaste <span id="finalScoreDisplay">0</span> Goles</p>
+
+    <!-- Popup de Resultado de Juego (Generalizado) -->
+    <div id="gameResultPopup" class="popup-overlay" style="display:none;">
+        <div class="popup-content game-result-content"> 
+            <h3 id="gameResultTitle">¡PARTIDO FINALIZADO!</h3>
+            <p>Anotaste <span id="finalScoreDisplay">0</span> <span id="scoreUnitDisplay">Goles</span></p>
             <p id="resultMessage">¡Gran actuación!</p>
             <button id="backToInvitationButton" class="action-button primary">VOLVER A LA INVITACIÓN</button>
             <div class="high-scores">
-                <h4>TABLA DE GOLEADORES</h4>
+                <h4 id="highScoresTitle">TABLA DE GOLEADORES</h4>
                 <ul id="highScoresList"></ul>
             </div>
         </div>
     </div>
 
+    <!-- Confeti (se genera con JS) -->
+
     <script>
+    // --- COPIA AQUÍ EL CÓDIGO JAVASCRIPT COMPLETO Y CORREGIDO DE LA RESPUESTA ANTERIOR ---
+    // Este script ya maneja los dos minijuegos, popups, música y errores comunes.
     document.addEventListener('DOMContentLoaded', function() {
 
-        // --- ELEMENTOS DEL DOM ---
-        const mainInvitationImage = document.getElementById("mainInvitationImage");
-        const dynamicSoccerGifElement = document.getElementById("dynamicSoccerGif");
-        const playerNameElement = document.getElementById("playerName");
-        const gameContainer = document.getElementById("gameContainer");
-        const invitacionContainer = document.getElementById("invitacionContainer");
-        const gameArea = document.getElementById("gameArea");
-        const gameScoreDisplay = document.getElementById("gameScore");
-        const gameTimerDisplay = document.getElementById("gameTimer");
-        const gameResultPopup = document.getElementById("gameResult");
-        const finalScoreDisplay = document.getElementById("finalScoreDisplay");
-        const resultMessage = document.getElementById("resultMessage");
-        const secretButton = document.getElementById("secretButton");
-        const endGameButton = document.getElementById("endGameButton");
-        const backToInvitationButton = document.getElementById("backToInvitationButton");
-        const soundButton = document.getElementById("soundButton");
-        const playerNameInput = document.getElementById("playerNameInput");
-        const startWithNameButton = document.getElementById("startWithNameButton");
-        const namePrompt = document.getElementById("namePrompt");
-        const tutorial = document.getElementById("tutorial");
-        const startAfterTutorial = document.getElementById("startAfterTutorial");
-        const minigameNoticeElement = document.getElementById("minigameNotice");
-        const powerUpElement = document.getElementById("powerUp");
+    // --- ELEMENTOS DOM GENERALES ---
+    const invitacionContainer = document.getElementById("invitacionContainer");
+    const namePromptPopup = document.getElementById("namePrompt");
+    const startWithNameButton = document.getElementById("startWithNameButton");
+    const playerNameInput = document.getElementById("playerNameInput");
+    const soundButton = document.getElementById("soundButton");
+    const powerUpElement = document.getElementById("powerUp");
+    const minigameNoticeElement = document.getElementById("minigameNotice");
+    const dynamicSoccerGifElement = document.getElementById("dynamicSoccerGif");
 
-        // --- CONFIGURACIÓN Y DATOS ---
-        const dynamicGifs = [
-            "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExc3RpdTc5YzFpcHhiZTF6c3ExeG15d3U2ODd3ZnM2eW5vbXNsbHlmNSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/waCWiXgm8dDkTggARm/giphy.gif", 
-            "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExajgzdXVodGFidWlhcjExMDZqZXg2ZzhpNzBneWtnM3k2cWR1MmZsYyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/pN3fM4bIDBeBVTY6Sn/giphy.gif",
-            "https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExY25yajBqcnE2OWswdnQ1cGt5MHJwY2g1bzhncTV6b29wejczYXd1dyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/8OJvD6X5p7iS39PbK0/giphy.gif",
-            "https://media.giphy.com/media/85wLxLsRtrFHZcFmZk/giphy.gif?cid=ecf05e47o6id0go5gjzp0r5pcijukk630wz6pqdhnmycz8o5&ep=v1_gifs_search&rid=giphy.gif&ct=g"
-        ];
+    // --- Elementos Minijuego 1: Tiro al Arco ---
+    const tiroAlArcoButton = document.getElementById("tiroAlArcoButton");
+    const tutorialTiroAlArcoPopup = document.getElementById("tutorialTiroAlArco");
+    const startAfterTutorialTiroAlArco = document.getElementById("startAfterTutorialTiroAlArco");
+    const tiroAlArcoContainer = document.getElementById("tiroAlArcoContainer");
+    const tiroAlArcoGameArea = document.getElementById("tiroAlArcoGameArea");
+    const tiroAlArcoScoreDisplay = document.getElementById("tiroAlArcoScore");
+    const tiroAlArcoTimerDisplay = document.getElementById("tiroAlArcoTimer");
+    const endTiroAlArcoButton = document.getElementById("endTiroAlArcoButton");
+    
+    // --- Elementos Minijuego 2: Dribbling Pro! ---
+    const dribblingProButton = document.getElementById("dribblingProButton");
+    const tutorialDribblingProPopup = document.getElementById("tutorialDribblingPro");
+    const startAfterTutorialDribblingPro = document.getElementById("startAfterTutorialDribblingPro");
+    const dribblingProContainer = document.getElementById("dribblingProContainer");
+    
+    // --- Elementos Comunes de Resultado de Juego ---
+    const gameResultPopup = document.getElementById("gameResultPopup"); // Este es el popup GENERAL
+    const gameResultTitle = document.getElementById("gameResultTitle");
+    const finalScoreDisplay = document.getElementById("finalScoreDisplay");
+    const scoreUnitDisplay = document.getElementById("scoreUnitDisplay");
+    const resultMessage = document.getElementById("resultMessage");
+    const highScoresTitle = document.getElementById("highScoresTitle");
+    const highScoresList = document.getElementById("highScoresList");
+    const backToInvitationButton = document.getElementById("backToInvitationButton"); // Botón en el popup GENERAL
 
-        if (dynamicSoccerGifElement && dynamicGifs.length > 0) {
-            dynamicSoccerGifElement.src = dynamicGifs[Math.floor(Math.random() * dynamicGifs.length)];
-        } else if (dynamicSoccerGifElement) {
-            dynamicSoccerGifElement.style.display = 'none';
+    let currentPlayerName = "Jugador Estrella";
+    let activeGameType = null; 
+
+    // --- LÓGICA DE MÚSICA DE FONDO ---
+    const musicPlaylist = [
+        'audio/eFootball 2025 Soundtrack - Manifest by Crystal Fighters.mp3',
+        'audio/eFootball 2025 Soundtrack - American Adrenaline by KAWALA.mp3',
+        'audio/All I Want - Lane 8 ft. Arctic Lake (FIFA 23 Official Soundtrack).mp3'
+    ];
+    let currentTrackIndex = 0; 
+    let audioPlayer = new Audio(); 
+    let musicPlaying = false;
+    let wasMusicPlayingBeforeMinigame = false;
+
+    function initializeAudioPlayer() {
+        if (musicPlaylist.length === 0) {
+            if(soundButton) soundButton.disabled = true; return;
         }
-        
-        let score = 0;
-        let timeLeft = 30;
-        let gameInterval;
-        let timerInterval;
-        let gameActive = false;
-        let currentPlayerName = "Jugador Estrella";
-
-        const gameItems = [
-            { emoji: "⚽", points: 1, speed: 2200, itemClass: "target-ball" },
-            { emoji: "🎯", points: 2, speed: 1800, itemClass: "target-diana" },
-            { emoji: "⭐", points: 5, speed: 1500, itemClass: "target-star" }
-        ];
-
-        // --- AUDIO ---
-        const musicPlaylist = [
-            'audio/eFootball 2025 Soundtrack - Manifest by Crystal Fighters.mp3',
-            'audio/eFootball 2025 Soundtrack - American Adrenaline by KAWALA.mp3',
-            'audio/All I Want - Lane 8 ft. Arctic Lake (FIFA 23 Official Soundtrack).mp3'
-        ];
-        let currentTrackIndex = 0; 
-        let audioPlayer = new Audio(); 
-        let musicPlaying = false; // Inicialmente la música no está sonando
-        let wasMusicPlayingBeforeGame = false;
-
-        let gameStartSound; 
-        let scoreSound;     
-        let gameEndSound;  
-
-        function initializeAudioPlayer() {
-            if (musicPlaylist.length === 0) {
-                console.warn("La lista de reproducción de música está vacía.");
-                if(soundButton) soundButton.disabled = true;
-                return;
-            }
-            try {
-                // Seleccionar pista inicial aleatoria
-                currentTrackIndex = Math.floor(Math.random() * musicPlaylist.length);
-                audioPlayer.src = musicPlaylist[currentTrackIndex];
-                audioPlayer.volume = 0.15;
-                audioPlayer.onended = playNextTrack; // Configurar para reproducir la siguiente al terminar
-
-                // Intentar autoplay
-                const playPromise = audioPlayer.play();
-                if (playPromise !== undefined) {
-                    playPromise.then(_ => {
-                        // Autoplay iniciado con éxito
-                        musicPlaying = true;
-                        if (soundButton) soundButton.textContent = "🔊";
-                        console.log("Autoplay de música iniciado con: " + musicPlaylist[currentTrackIndex]);
-                    }).catch(error => {
-                        // Autoplay bloqueado o fallido
-                        musicPlaying = false;
-                        if (soundButton) soundButton.textContent = "🔇";
-                        console.log("Autoplay de música bloqueado. El usuario debe interactuar primero. Error: ", error);
-                    });
-                }
-            } catch (e) {
-                console.error("Error al inicializar el reproductor de audio:", e);
-                if(soundButton) soundButton.disabled = true;
-                musicPlaying = false; // Asegurar que el estado sea falso
-                if (soundButton) soundButton.textContent = "🔇";
-            }
-        }
-
-        function playNextTrack() {
-            // Reproducción secuencial después de la primera pista aleatoria
-            currentTrackIndex = (currentTrackIndex + 1) % musicPlaylist.length;
+        try {
+            currentTrackIndex = Math.floor(Math.random() * musicPlaylist.length);
             audioPlayer.src = musicPlaylist[currentTrackIndex];
-            if (musicPlaying) { 
-                audioPlayer.play().catch(e => console.error("Error al reproducir la siguiente pista: " + musicPlaylist[currentTrackIndex], e));
+            audioPlayer.volume = 0.15;
+            audioPlayer.loop = false;
+            audioPlayer.onended = playNextTrack;
+            const playPromise = audioPlayer.play();
+            if (playPromise !== undefined) {
+                playPromise.then(_ => { musicPlaying = true; if (soundButton) soundButton.textContent = "🔊"; })
+                           .catch(error => { musicPlaying = false; if (soundButton) soundButton.textContent = "🔇"; console.log("Autoplay bloqueado:", error.message); });
             }
+        } catch (e) { if(soundButton) soundButton.disabled = true; musicPlaying = false; if (soundButton) soundButton.textContent = "🔇"; }
+    }
+    function playNextTrack() {
+        currentTrackIndex = (currentTrackIndex + 1) % musicPlaylist.length;
+        audioPlayer.src = musicPlaylist[currentTrackIndex];
+        if (musicPlaying) audioPlayer.play().catch(e => console.error("Error siguiente pista:", e.message));
+    }
+    initializeAudioPlayer();
+    if (soundButton) {
+        soundButton.addEventListener("click", function() {
+            if (musicPlaylist.length === 0) return;
+            if (!audioPlayer.src && musicPlaylist.length > 0) {
+                currentTrackIndex = Math.floor(Math.random() * musicPlaylist.length);
+                audioPlayer.src = musicPlaylist[currentTrackIndex]; audioPlayer.volume = 0.15; audioPlayer.onended = playNextTrack;
+            }
+            if (musicPlaying) { audioPlayer.pause(); soundButton.textContent = "🔇"; musicPlaying = false; }
+            else { audioPlayer.play().then(() => { soundButton.textContent = "🔊"; musicPlaying = true; })
+                                     .catch(e => { soundButton.textContent = "🔇"; musicPlaying = false; }); }
+        });
+    }
+    function stopSoundEffect(soundInstance) { if (soundInstance && typeof soundInstance.pause === 'function') { soundInstance.pause(); soundInstance.currentTime = 0; }}
+
+    // --- NAVEGACIÓN GENERAL Y ESTADO DE PANTALLAS ---
+    function showScreen(screenId) {
+        const screens = [ invitacionContainer, tiroAlArcoContainer, dribblingProContainer, 
+                          namePromptPopup, tutorialTiroAlArcoPopup, tutorialDribblingProPopup, gameResultPopup ];
+        screens.forEach(el => { if (el) el.style.display = 'none'; });
+        const screenElement = document.getElementById(screenId);
+        if (screenElement) {
+            const displayType = (screenElement.classList.contains('popup-overlay') || screenElement.classList.contains('game-module-container')) ? 'flex' : 'block';
+            screenElement.style.display = displayType;
+        } else { console.warn(`Elemento '${screenId}' no encontrado.`); }
+    }
+    
+    if (startWithNameButton) {
+        startWithNameButton.addEventListener("click", function() {
+            currentPlayerName = playerNameInput.value.trim() || "Crack Anónimo";
+            if (activeGameType === 'tiroAlArco') showScreen('tutorialTiroAlArco');
+            else if (activeGameType === 'dribblingPro') showScreen('tutorialDribblingPro');
+            else showScreen('invitacionContainer');
+        });
+    }
+
+    // --- MINIJUEGO 1: TIRO AL ARCO ---
+    let ta_score = 0, ta_timeLeft = 30, ta_gameInterval, ta_timerInterval, ta_gameActive = false;
+    let ta_gameStartSound, ta_scoreSound, ta_gameEndSound;
+    const ta_gameItems = [ { emoji: "⚽", points: 1, speed: 2200 }, { emoji: "🎯", points: 2, speed: 1800 }, { emoji: "⭐", points: 5, speed: 1500, itemClass: "target-star" } ];
+
+    if (tiroAlArcoButton) {
+        tiroAlArcoButton.addEventListener("click", function() {
+            activeGameType = 'tiroAlArco'; showScreen('namePrompt');
+            if (minigameNoticeElement) minigameNoticeElement.classList.remove('show');
+        });
+    }
+    if (startAfterTutorialTiroAlArco) startAfterTutorialTiroAlArco.addEventListener("click", () => { showScreen('tiroAlArcoContainer'); startTiroAlArcoGame(); });
+    function startTiroAlArcoGame() {
+        if (!tiroAlArcoContainer) return;
+        stopSoundEffect(ta_gameEndSound); wasMusicPlayingBeforeMinigame = musicPlaying; 
+        if (musicPlaying && audioPlayer) audioPlayer.pause();
+        ta_score = 0; ta_timeLeft = 30; ta_gameActive = true;
+        if (tiroAlArcoScoreDisplay) tiroAlArcoScoreDisplay.textContent = ta_score;
+        if (tiroAlArcoTimerDisplay) tiroAlArcoTimerDisplay.textContent = ta_timeLeft;
+        if(tiroAlArcoGameArea) tiroAlArcoGameArea.innerHTML = '';
+        ta_gameInterval = setInterval(createTiroAlArcoItem, 1100);
+        ta_timerInterval = setInterval(updateTiroAlArcoTimer, 1000);
+        try { ta_gameStartSound = new Audio("audio/Mario-coin-sound.mp3"); ta_gameStartSound.volume = 0.4; ta_gameStartSound.play().catch(e => {}); } catch(e){}
+    }
+    function createTiroAlArcoItem() {
+        if (!ta_gameActive || !tiroAlArcoGameArea) return;
+        const item = document.createElement("div"); const itemDetails = ta_gameItems[Math.floor(Math.random() * ta_gameItems.length)];
+        item.className = "game-item " + (itemDetails.itemClass || ""); item.textContent = itemDetails.emoji; item.dataset.points = itemDetails.points;
+        const gameAreaRect = tiroAlArcoGameArea.getBoundingClientRect(); if (gameAreaRect.width === 0) return; 
+        const itemSize = Math.min(gameAreaRect.width, gameAreaRect.height) * 0.15; item.style.fontSize = `${itemSize}px`;
+        const maxX = gameAreaRect.width - itemSize * 1.2; const maxY = gameAreaRect.height - itemSize * 1.2;
+        item.style.left = Math.max(0, Math.floor(Math.random() * maxX)) + "px"; item.style.top = Math.max(0, Math.floor(Math.random() * maxY)) + "px";
+        item.addEventListener("click", function() {
+            if (!ta_gameActive || !item.parentNode || item.parentNode !== tiroAlArcoGameArea) return;
+            const points = parseInt(item.dataset.points); ta_score += points; 
+            if (tiroAlArcoScoreDisplay) tiroAlArcoScoreDisplay.textContent = ta_score;
+            const pointsAnim = document.createElement("div"); pointsAnim.className = "points-animation"; 
+            pointsAnim.textContent = (points > 1) ? `¡GOLAZO! +${points}` : `¡GOL! +${points}`;
+            if (itemDetails.itemClass === "target-star") pointsAnim.classList.add("golden");
+            pointsAnim.style.left = item.style.left; pointsAnim.style.top = item.style.top;
+            tiroAlArcoGameArea.appendChild(pointsAnim); setTimeout(() => { if (pointsAnim.parentNode) pointsAnim.remove(); }, 1200);
+            try { ta_scoreSound = new Audio("audio/smw_coin.mp3"); ta_scoreSound.volume = 0.5; ta_scoreSound.play().catch(e => {}); } catch(e){}
+            item.remove();
+        });
+        tiroAlArcoGameArea.appendChild(item);
+        setTimeout(() => { if (item.parentNode) item.remove(); }, itemDetails.speed);
+    }
+    function updateTiroAlArcoTimer() { ta_timeLeft--; if (tiroAlArcoTimerDisplay) tiroAlArcoTimerDisplay.textContent = ta_timeLeft; if (ta_timeLeft <= 0) endTiroAlArcoGame(); }
+    function endTiroAlArcoGame() {
+        if (!ta_gameActive) return;
+        stopSoundEffect(ta_gameStartSound); stopSoundEffect(ta_scoreSound);
+        clearInterval(ta_gameInterval); clearInterval(ta_timerInterval); ta_gameActive = false;
+        handleMinigameCompletion(ta_score, "Tiro al Arco", "Goles", 'soccerStarHighScores', true); // true para mostrar popup general
+        try { ta_gameEndSound = new Audio("audio/smb_stage_clear.mp3"); ta_gameEndSound.volume = 0.5; ta_gameEndSound.play().catch(e => {}); } catch(e){}
+    }
+    if (endTiroAlArcoButton) endTiroAlArcoButton.addEventListener("click", endTiroAlArcoGame);
+
+    // --- MINIJUEGO 2: DRIBBLING PRO! ---
+    let dribblingProInstance = null; 
+    if (dribblingProButton) {
+        dribblingProButton.addEventListener("click", function() {
+            activeGameType = 'dribblingPro'; showScreen('namePrompt');
+            if (minigameNoticeElement) minigameNoticeElement.classList.remove('show');
+        });
+    }
+    if (startAfterTutorialDribblingPro) {
+        startAfterTutorialDribblingPro.addEventListener("click", function() {
+            showScreen('dribblingProContainer');
+            if (!dribblingProInstance) dribblingProInstance = initDribblingProGame('dribblingProContainer', handleMinigameCompletion);
+            if (dribblingProInstance && dribblingProInstance.startGame) {
+                wasMusicPlayingBeforeMinigame = musicPlaying;
+                if (musicPlaying && audioPlayer) audioPlayer.pause();
+                dribblingProInstance.startGame();
+            } else { showScreen('invitacionContainer'); }
+        });
+    }
+
+    function initDribblingProGame(containerId, onGameOverCallback) {
+        const gameModule = document.getElementById(containerId);
+        if (!gameModule) { console.error("Contenedor DribblingPro no encontrado:", containerId); return null; }
+        const dp_gameArea = gameModule.querySelector('#dp_gameArea');
+        const dp_player = gameModule.querySelector('#dp_player');
+        const dp_scoreDisplay = gameModule.querySelector('#dp_score');
+        const dp_highScoreDisplay = gameModule.querySelector('#dp_highScore');
+        const dp_startButton = gameModule.querySelector('#dp_startButton');
+        const dp_gameOverMessage = gameModule.querySelector('#dp_gameOverMessage');
+        const dp_finalScoreDisplay = gameModule.querySelector('#dp_finalScore');
+        const dp_restartButton = gameModule.querySelector('#dp_restartButton');
+        const dp_backButton = gameModule.querySelector('#dp_backToInvitationButton');
+        const dp_moveLeftButton = gameModule.querySelector('#dp_moveLeftButton');
+        const dp_moveRightButton = gameModule.querySelector('#dp_moveRightButton');
+        const dp_instructionsText = gameModule.querySelector('.dp-instructions');
+        const dp_controls = gameModule.querySelector('.dp-controls');
+
+        if (!dp_gameArea || !dp_player || !dp_scoreDisplay || !dp_highScoreDisplay || !dp_startButton || !dp_gameOverMessage || !dp_finalScoreDisplay || !dp_restartButton || !dp_backButton || !dp_moveLeftButton || !dp_moveRightButton || !dp_instructionsText || !dp_controls) {
+            console.error("Faltan elementos DOM para Dribbling Pro."); return null;
         }
-        
-        // Llama a initializeAudioPlayer aquí, después de que el DOM esté cargado.
-        // No es necesario llamarlo de nuevo en el event listener del botón de sonido a menos que falle la carga inicial.
-        initializeAudioPlayer(); 
+        let dp_gameAreaWidth = 0, dp_playerWidth = 0, dp_score = 0;
+        let dp_highScore = localStorage.getItem('dribblingProHighScoreMobile') || 0;
+        dp_highScoreDisplay.textContent = dp_highScore;
+        let dp_gameInterval, dp_coneInterval, dp_gameTimeIntervalId;
+        let dp_cones = [], dp_playerPosition = 0; const dp_playerStep = 25;
+        const DP_INITIAL_CONE_SPEED = 2.5, DP_INITIAL_CONE_SPAWN_RATE = 2200, DP_MAX_CONE_SPEED = 7, DP_MIN_CONE_SPAWN_RATE = 500;
+        const DP_TIME_DIFFICULTY_INTERVAL_MS = 7000, DP_TIME_SPEED_INCREMENT = 0.2, DP_TIME_SPAWN_DECREMENT = 100;
+        const DP_SCORE_SPEED_INCREMENT = 0.15, DP_SCORE_SPAWN_DECREMENT = 70;
+        let dp_coneSpeed = DP_INITIAL_CONE_SPEED, dp_coneSpawnRate = DP_INITIAL_CONE_SPAWN_RATE, dp_gameIsOver = false;
 
-        if (soundButton) {
-            soundButton.addEventListener("click", function() {
-                if (musicPlaylist.length === 0) return; 
+        function dp_updatePlayerPosition() { if(dp_player) dp_player.style.left = `${dp_playerPosition}px`; }
+        function dp_movePlayer(direction) {
+            if (dp_gameIsOver || !dp_gameInterval || !dp_player || !dp_gameArea) return;
+            dp_gameAreaWidth = dp_gameArea.offsetWidth; dp_playerWidth = dp_player.offsetWidth || 35;
+            if (direction === 'left') dp_playerPosition -= dp_playerStep; else if (direction === 'right') dp_playerPosition += dp_playerStep;
+            if (dp_playerPosition < 0) dp_playerPosition = 0;
+            if (dp_playerPosition > dp_gameAreaWidth - dp_playerWidth) dp_playerPosition = dp_gameAreaWidth - dp_playerWidth;
+            dp_updatePlayerPosition();
+        }
+        const eventType = (('ontouchstart' in window) || (navigator.maxTouchPoints > 0)) ? 'touchstart' : 'click';
+        dp_moveLeftButton.addEventListener(eventType, (e) => { if(e.cancelable) e.preventDefault(); dp_movePlayer('left'); });
+        dp_moveRightButton.addEventListener(eventType, (e) => { if(e.cancelable) e.preventDefault(); dp_movePlayer('right'); });
+        function dp_createCone() {
+            if (dp_gameIsOver || !dp_gameArea) return;
+            const coneElement = document.createElement('div'); coneElement.classList.add('dp-cone');
+            const currentGaWidth = dp_gameArea.offsetWidth || 300;
+            let cW = 28, cH = 38; 
+            // No es ideal crear elementos para medir, pero si las clases CSS son consistentes, esto es un fallback.
+            // Mejor sería definir estas dimensiones en JS como constantes si el CSS es complejo para getComputedStyle
+            // o si el elemento 'dp-cone' no está garantizado estar en el DOM de forma invisible para medir.
+            // Por simplicidad, asumimos que la clase '.dp-cone' tiene dimensiones fijas o que este método funciona.
+            try { 
+                const tempCone = document.createElement('div'); tempCone.classList.add('dp-cone'); 
+                tempCone.style.position = 'absolute'; tempCone.style.visibility = 'hidden'; tempCone.style.display = 'block'; // Asegurar que tenga layout
+                dp_gameArea.appendChild(tempCone); // Añadir al área de juego para dimensiones correctas
+                const cs = window.getComputedStyle(tempCone);
+                cW = parseInt(cs.width)||cW; cH = parseInt(cs.height)||cH;
+                dp_gameArea.removeChild(tempCone);
+            } catch(e) { /* Usar defaults si falla */ }
 
-                // Si el audioPlayer no tiene una fuente (caso raro, pero por si acaso)
-                if (!audioPlayer.src && musicPlaylist.length > 0) {
-                    console.log("Fuente de audio no encontrada, re-inicializando con pista aleatoria.");
-                    currentTrackIndex = Math.floor(Math.random() * musicPlaylist.length);
-                    audioPlayer.src = musicPlaylist[currentTrackIndex];
-                    audioPlayer.onended = playNextTrack;
-                    audioPlayer.volume = 0.15;
+            coneElement.style.left = `${Math.random()*(currentGaWidth-cW)}px`; coneElement.style.top = `-${cH}px`;
+            dp_gameArea.appendChild(coneElement); dp_cones.push({ element: coneElement, y: -cH });
+        }
+        function dp_resetConeSpawnInterval() { clearInterval(dp_coneInterval); if (!dp_gameIsOver) dp_coneInterval = setInterval(dp_createCone, dp_coneSpawnRate); }
+        function dp_increaseDifficultyOverTime() {
+            if (dp_gameIsOver) return;
+            if (dp_coneSpeed < DP_MAX_CONE_SPEED) { dp_coneSpeed = Math.min(DP_MAX_CONE_SPEED, dp_coneSpeed + DP_TIME_SPEED_INCREMENT); }
+            if (dp_coneSpawnRate > DP_MIN_CONE_SPAWN_RATE) { dp_coneSpawnRate = Math.max(DP_MIN_CONE_SPAWN_RATE, dp_coneSpawnRate - DP_TIME_SPAWN_DECREMENT); dp_resetConeSpawnInterval(); }
+        }
+        function dp_updateCones() {
+            if (dp_gameIsOver || !dp_gameArea || !dp_player) return;
+            for (let i = dp_cones.length - 1; i >= 0; i--) {
+                const coneObj = dp_cones[i]; coneObj.y += dp_coneSpeed; coneObj.element.style.top = `${coneObj.y}px`;
+                const pR = dp_player.getBoundingClientRect(); const cR = coneObj.element.getBoundingClientRect();
+                if (pR.width > 0 && cR.width > 0 && pR.left < cR.right && pR.right > cR.left && pR.top < cR.bottom && pR.bottom > cR.top) { dp_gameOver(); return; }
+                if (coneObj.y > dp_gameArea.offsetHeight) {
+                    coneObj.element.remove(); dp_cones.splice(i, 1); dp_score++; dp_scoreDisplay.textContent = dp_score;
+                    if (dp_score > 0 && dp_score % 5 === 0) {
+                        let spawnChanged = false;
+                        if (dp_coneSpeed < DP_MAX_CONE_SPEED) dp_coneSpeed = Math.min(DP_MAX_CONE_SPEED, dp_coneSpeed + DP_SCORE_SPEED_INCREMENT);
+                        if (dp_coneSpawnRate > DP_MIN_CONE_SPAWN_RATE) { dp_coneSpawnRate = Math.max(DP_MIN_CONE_SPAWN_RATE, dp_coneSpawnRate - DP_SCORE_SPAWN_DECREMENT); spawnChanged = true;}
+                        if(spawnChanged) dp_resetConeSpawnInterval();
+                    }
                 }
-                
-                if (musicPlaying) {
-                    audioPlayer.pause();
-                    soundButton.textContent = "🔇";
-                    musicPlaying = false;
-                } else {
-                    // Intenta reproducir la pista actual. Si falla (ej. por políticas del navegador aún sin interacción suficiente),
-                    // el catch lo manejará.
-                    audioPlayer.play().then(() => {
-                        soundButton.textContent = "🔊";
-                        musicPlaying = true;
-                    }).catch(e => {
-                        console.error("Error al reproducir música por clic:", e);
-                        soundButton.textContent = "🔇"; 
-                        musicPlaying = false;
-                    });
-                }
-            });
+            }
         }
+        function dp_gameLoop() { dp_updateCones(); }
+        function dp_startGame() {
+            dp_gameIsOver = false; dp_score = 0; dp_coneSpeed = DP_INITIAL_CONE_SPEED; dp_coneSpawnRate = DP_INITIAL_CONE_SPAWN_RATE;
+            dp_scoreDisplay.textContent = dp_score;
+            if (!dp_gameArea || !dp_player) return;
+            dp_gameAreaWidth = dp_gameArea.offsetWidth; dp_playerWidth = dp_player.offsetWidth || 35;
+            dp_playerPosition = dp_gameAreaWidth / 2 - (dp_playerWidth / 2);
+            dp_updatePlayerPosition(); dp_cones.forEach(c => c.element.remove()); dp_cones = [];
+            dp_startButton.classList.add('dp-hidden'); dp_gameOverMessage.classList.add('dp-hidden');
+            dp_instructionsText.style.display = 'none'; dp_controls.style.display = 'flex';
+            clearInterval(dp_gameInterval); clearInterval(dp_coneInterval); clearInterval(dp_gameTimeIntervalId);
+            dp_gameInterval = setInterval(dp_gameLoop, 20); dp_resetConeSpawnInterval();
+            dp_gameTimeIntervalId = setInterval(dp_increaseDifficultyOverTime, DP_TIME_DIFFICULTY_INTERVAL_MS);
+        }
+        function dp_gameOver() {
+            dp_gameIsOver = true; clearInterval(dp_gameInterval); clearInterval(dp_coneInterval); clearInterval(dp_gameTimeIntervalId);
+            if(dp_finalScoreDisplay) dp_finalScoreDisplay.textContent = dp_score;
+            if (dp_score > parseInt(dp_highScore)) { // Asegurarse que dp_highScore es número para comparación
+                dp_highScore = dp_score; 
+                if(dp_highScoreDisplay) dp_highScoreDisplay.textContent = dp_highScore;
+                localStorage.setItem('dribblingProHighScoreMobile', dp_highScore.toString());
+            }
+            dp_gameOverMessage.classList.remove('dp-hidden'); dp_instructionsText.style.display = 'none'; dp_controls.style.display = 'none';
+        }
+        dp_startButton.addEventListener('click', dp_startGame);
+        dp_restartButton.addEventListener('click', dp_startGame);
+        dp_backButton.addEventListener('click', () => { onGameOverCallback(dp_score, "Dribbling Pro", "Puntos", 'dribblingProHighScoreMobile', false); });
         
-        function stopSound(soundInstance) {
-            if (soundInstance) {
-                soundInstance.pause();
-                soundInstance.currentTime = 0;
-            }
+        dp_controls.style.display = 'none'; dp_instructionsText.style.display = 'block'; dp_startButton.classList.remove('dp-hidden'); dp_gameOverMessage.classList.add('dp-hidden');
+        if (dp_gameArea && dp_player) { dp_gameAreaWidth = dp_gameArea.offsetWidth; dp_playerWidth = dp_player.offsetWidth || 35; dp_playerPosition = dp_gameAreaWidth / 2 - (dp_playerWidth / 2); dp_updatePlayerPosition(); }
+        window.addEventListener('resize', () => { if (dribblingProContainer && dribblingProContainer.style.display === 'flex' && dp_gameArea && dp_player && !dp_gameIsOver) { dp_gameAreaWidth = dp_gameArea.offsetWidth; dp_playerPosition = dp_gameAreaWidth / 2 - (dp_player.offsetWidth || 35) / 2; dp_updatePlayerPosition(); }});
+        return { startGame: dp_startGame };
+    }
+
+    function handleMinigameCompletion(score, gameName, scoreUnit, localStorageKey, showGeneralResultPopup) {
+        activeGameType = null;
+        showScreen('invitacionContainer'); 
+
+        if (powerUpElement) {
+            powerUpElement.textContent = `+${score} ${scoreUnit.toUpperCase()}!`;
+            powerUpElement.style.display = "block";
+            powerUpElement.classList.add("animate");
+            setTimeout(() => { if (powerUpElement) { powerUpElement.style.display = "none"; powerUpElement.classList.remove("animate"); }}, 2500);
         }
 
-        // --- NAVEGACIÓN Y BOTONES ---
-        if (secretButton) {
-            secretButton.addEventListener("click", function() {
-                if (invitacionContainer) invitacionContainer.style.display = "none";
-                if (namePrompt) namePrompt.style.display = "block";
-                if (minigameNoticeElement) minigameNoticeElement.classList.remove('show');
-                if (secretButton) secretButton.classList.remove('highlight-game'); 
-            });
+        if (wasMusicPlayingBeforeMinigame && audioPlayer && audioPlayer.src) {
+            audioPlayer.play().catch(e => console.error("Error al reanudar música:", e.message));
         }
-        if (startWithNameButton) {
-            startWithNameButton.addEventListener("click", function() {
-                currentPlayerName = playerNameInput.value.trim() || "Crack Anónimo";
-                if (namePrompt) namePrompt.style.display = "none";
-                if (tutorial) tutorial.style.display = "block";
-            });
-        }
-        if (startAfterTutorial) {
-            startAfterTutorial.addEventListener("click", function() {
-                if (tutorial) tutorial.style.display = "none";
-                startGame();
-            });
-        }
-        if (endGameButton) endGameButton.addEventListener("click", endGame);
-        if (backToInvitationButton) {
-            backToInvitationButton.addEventListener("click", function() {
-                if (gameResultPopup) gameResultPopup.style.display = "none";
-                backToInvitation();
-            });
-        }
-
-        // --- LÓGICA DEL MINIJUEGO ---
-        function startGame() {
-            stopSound(gameEndSound);
-            wasMusicPlayingBeforeGame = musicPlaying; 
-            if (musicPlaying && audioPlayer) audioPlayer.pause();
-
-            if (invitacionContainer) invitacionContainer.style.display = "none";
-            if (gameContainer) gameContainer.style.display = "block";
-            if (gameResultPopup) gameResultPopup.style.display = "none";
+        if (soundButton) soundButton.textContent = musicPlaying ? "🔊" : "🔇";
             
-            score = 0; timeLeft = 30; gameActive = true;
-            if (gameScoreDisplay) gameScoreDisplay.textContent = score;
-            if (gameTimerDisplay) gameTimerDisplay.textContent = timeLeft;
+        if (showGeneralResultPopup && gameResultPopup) {
+            if(gameResultTitle) gameResultTitle.textContent = `¡${gameName} Finalizado!`;
+            if(finalScoreDisplay) finalScoreDisplay.textContent = score;
+            if(scoreUnitDisplay) scoreUnitDisplay.textContent = scoreUnit;
+            if(resultMessage) resultMessage.textContent = score >= (gameName === "Tiro al Arco" ? 15 : (gameName === "Dribbling Pro" ? 20 : 10)) ? "¡QUÉ CRACK!" : (score >= (gameName === "Tiro al Arco" ? 8 : (gameName === "Dribbling Pro" ? 10 : 5)) ? "¡BUENA PARTIDA!" : "¡GRACIAS POR JUGAR!");
+            if(highScoresTitle) highScoresTitle.textContent = gameName === "Tiro al Arco" ? "TABLA DE GOLEADORES" : "RÉCORDS DE DRIBBLING";
+            updateHighScoresListGeneric(localStorageKey, scoreUnit, gameName); 
             
-            if(gameArea) gameArea.innerHTML = '';
-            gameInterval = setInterval(createGameItem, 1100);
-            timerInterval = setInterval(updateTimer, 1000);
-            
-            gameStartSound = new Audio("audio/Mario-coin-sound.mp3"); 
-            gameStartSound.volume = 0.4;
-            gameStartSound.play().catch(e => console.error("Error al reproducir sonido de inicio de juego:", e));
+            setTimeout(() => { 
+                if (gameResultPopup) gameResultPopup.style.display = "flex";
+                showConfetti();
+            }, 300);
+        } else if (!showGeneralResultPopup) {
+            setTimeout(() => { showConfetti(); }, 100);
         }
+    }
+    
+    if(backToInvitationButton) backToInvitationButton.addEventListener("click", () => { showScreen('invitacionContainer'); });
+    function showConfetti() { for (let i=0; i<100; i++) { const c=document.createElement("div");c.className="confetti";c.style.left=Math.random()*100+"vw";c.style.animationDelay=Math.random()*4+"s";c.style.backgroundColor=['var(--color-primary-pink)','var(--color-black)','var(--color-white)','var(--color-gold-star)'][Math.floor(Math.random()*4)];if(document.body)document.body.appendChild(c);setTimeout(()=>{if(c.parentNode===document.body)document.body.removeChild(c)},4000)}}
+    function updateHighScoresListGeneric(storageKey, unit, gameName) {
+        if (!gameResultPopup || gameResultPopup.style.display !== 'flex' || !highScoresList) { return; }
+        highScoresList.innerHTML = "";
 
-        function createGameItem() {
-            if (!gameActive || !gameArea) return;
-            const item = document.createElement("div");
-            const itemDetails = gameItems[Math.floor(Math.random() * gameItems.length)];
-            
-            item.className = "game-item " + (itemDetails.itemClass || "");
-            item.textContent = itemDetails.emoji;
-            item.dataset.points = itemDetails.points;
-            
-            const gameAreaRect = gameArea.getBoundingClientRect();
-            const itemSize = Math.min(gameAreaRect.width, gameAreaRect.height) * 0.15;
-            item.style.fontSize = `${itemSize}px`;
-
-            const maxX = gameAreaRect.width - itemSize * 1.2;
-            const maxY = gameAreaRect.height - itemSize * 1.2;
-            const posX = Math.max(0, Math.floor(Math.random() * maxX));
-            const posY = Math.max(0, Math.floor(Math.random() * maxY));
-            item.style.left = posX + "px"; 
-            item.style.top = posY + "px";
-            
-            item.addEventListener("click", function() {
-                if (!gameActive || !item.parentNode || item.parentNode !== gameArea) return;
-                const points = parseInt(item.dataset.points);
-                score += points; 
-                if (gameScoreDisplay) gameScoreDisplay.textContent = score;
-                
-                const pointsAnim = document.createElement("div");
-                pointsAnim.className = "points-animation"; 
-                pointsAnim.textContent = (points > 1) ? `¡GOLAZO! +${points}` : `¡GOL! +${points}`;
-                if (itemDetails.itemClass === "target-star") pointsAnim.classList.add("golden");
-                pointsAnim.style.left = item.style.left; 
-                pointsAnim.style.top = item.style.top;
-                gameArea.appendChild(pointsAnim);
-                setTimeout(() => { if (pointsAnim.parentNode === gameArea) gameArea.removeChild(pointsAnim); }, 1200);
-                
-                scoreSound = new Audio("audio/smw_coin.mp3"); 
-                scoreSound.volume = 0.5;
-                scoreSound.play().catch(e => console.error("Error al reproducir sonido de gol:", e));
-                
-                gameArea.removeChild(item);
-            });
-            gameArea.appendChild(item);
-            setTimeout(() => {
-                if (gameActive && item.parentNode === gameArea) gameArea.removeChild(item);
-            }, itemDetails.speed);
+        if (gameName === 'Dribbling Pro') {
+            const record = localStorage.getItem(storageKey) || 0; const li = document.createElement("li");
+            if (parseInt(record) > 0) li.textContent = `MEJOR RÉCORD: ${record} ${unit}`; else li.textContent = "¡Establece un récord!";
+            highScoresList.appendChild(li);
+        } else { 
+            const highScores = JSON.parse(localStorage.getItem(storageKey)) || [];
+            if (highScores.length === 0) { const li=document.createElement("li"); li.textContent="¡Sé el primero en anotar!"; highScoresList.appendChild(li); }
+            else { highScores.forEach((record, index) => { const li=document.createElement("li");li.textContent=`${index+1}. ${record.name||'Jugador'}: ${record.score} ${unit}`;highScoresList.appendChild(li);});}
         }
-
-        function updateTimer() {
-            timeLeft--; 
-            if (gameTimerDisplay) gameTimerDisplay.textContent = timeLeft;
-            if (timeLeft <= 0) endGame();
-        }
-
-        function endGame() {
-            if (!gameActive) return;
-            stopSound(gameStartSound); stopSound(scoreSound);
-            clearInterval(gameInterval); clearInterval(timerInterval); gameActive = false;
-            
-            if (finalScoreDisplay) finalScoreDisplay.textContent = score;
-            if (resultMessage) {
-                if (score >= 15) resultMessage.textContent = "¡QUÉ CRACK! ¡Dominaste el área!";
-                else if (score >= 8) resultMessage.textContent = "¡BUENA DEFINICIÓN! ¡Santiago estará orgulloso!";
-                else resultMessage.textContent = "¡Gracias por participar! ¡Te esperamos en la fiesta!";
-            }
-            if (gameResultPopup) gameResultPopup.style.display = "flex";
-            
-            gameEndSound = new Audio("audio/smb_stage_clear.mp3"); 
-            gameEndSound.volume = 0.5;
-            gameEndSound.play().catch(e => console.error("Error al reproducir sonido de fin de juego:", e));
-            
-            showConfetti(); 
-            saveHighScore(currentPlayerName, score);
-        }
-
-        function backToInvitation() {
-            stopSound(gameStartSound); stopSound(scoreSound); stopSound(gameEndSound);
-
-            // Reanudar música si estaba sonando antes del juego
-            if (wasMusicPlayingBeforeGame && audioPlayer && audioPlayer.src) {
-                audioPlayer.play().catch(e => console.error("Error al reanudar música:", e));
-                // musicPlaying ya debería ser true en este caso
-            }
-            // Actualizar el icono del botón de sonido en base al estado actual de musicPlaying
-            if (soundButton) soundButton.textContent = musicPlaying ? "🔊" : "🔇";
-
-            if (gameContainer) gameContainer.style.display = "none"; 
-            if (invitacionContainer) invitacionContainer.style.display = "block";
-            
-            if (powerUpElement) {
-                powerUpElement.textContent = `+${score} GOLES!`;
-                powerUpElement.style.display = "block";
-                powerUpElement.classList.add("animate");
-                setTimeout(() => {
-                    powerUpElement.style.display = "none";
-                    powerUpElement.classList.remove("animate");
-                }, 2000);
-            }
-        }
-
-        function showConfetti() {
-            for (let i = 0; i < 100; i++) {
-                const confetti = document.createElement("div");
-                confetti.className = "confetti";
-                confetti.style.left = Math.random() * 100 + "vw";
-                confetti.style.animationDelay = Math.random() * 4 + "s";
-                confetti.style.backgroundColor = ['var(--color-primary-pink)', 'var(--color-black)', 'var(--color-white)', 'var(--color-gold-star)'][Math.floor(Math.random() * 4)];
-                document.body.appendChild(confetti);
-                setTimeout(() => { if (confetti.parentNode === document.body) document.body.removeChild(confetti); }, 4000);
-            }
-        }
-        
-        function saveHighScore(name, scoreValue) {
-            let highScores = JSON.parse(localStorage.getItem('soccerStarHighScores')) || [];
-            highScores.push({ name: name, score: scoreValue, date: new Date().toLocaleDateString() });
-            highScores.sort((a, b) => b.score - a.score);
-            highScores = highScores.slice(0, 5); 
-            localStorage.setItem('soccerStarHighScores', JSON.stringify(highScores));
-            updateHighScoresList();
-        }
-        
-        function updateHighScoresList() {
-            const highScoresList = document.getElementById("highScoresList");
-            if (!highScoresList) return;
-            highScoresList.innerHTML = "";
-            const highScores = JSON.parse(localStorage.getItem('soccerStarHighScores')) || [];
-            if (highScores.length === 0) {
-                const li = document.createElement("li");
-                li.textContent = "¡Sé el primero en anotar!";
-                highScoresList.appendChild(li);
-            } else {
-                highScores.forEach((record, index) => {
-                    const li = document.createElement("li");
-                    li.textContent = `${index + 1}. ${record.name}: ${record.score} Goles`;
-                    highScoresList.appendChild(li);
-                });
-            }
-        }
-        
-        // --- INICIALIZACIÓN FINAL ---
-        updateHighScoresList(); 
-
-        if (secretButton && minigameNoticeElement) {
-            setTimeout(() => {
-                minigameNoticeElement.classList.add('show');
-                if(secretButton) secretButton.classList.add('highlight-game');
-            }, 2500); 
-            setTimeout(() => {
-                minigameNoticeElement.classList.remove('show');
-                if(secretButton) secretButton.classList.remove('highlight-game');
-            }, 8000); 
-        }
-
-        // El estado inicial del botón de sonido se establece dentro de initializeAudioPlayer()
-        // después del intento de autoplay.
-    });
+    }
+    const dynamicGifsList = [ "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExc3RpdTc5YzFpcHhiZTF6c3ExeG15d3U2ODd3ZnM2eW5vbXNsbHlmNSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/waCWiXgm8dDkTggARm/giphy.gif", "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExajgzdXVodGFidWlhcjExMDZqZXg2ZzhpNzBneWtnM3k2cWR1MmZsYyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/pN3fM4bIDBeBVTY6Sn/giphy.gif"];
+    if (dynamicSoccerGifElement && dynamicGifsList.length > 0) dynamicSoccerGifElement.src = dynamicGifsList[Math.floor(Math.random() * dynamicGifsList.length)]; else if (dynamicSoccerGifElement) dynamicSoccerGifElement.style.display = 'none';
+    if (minigameNoticeElement && (tiroAlArcoButton || dribblingProButton)) {
+         setTimeout(() => { minigameNoticeElement.classList.add('show'); if(tiroAlArcoButton) tiroAlArcoButton.classList.add('highlight-game'); }, 3500); 
+         setTimeout(() => { minigameNoticeElement.classList.remove('show'); if(tiroAlArcoButton) tiroAlArcoButton.classList.remove('highlight-game'); if(dribblingProButton) dribblingProButton.classList.remove('highlight-game');}, 9000); 
+    }
+    showScreen('invitacionContainer');
+});
     </script>
 </body>
 </html>
