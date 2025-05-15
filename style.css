@@ -1,20 +1,21 @@
 /* --- Variables Globales --- */
 :root {
-    --color-primary-pink: #F7B5CD; /* Rosa principal Inter Miami */
-    --color-secondary-pink: #E0A0B6; /* Rosa más oscuro para acentos/hover */
+    --color-primary-pink: #F7B5CD;
+    --color-secondary-pink: #E0A0B6;
     --color-primary-pink-glow: rgba(247, 181, 205, 0.7);
     --color-black: #000000;
-    --color-black-alt: #121212; /* Negro ligeramente más suave */
-    --color-black-transparent: rgba(0, 0, 0, 0.85); /* Más opaco para popups */
+    --color-black-alt: #121212;
+    --color-black-transparent: rgba(0, 0, 0, 0.85); /* Para fondos de popups */
     --color-white: #FFFFFF;
     --color-grey-light: #f0f0f0;
     --color-grey-medium: #cccccc;
-    --color-grey-dark: #222222; /* Oscurecido un poco */
+    --color-grey-dark: #222222;
     --color-gold-star: #FFD700;
 
     --font-display: 'Anton', sans-serif;
     --font-heading: 'Oswald', sans-serif;
     --font-body: 'Roboto', sans-serif;
+    --font-dribbling-pro: 'Fredoka One', cursive; /* Fuente para Dribbling Pro */
 
     --border-radius-soft: 8px;
     --border-radius-medium: 12px;
@@ -33,8 +34,10 @@ body {
     padding: 20px 10px;
     line-height: 1.6;
     overflow-x: hidden;
+    -webkit-tap-highlight-color: transparent; /* Evita el resaltado azul en Chrome Mobile al tocar */
 }
 
+/* --- Estilos de la Invitación Principal --- */
 .invitation-wrapper {
     max-width: 700px;
     margin: 30px auto;
@@ -42,12 +45,11 @@ body {
     border: 3px solid var(--color-primary-pink);
     border-radius: var(--border-radius-medium);
     box-shadow: 0 5px 25px rgba(0,0,0,0.3), var(--box-shadow-pink);
-    padding: 0;
+    padding: 0; /* El padding irá en las secciones internas */
     text-align: center;
-    overflow: hidden;
+    overflow: hidden; /* Para bordes redondeados en imágenes internas */
 }
 
-/* --- Encabezado de Invitación --- */
 .invitation-header {
     background-color: var(--color-black);
     padding: 30px 20px;
@@ -72,7 +74,6 @@ body {
     letter-spacing: 1px;
 }
 
-/* --- Tarjeta del Jugador (Nombre e Imagen) --- */
 .player-card {
     padding: 30px 20px;
     background-color: var(--color-black-alt);
@@ -87,306 +88,454 @@ body {
     text-shadow: 1px 1px 2px var(--color-primary-pink);
 }
 .player-image-container {
-    max-width: 300px; /* Reducido para controlar el tamaño del logo/imagen */
-    max-height: 300px; /* Añadido para limitar altura también */
+    max-width: 300px; 
+    max-height: 300px; 
     margin: 20px auto;
     border: 4px solid var(--color-primary-pink);
     border-radius: var(--border-radius-soft);
     overflow: hidden;
     box-shadow: var(--box-shadow-light);
     background-color: var(--color-black); 
-    display: flex; /* Para centrar la imagen si es más pequeña */
+    display: flex; 
     align-items: center;
     justify-content: center;
 }
 .main-image {
-    display: block;
-    width: auto; /* Permitir que la imagen se ajuste manteniendo su aspect ratio */
-    height: auto; /* Permitir que la imagen se ajuste manteniendo su aspect ratio */
-    max-width: 100%; /* No exceder el contenedor */
-    max-height: 100%; /* No exceder el contenedor */
-    object-fit: contain; /* Asegura que toda la imagen se vea, puede dejar espacios */
+    display: block; width: auto; height: auto; 
+    max-width: 100%; max-height: 100%; 
+    object-fit: contain; 
 }
 .main-text {
-    font-size: 1.25rem;
-    color: var(--color-grey-light);
-    margin: 25px auto;
-    max-width: 90%;
+    font-size: 1.25rem; color: var(--color-grey-light);
+    margin: 25px auto; max-width: 90%;
 }
 
-/* --- Secciones de Detalles y Actividades --- */
 .details-section, .activities-section {
-    padding: 25px 20px;
-    background-color: var(--color-grey-dark);
+    padding: 25px 20px; background-color: var(--color-grey-dark);
     border-top: 1px solid var(--color-secondary-pink);
 }
 .details-section h3, .activities-section h3 {
-    font-family: var(--font-heading);
-    font-weight: 700;
-    font-size: 1.8rem;
-    color: var(--color-primary-pink);
-    text-transform: uppercase;
-    margin-bottom: 20px;
-    letter-spacing: 0.5px;
+    font-family: var(--font-heading); font-weight: 700; font-size: 1.8rem;
+    color: var(--color-primary-pink); text-transform: uppercase;
+    margin-bottom: 20px; letter-spacing: 0.5px;
 }
 .details-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 15px;
-    text-align: left;
-    max-width: 450px;
-    margin: 0 auto;
+    display: grid; grid-template-columns: 1fr; gap: 15px;
+    text-align: left; max-width: 450px; margin: 0 auto;
 }
 .details-grid p {
-    font-size: 1.15rem;
-    margin: 0;
-    padding: 10px;
-    background-color: rgba(0,0,0,0.2);
-    border-radius: var(--border-radius-soft);
+    font-size: 1.15rem; margin: 0; padding: 10px;
+    background-color: rgba(0,0,0,0.2); border-radius: var(--border-radius-soft);
     border-left: 4px solid var(--color-primary-pink);
 }
-.details-grid p strong {
-    color: var(--color-white);
-    font-weight: 700;
-}
-.icon {
-    margin-right: 10px;
-    font-size: 1.3em;
-    vertical-align: middle;
-}
+.details-grid p strong { color: var(--color-white); font-weight: 700; }
+.icon { margin-right: 10px; font-size: 1.3em; vertical-align: middle; }
 
 .activities-section ul {
-    list-style-type: none;
-    padding: 0;
-    max-width: 500px;
-    margin: 0 auto;
-    text-align: left;
+    list-style-type: none; padding: 0; max-width: 500px;
+    margin: 0 auto; text-align: left;
 }
 .activities-section li {
-    font-size: 1.15rem;
-    margin-bottom: 12px;
-    padding: 10px;
-    background-color: rgba(0,0,0,0.2);
-    border-radius: var(--border-radius-soft);
-    display: flex;
-    align-items: center;
+    font-size: 1.15rem; margin-bottom: 12px; padding: 10px;
+    background-color: rgba(0,0,0,0.2); border-radius: var(--border-radius-soft);
+    display: flex; align-items: center;
 }
-.li-icon {
-    font-size: 1.4em;
-    margin-right: 12px;
-    color: var(--color-primary-pink);
-}
+.li-icon { font-size: 1.4em; margin-right: 12px; color: var(--color-primary-pink); }
 
-/* --- GIF Banner (Opcional) --- */
 .gif-banner-container {
-    margin: 20px 0 0;
-    max-height: 200px;
-    overflow: hidden;
-    background-color: var(--color-black);
+    margin: 20px 0 0; max-height: 200px;
+    overflow: hidden; background-color: var(--color-black);
 }
-.dynamic-gif {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-}
+.dynamic-gif { width: 100%; height: 100%; object-fit: cover; display: block; }
 
-/* --- Texto Final y Botón Principal --- */
 .footer-text {
-    padding: 25px 20px;
-    font-family: var(--font-heading);
-    font-weight: 500;
-    font-size: 1.4rem;
-    color: var(--color-primary-pink);
-    text-transform: uppercase;
-    margin: 0;
-    background-color: var(--color-black);
+    padding: 25px 20px; font-family: var(--font-heading); font-weight: 500;
+    font-size: 1.4rem; color: var(--color-primary-pink); text-transform: uppercase;
+    margin: 0; background-color: var(--color-black);
     border-top: 3px solid var(--color-primary-pink);
 }
-.footer-text .icon {
-    font-size: 1.1em;
+.footer-text .icon { font-size: 1.1em; }
+
+.minigame-buttons-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px; 
+    padding: 10px 0 20px;
 }
 
 .action-button {
-    font-family: var(--font-display);
-    font-size: 1.3rem;
-    color: var(--color-black);
-    padding: 15px 35px;
-    border: none;
-    border-radius: var(--border-radius-soft);
-    cursor: pointer;
-    transition: all 0.25s ease-in-out;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    display: inline-block;
+    font-family: var(--font-display); font-size: 1.3rem; color: var(--color-black);
+    padding: 12px 25px; 
+    border: none; border-radius: var(--border-radius-soft); cursor: pointer;
+    transition: all 0.25s ease-in-out; text-transform: uppercase;
+    letter-spacing: 1px; display: inline-block;
+    width: 80%; 
+    max-width: 300px; 
 }
 .action-button.primary {
     background-color: var(--color-primary-pink);
     box-shadow: 0 5px 0 var(--color-secondary-pink), 0 8px 15px rgba(0,0,0,0.3);
-    margin: 25px 0;
 }
 .action-button.primary:hover {
-    background-color: var(--color-secondary-pink);
-    transform: translateY(-2px);
+    background-color: var(--color-secondary-pink); transform: translateY(-2px);
     box-shadow: 0 7px 0 var(--color-secondary-pink), 0 10px 20px rgba(0,0,0,0.2);
 }
 .action-button.primary:active {
     transform: translateY(2px);
     box-shadow: 0 3px 0 var(--color-secondary-pink), 0 5px 10px rgba(0,0,0,0.3);
 }
-
 .action-button.secondary {
-    background-color: var(--color-grey-medium);
-    color: var(--color-black);
-    box-shadow: 0 4px 0 #999;
-    font-size: 1rem;
-    padding: 12px 25px;
+    background-color: var(--color-grey-medium); color: var(--color-black);
+    box-shadow: 0 4px 0 #999; font-size: 1rem; padding: 10px 20px;
 }
-.action-button.secondary:hover {
-    background-color: #b3b3b3;
-    box-shadow: 0 5px 0 #888;
-}
-.action-button.secondary:active {
-    box-shadow: 0 2px 0 #888;
-}
+.action-button.secondary:hover { background-color: #b3b3b3; box-shadow: 0 5px 0 #888; }
+.action-button.secondary:active { box-shadow: 0 2px 0 #888; }
+.action-button.highlight-game { animation: highlightPulseSoccer 1.5s infinite ease-in-out; }
+@keyframes highlightPulseSoccer { 0% { transform: scale(1); } 50% { transform: scale(1.05); filter: brightness(1.1); } 100% { transform: scale(1); } }
 
-.action-button.highlight-game {
-    animation: highlightPulseSoccer 1.5s infinite ease-in-out;
-}
-@keyframes highlightPulseSoccer {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.05); filter: brightness(1.1); }
-    100% { transform: scale(1); }
-}
-
-/* --- Animación de Puntos (XP/Goles) --- */
 .power-up {
-    display: none; position: absolute;
-    font-family: var(--font-display); color: var(--color-gold-star);
-    font-size: 2rem; text-shadow: 2px 2px 0 var(--color-black);
+    display: none; position: absolute; font-family: var(--font-display);
+    color: var(--color-gold-star); font-size: 2rem; text-shadow: 2px 2px 0 var(--color-black);
     left: 50%; transform: translateX(-50%); bottom: 45%;
 }
 .power-up.animate { display: block; animation: flyUpScore 1.8s ease-out forwards; }
-@keyframes flyUpScore {
-    0% { bottom: 45%; opacity: 0; transform: translateX(-50%) scale(0.8); }
-    20% { opacity: 1; transform: translateX(-50%) scale(1.1);}
-    80% { opacity: 1; transform: translateX(-50%) scale(1);}
-    100% { bottom: 85%; opacity: 0; transform: translateX(-50%) scale(0.5); }
-}
+@keyframes flyUpScore { 0% { bottom: 45%; opacity: 0; transform: translateX(-50%) scale(0.8); } 20% { opacity: 1; transform: translateX(-50%) scale(1.1);} 80% { opacity: 1; transform: translateX(-50%) scale(1);} 100% { bottom: 85%; opacity: 0; transform: translateX(-50%) scale(0.5); } }
 
-/* --- Estilos del Minijuego --- */
-.game-container {
+/* --- Estilos Comunes para Popups (NamePrompt, Tutorial, GameResult) --- */
+.popup-overlay {
+    display: none; 
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background-color: var(--color-black-transparent);
+    z-index: 1010; 
     padding: 20px;
-    background-color: var(--color-black-alt);
-    border-radius: var(--border-radius-medium); /* Asegurar bordes redondeados si es un contenedor separado */
-    border: 3px solid var(--color-primary-pink); /* Coherencia con el wrapper */
-    box-shadow: 0 5px 25px rgba(0,0,0,0.3), var(--box-shadow-pink); /* Coherencia */
-    max-width: 700px; /* Mismo max-width que invitation-wrapper */
-    margin: 30px auto; /* Centrado igual que invitation-wrapper */
+    box-sizing: border-box;
 }
-.game-header h3 {
-    font-family: var(--font-heading); color: var(--color-primary-pink);
-    font-size: 2rem; margin: 10px 0 20px; text-transform: uppercase;
+.popup-content {
+    background-color: var(--color-grey-dark);
+    border: 2px solid var(--color-primary-pink);
+    box-shadow: 0 0 20px var(--color-primary-pink-glow);
+    padding: 30px; border-radius: var(--border-radius-medium);
+    text-align: center; color: var(--color-white);
+    max-width: 500px; width: 90%; /* Ocupa el 90% del ancho en móviles, máximo 500px */
 }
-.game-stats {
-    display: flex; justify-content: space-around;
-    background-color: rgba(0,0,0,0.4);
-    border-radius: var(--border-radius-soft); padding: 15px; margin: 15px 0 20px;
+.popup-content h3 {
+    color: var(--color-primary-pink);
+    font-family: var(--font-heading);
+    font-size: 1.6rem;
+    margin-top: 0;
+    margin-bottom: 20px;
 }
-.game-stats p {
-    margin: 0; font-size: 1.3rem;
-    font-family: var(--font-heading); color: var(--color-white);
+/* Input específico para el name-prompt */
+.name-prompt-content input { 
+    background-color: rgba(255, 255, 255, 0.1); border: 2px solid var(--color-primary-pink);
+    color: var(--color-white); padding: 12px 15px; font-size: 1.1rem; margin: 20px 0;
+    border-radius: var(--border-radius-soft); font-family: 'Roboto', sans-serif;
+    width: 85%; box-sizing: border-box;
 }
-.game-stats p span { color: var(--color-primary-pink); font-weight: 700; }
+/* Estilos para los pasos del tutorial */
+.tutorial-content .tutorial-step { 
+    display: flex; align-items: center; margin: 18px 0;
+    justify-content: center; font-size: 1.15rem;
+}
+.tutorial-content .tutorial-icon {
+    font-size: 2rem; margin-right: 15px;
+    animation: pulseSoccer 1.5s infinite; color: var(--color-primary-pink);
+}
+@keyframes pulseSoccer { 0% { transform: scale(1); } 50% { transform: scale(1.15); } 100% { transform: scale(1); } }
 
-.game-area {
+/* Estilos para el contenido del resultado del juego */
+.game-result-content p { font-size: 1.2rem; margin: 15px 0; }
+.game-result-content #finalScoreDisplay { color: var(--color-gold-star); font-size: 2rem; font-family: var(--font-display); }
+.high-scores { margin-top: 25px; border-top: 2px dashed var(--color-primary-pink); padding-top: 20px; }
+.high-scores h4 { color: var(--color-primary-pink); margin-bottom: 12px; font-family: 'Oswald', sans-serif; font-size: 1.3rem; }
+.high-scores ul { list-style: none; padding: 0; margin: 8px 0; font-size: 1rem; }
+
+/* --- Estilos para Contenedores de Minijuegos --- */
+.game-module-container { 
+    display: none; 
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background-color: var(--color-black-alt); 
+    z-index: 1005; 
+    padding: 15px; /* Un poco de padding general */
+    box-sizing: border-box;
+    display: flex; 
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow-y: auto; /* Scroll si el contenido es muy alto */
+}
+
+/* --- Estilos Minijuego 1: Tiro al Arco --- */
+/* Wrapper interno para centrar el contenido del juego si es más pequeño que el game-module-container */
+.tiro-al-arco-wrapper {
+    width: 100%;
+    max-width: 600px; /* Ancho máximo del juego Tiro al Arco */
+    padding: 20px;
+    background-color: var(--color-grey-dark); /* Fondo interno del juego */
+    border-radius: var(--border-radius-soft);
+    box-shadow: 0 0 15px rgba(0,0,0,0.5);
+}
+#tiroAlArcoContainer .game-header h3 {
+    font-family: var(--font-heading); color: var(--color-primary-pink);
+    font-size: 1.8rem; margin: 0 0 15px; text-transform: uppercase;
+}
+#tiroAlArcoContainer .game-stats {
+    display: flex; justify-content: space-around; background-color: rgba(0,0,0,0.4);
+    border-radius: var(--border-radius-soft); padding: 12px; margin: 15px 0;
+}
+#tiroAlArcoContainer .game-stats p {
+    margin: 0; font-size: 1.2rem; font-family: var(--font-heading); color: var(--color-white);
+}
+#tiroAlArcoContainer .game-stats p span { color: var(--color-primary-pink); font-weight: 700; }
+
+#tiroAlArcoGameArea { /* Ajustado para el área de juego de Tiro al Arco */
     background-color: #2a2a2a;
     background-image: 
         linear-gradient(rgba(255,255,255,0.07) 2px, transparent 2px),
         linear-gradient(90deg, rgba(255,255,255,0.07) 2px, transparent 2px);
-    background-size: 40px 40px;
-    border: 4px solid var(--color-white);
-    border-radius: var(--border-radius-soft);
-    width: 100%; height: 350px;
-    margin: 10px auto; position: relative; overflow: hidden; box-sizing: border-box;
-    box-shadow: inset 0 0 15px rgba(0,0,0,0.5);
+    background-size: 40px 40px; border: 4px solid var(--color-white);
+    border-radius: var(--border-radius-soft); width: 100%; 
+    height: 320px; /* Altura ajustada para móviles */
+    margin: 10px auto; position: relative; overflow: hidden;
+    box-sizing: border-box; box-shadow: inset 0 0 15px rgba(0,0,0,0.5);
 }
-.game-item {
+#tiroAlArcoContainer .game-item { /* Estilos de los objetivos */
     position: absolute; cursor: pointer; user-select: none;
-    transition: transform 0.15s ease-out;
-    filter: drop-shadow(2px 2px 3px rgba(0,0,0,0.5));
+    transition: transform 0.15s ease-out; filter: drop-shadow(2px 2px 3px rgba(0,0,0,0.5));
 }
-.game-item:hover { transform: scale(1.15); }
-.game-item.target-ball { color: var(--color-white); }
-.game-item.target-diana { color: var(--color-primary-pink); }
-.game-item.target-star { color: var(--color-gold-star); animation: pulseGoldenBall 1s infinite alternate; }
+#tiroAlArcoContainer .game-item:hover { transform: scale(1.15); }
+#tiroAlArcoContainer .game-item.target-ball { color: var(--color-white); }
+#tiroAlArcoContainer .game-item.target-diana { color: var(--color-primary-pink); }
+#tiroAlArcoContainer .game-item.target-star { color: var(--color-gold-star); animation: pulseGoldenBall 1s infinite alternate; }
 @keyframes pulseGoldenBall { from { transform: scale(1); } to { transform: scale(1.1); opacity: 0.8; } }
-
-.game-controls { margin: 25px 0 10px; }
-
-/* --- Estilo para Pop-up de Resultado del Juego (Centrado) --- */
-.game-result {
-    display: none; /* Inicialmente oculto, se muestra con JS */
-    flex-direction: column; /* Para alinear items verticalmente */
-    align-items: center; /* Centrar horizontalmente */
-    justify-content: center; /* Centrar verticalmente */
-    position: fixed; /* Posición fija relativa al viewport */
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: var(--color-black-transparent); /* Fondo semi-transparente */
-    z-index: 1020; /* Por encima de todo */
-    padding: 20px;
-    box-sizing: border-box;
-}
-.game-result > div { /* Contenedor interno para el contenido del resultado, para centrarlo mejor */
-    background-color: var(--color-grey-dark);
-    border: 3px solid var(--color-primary-pink);
-    border-radius: var(--border-radius-medium);
-    padding: 30px;
-    text-align: center;
-    box-shadow: 0 5px 25px rgba(0,0,0,0.5), var(--box-shadow-pink);
-    max-width: 500px; /* Ancho máximo del contenido */
-    width: 90%; /* Ancho en pantallas pequeñas */
-}
-
-.game-result h3 { color: var(--color-primary-pink); font-size: 1.8rem; margin-top:0; }
-.game-result p { font-size: 1.2rem; margin: 15px 0; }
-#finalScoreDisplay { color: var(--color-gold-star); font-size: 2rem; font-family: var(--font-display); }
-
-
-.points-animation {
+#tiroAlArcoContainer .game-controls { margin: 20px 0 10px; }
+#tiroAlArcoContainer .points-animation { /* Animación de puntos */
     position: absolute; font-family: var(--font-heading); font-weight: 700;
     font-size: 1.4rem; animation: float-up-score 1.3s forwards ease-out;
     z-index: 5; pointer-events: none; text-shadow: 1px 1px 0 var(--color-black);
     color: var(--color-primary-pink);
 }
-.points-animation.golden { color: var(--color-gold-star); font-size: 1.6rem; }
+#tiroAlArcoContainer .points-animation.golden { color: var(--color-gold-star); font-size: 1.6rem; }
 @keyframes float-up-score {
     0% { opacity: 1; transform: translateY(0) scale(1); }
     100% { opacity: 0; transform: translateY(-75px) scale(1.3); }
 }
 
-/* --- Media Queries para Responsividad --- */
+
+/* --- ESTILOS ESPECÍFICOS PARA DRIBBLING PRO (Adaptados y Prefijados) --- */
+.dp-game-wrapper { 
+    background-color: var(--color-black); /* Fondo más oscuro para Dribbling Pro */
+    padding: 15px;
+    border-radius: var(--border-radius-medium);
+    border: 2px solid var(--color-primary-pink);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.4), var(--box-shadow-pink);
+    text-align: center;
+    width: 100%;
+    max-width: 360px; 
+    font-family: var(--font-dribbling-pro); 
+    color: var(--color-white);
+}
+
+.dp-game-wrapper .dp-h1 { 
+    color: var(--color-primary-pink);
+    font-size: 2.2em;
+    margin-bottom: 10px;
+    font-family: var(--font-dribbling-pro);
+    text-shadow: 1px 1px 2px var(--color-black);
+}
+
+.dp-game-wrapper .dp-game-info {
+    font-size: 1.1em; /* Más pequeño para encajar */
+    margin-bottom: 10px;
+    color: var(--color-grey-light);
+    font-family: var(--font-body); /* Fuente más legible para info */
+}
+
+.dp-game-wrapper .dp-game-area {
+    width: 100%;
+    max-width: 300px; 
+    height: 380px; 
+    background-image: 
+        linear-gradient(rgba(247, 181, 205, 0.08) 1px, transparent 1px), /* Líneas rosas sutiles */
+        linear-gradient(90deg, rgba(247, 181, 205, 0.08) 1px, transparent 1px),
+        linear-gradient(var(--color-black-alt), #080808); /* Degradado oscuro */
+    background-size: 25px 25px, 25px 25px, auto; /* Patrón de cancha más pequeño */
+    border: 3px solid var(--color-primary-pink);
+    border-radius: var(--border-radius-soft);
+    position: relative;
+    overflow: hidden;
+    margin: 0 auto 12px auto;
+    box-shadow: inset 0 0 8px rgba(0,0,0,0.4);
+}
+
+.dp-game-wrapper .dp-player {
+    width: 35px; 
+    height: 35px;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="white"/><path d="M50,5 A45,45 0 0,1 50,95 A45,45 0 0,1 50,5 M22,35 Q50,25 78,35 M22,65 Q50,75 78,65 M35,22 Q25,50 35,78 M65,22 Q75,50 65,78" fill="none" stroke="black" stroke-width="6"/><circle cx="50" cy="50" r="15" fill="black"/></svg>');
+    background-size: cover;
+    position: absolute;
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    transition: left 0.05s linear;
+}
+
+.dp-game-wrapper .dp-cone {
+    width: 28px; 
+    height: 38px;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 60"><polygon points="25,0 0,60 50,60" fill="%23F7B5CD"/><rect x="0" y="40" width="50" height="7" fill="white" /><rect x="0" y="50" width="50" height="10" fill="white" /></svg>');
+    background-size: contain;
+    background-repeat: no-repeat;
+    position: absolute;
+}
+
+.dp-game-wrapper .dp-controls {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 280px; /* Ajustar al ancho del game-area */
+    margin: 0 auto 12px auto;
+}
+
+.dp-game-wrapper .dp-control-button {
+    background-color: var(--color-primary-pink);
+    color: var(--color-black);
+    border: none;
+    padding: 12px 0; 
+    font-size: 1.8em; 
+    font-family: 'Arial', sans-serif;
+    border-radius: var(--border-radius-soft);
+    cursor: pointer;
+    text-shadow: none;
+    box-shadow: 0 3px var(--color-secondary-pink);
+    flex-basis: 48%; 
+    user-select: none; 
+}
+.dp-game-wrapper .dp-control-button:active {
+    background-color: var(--color-secondary-pink);
+    box-shadow: 0 1px var(--color-secondary-pink);
+    transform: translateY(2px);
+}
+
+.dp-game-wrapper .dp-action-button {
+    background-color: var(--color-gold-star);
+    color: var(--color-black);
+    border: none;
+    padding: 10px 20px; /* Más pequeño para Dribbling Pro */
+    font-size: 1.1em; /* Más pequeño */
+    font-family: var(--font-dribbling-pro);
+    border-radius: 25px; 
+    cursor: pointer;
+    margin-top: 12px;
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
+    box-shadow: 0 3px #cca300; /* Sombra más oscura para dorado */
+    text-shadow: none;
+    width: auto; 
+    min-width: 160px;
+}
+.dp-game-wrapper .dp-action-button.dp-secondary {
+    background-color: var(--color-grey-medium);
+    box-shadow: 0 3px #999;
+}
+.dp-game-wrapper .dp-action-button:hover { filter: brightness(1.05); }
+.dp-game-wrapper .dp-action-button:active {
+    transform: translateY(1px);
+    box-shadow: 0 1px #cca300;
+}
+.dp-game-wrapper .dp-action-button.dp-secondary:active { box-shadow: 0 1px #999; }
+
+.dp-game-wrapper .dp-message {
+    margin-top: 15px;
+    background-color: rgba(0,0,0,0.75);
+    padding: 12px;
+    border-radius: var(--border-radius-soft);
+    font-size: 1.1em;
+    color: var(--color-white);
+}
+.dp-game-wrapper .dp-hidden { display: none !important; }
+.dp-game-wrapper .dp-instructions {
+    font-size: 0.9em;
+    color: var(--color-grey-light);
+    margin-top: 8px;
+    font-family: var(--font-body);
+}
+
+/* --- Confeti y Sound Control (generales) --- */
+.confetti { position: fixed; width: 10px; height: 10px; top: -10px; border-radius: 50%; animation: confetti-fall 5s linear forwards; z-index: 1000; }
+@keyframes confetti-fall { 0% { transform: translateY(0) rotate(0deg); opacity: 1; } 100% { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
+.sound-control { position: fixed; top: 25px; right: 25px; z-index: 1030; /* Más alto para estar sobre todo */}
+.sound-button {
+    background-color: var(--color-primary-pink); color: var(--color-black);
+    font-family: 'Anton', sans-serif; font-size: 1.6rem; padding: 0; border: none;
+    border-radius: 50%; cursor: pointer; transition: all 0.2s ease-in-out;
+    width: 50px; height: 50px; display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.4);
+}
+.sound-button:hover { background-color: var(--color-secondary-pink); transform: scale(1.1); }
+.sound-button:active { transform: scale(0.98) translateY(1px); }
+.minigame-notice {
+    position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
+    background-color: var(--color-primary-pink); color: var(--color-black);
+    padding: 12px 25px; border-radius: 30px;
+    font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 1rem; text-transform: uppercase;
+    box-shadow: 0 0 20px var(--color-primary-pink-glow); z-index: 1002; opacity: 0;
+    transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out; pointer-events: none;
+}
+.minigame-notice.show { opacity: 1; transform: translateX(-50%) translateY(-10px); }
+.minigame-notice::after {
+    content: ''; position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%);
+    width: 0; height: 0; border-left: 10px solid transparent; border-right: 10px solid transparent;
+    border-top: 10px solid var(--color-primary-pink);
+}
+
+
+/* --- Media Queries (Ajustes finales) --- */
 @media (min-width: 600px) {
-    .details-grid {
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    }
+    .details-grid { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
     .invitation-header h1 { font-size: 4rem; }
     .player-name { font-size: 3rem; }
-    .game-area { height: 400px; }
+    #tiroAlArcoGameArea { height: 400px; } 
+    .dp-game-wrapper .dp-game-area { height: 450px; max-width: 360px;} /* Un poco más de espacio para Dribbling Pro en desktop */
+    .minigame-buttons-container { flex-direction: row; justify-content: center; gap: 20px;}
+    .action-button { width: auto; padding: 15px 35px; }
 }
 
 @media (max-width: 480px) {
-    body { padding: 15px 5px; }
-    .invitation-header h1 { font-size: 2.5rem; }
-    .player-name { font-size: 2rem; }
-    .details-section h3, .activities-section h3, .game-header h3 { font-size: 1.5rem; }
-    .main-text, .details-grid p, .activities-section li { font-size: 1rem; }
-    .action-button.primary { font-size: 1.1rem; padding: 12px 25px; }
-    .footer-text { font-size: 1.2rem; }
-    .game-area { height: 300px; }
-    .game-stats p { font-size: 1.1rem; }
-    .name-prompt, .tutorial, .game-result > div { padding: 20px; } /* Menos padding en popups pequeños */
+    body { padding: 10px 5px; } /* Menos padding en cuerpo */
+    .invitation-wrapper { margin: 15px auto; }
+    .invitation-header h1 { font-size: 2.2rem; }
+    .player-name { font-size: 1.8rem; }
+    .details-section h3, .activities-section h3, 
+    #tiroAlArcoContainer .game-header h3, 
+    .dp-game-wrapper .dp-h1 { font-size: 1.4rem; }
+
+    .main-text, .details-grid p, .activities-section li { font-size: 0.95rem; }
+    .action-button.primary { font-size: 1rem; padding: 10px 20px; }
+    .footer-text { font-size: 1.1rem; }
+    
+    #tiroAlArcoGameArea { height: 280px; }
+    .dp-game-wrapper .dp-game-area { height: 350px; max-width: 95%;} /* Hacer el área de Dribbling Pro más responsiva */
+
+    #tiroAlArcoContainer .game-stats p, .dp-game-wrapper .dp-game-info { font-size: 1rem; }
+    .popup-content { padding: 15px; } /* Menos padding en popups */
+    .popup-content h3 { font-size: 1.3rem; }
+    .name-prompt-content input { font-size: 1rem; padding: 10px 12px; }
+    .tutorial-content .tutorial-step { font-size: 1rem; }
+    .tutorial-content .tutorial-icon { font-size: 1.5rem; }
+    
+    .dp-game-wrapper { padding: 10px; }
+    .dp-game-wrapper .dp-h1 { font-size: 1.8em; }
+    .dp-game-wrapper .dp-control-button { font-size: 1.5em; padding: 10px 0; }
+    .dp-game-wrapper .dp-action-button { font-size: 1em; padding: 8px 15px; min-width: 140px; }
+    .dp-game-wrapper .dp-instructions { font-size: 0.85em;}
+
+    .minigame-buttons-container { gap: 10px; }
 }
