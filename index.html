@@ -235,6 +235,21 @@ document.addEventListener('DOMContentLoaded', function() {
     const MAIN_VOLUME = 0.15; 
     const MINIGAME_DP_VOLUME_FACTOR = 0.3; 
 
+    // --- Funciones Auxiliares de Audio ---
+    function playNextTrack() {
+        currentTrackIndex = (currentTrackIndex + 1) % musicPlaylist.length;
+        if (musicPlaylist[currentTrackIndex]) {
+            audioPlayer.src = musicPlaylist[currentTrackIndex];
+            console.log("Cambiando a siguiente pista:", musicPlaylist[currentTrackIndex]);
+            if (musicPlaying) { 
+                const playPromise = audioPlayer.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch(e => console.error("Error al reproducir siguiente pista:", e.message));
+                }
+            }
+        }
+    }
+
     function initializeAudioPlayer() {
         console.log("Inicializando Audio Player...");
         if (musicPlaylist.length === 0) {
@@ -258,36 +273,68 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    function handleFirstInteraction() {
+    function tryPlayMusicAfterInteraction() {
+        if (audioPlayer.src && !musicPlaying && userInteracted) { 
+            console.log("Intentando reproducir música tras primera interacción general.");
+            let targetVolume = MAIN_VOLUME;
+             // Si por alguna razón un minijuego ya estuviera activo (poco probable aquí, pero por seguridad)
+            if (activeGameType === 'dribblingPro') {
+                targetVolume = MAIN_VOLUME * MINIGAME_DP_VOLUME_FACTOR;
+            }
+            audioPlayer.volume = targetVolume; 
+
+            const playPromise = audioPlayer.play();
+            if (playPromise !== undefined) {
+                playPromise.then(() => {
+                    musicPlaying = true;
+                    if (soundButton) soundButton.textContent = "🔊";
+                    console.log("Música iniciada tras primera interacción general. Volumen:", audioPlayer.volume);
+                }).catch(error => {
+                    musicPlaying = false; // Asegurar que quede como false si falla
+                    if (soundButton) soundButton.textContent = "🔇";
+                    console.warn("Error al iniciar música tras primera interacción general:", error.message);
+                });
+            }
+        } else {
+            if (!audioPlayer.src) console.log("No se intentó reproducir: audioPlayer sin src.");
+            if (musicPlaying) console.log("No se intentó reproducir: música ya sonando.");
+            if (!userInteracted) console.log("No se intentó reproducir: userInteracted es false.");
+        }
+    }
+
+    function handleFirstInteraction(event) {
+        // Solo procesar si no es un clic en el propio botón de sonido para evitar doble lógica
+        if (soundButton && event.target === soundButton) {
+            if (!userInteracted) { // Si el primer clic ES el botón de sonido
+                userInteracted = true;
+                console.log("Primera interacción fue el botón de sonido (detectado en handleFirstInteraction). Audio desbloqueado.");
+                 // Los listeners se removerán de todas formas. La lógica del botón de sonido se encargará.
+            }
+            return; 
+        }
+
         if (!userInteracted) {
             userInteracted = true;
-            console.log("Primera interacción con el documento detectada. Audio desbloqueado para futuras acciones.");
+            console.log("Primera interacción con el documento (no botón de sonido) detectada. Audio desbloqueado.");
+            tryPlayMusicAfterInteraction(); 
+            // Remover listeners después de la primera interacción que no sea el botón de sonido
             document.removeEventListener('click', handleFirstInteraction, true);
             document.removeEventListener('touchstart', handleFirstInteraction, true);
         }
     }
+    
+    // --- Inicialización y Event Listeners Globales ---
+    initializeAudioPlayer(); 
     document.addEventListener('click', handleFirstInteraction, true);
     document.addEventListener('touchstart', handleFirstInteraction, true);
 
-    initializeAudioPlayer(); 
-
-    function playNextTrack() {
-        currentTrackIndex = (currentTrackIndex + 1) % musicPlaylist.length;
-        if (musicPlaylist[currentTrackIndex]) {
-            audioPlayer.src = musicPlaylist[currentTrackIndex];
-            console.log("Cambiando a siguiente pista:", musicPlaylist[currentTrackIndex]);
-            if (musicPlaying) { 
-                audioPlayer.play().catch(e => console.error("Error al reproducir siguiente pista:", e.message));
-            }
-        }
-    }
-    
     if (soundButton) {
         soundButton.addEventListener("click", function() {
             console.log("Botón de sonido clickeado. UserInteracted:", userInteracted, "MusicPlaying:", musicPlaying);
             if (!userInteracted) { 
                 userInteracted = true; 
-                console.log("Primera interacción fue el botón de sonido. Audio desbloqueado.");
+                console.log("Primera interacción (directa en botón de sonido). Audio desbloqueado.");
+                // Remover los listeners globales si el primer clic fue aquí
                 document.removeEventListener('click', handleFirstInteraction, true);
                 document.removeEventListener('touchstart', handleFirstInteraction, true);
             }
@@ -297,7 +344,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (!audioPlayer.src && musicPlaylist.length > 0) { 
                 currentTrackIndex = Math.floor(Math.random() * musicPlaylist.length);
                 audioPlayer.src = musicPlaylist[currentTrackIndex];
-                audioPlayer.volume = (activeGameType === 'dribblingPro' && musicPlaying) ? MAIN_VOLUME * MINIGAME_DP_VOLUME_FACTOR : MAIN_VOLUME;
+                audioPlayer.volume = MAIN_VOLUME; // Volumen por defecto al cargar pista nueva
                 audioPlayer.onended = playNextTrack;
                 console.log("AudioPlayer src re-inicializado por botón de sonido.");
             }
@@ -308,19 +355,20 @@ document.addEventListener('DOMContentLoaded', function() {
                 soundButton.textContent = "🔇";
                 console.log("Música pausada por botón.");
             } else {
-                if (userInteracted) {
+                if (userInteracted) { // Solo intentar play si hubo alguna interacción previa
+                    let targetVolume = MAIN_VOLUME;
                     if (activeGameType === 'dribblingPro') {
-                        audioPlayer.volume = MAIN_VOLUME * MINIGAME_DP_VOLUME_FACTOR;
-                    } else {
-                        audioPlayer.volume = MAIN_VOLUME;
+                        targetVolume = MAIN_VOLUME * MINIGAME_DP_VOLUME_FACTOR;
                     }
+                    audioPlayer.volume = targetVolume;
+                    console.log("Intentando reproducir/reanudar por botón. Volumen:", audioPlayer.volume);
 
                     const playPromise = audioPlayer.play();
                     if (playPromise !== undefined) {
                         playPromise.then(() => {
                             musicPlaying = true;
                             soundButton.textContent = "🔊";
-                            console.log("Música reproducida por botón.");
+                            console.log("Música reproducida/reanudada por botón.");
                         }).catch(e => {
                             musicPlaying = false;
                             soundButton.textContent = "🔇"; 
@@ -328,7 +376,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         });
                     }
                 } else {
-                    console.log("Intento de reproducir música, pero userInteracted es false. El usuario necesita tocar la pantalla primero (o este botón).");
+                    console.log("Botón de sonido presionado, pero userInteracted aún es false. Esto es inesperado si los listeners están bien.");
                 }
             }
         });
@@ -364,11 +412,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (tiroAlArcoButton) {
         tiroAlArcoButton.addEventListener("click", function() {
-            activeGameType = 'tiroAlArco'; showScreen('namePrompt');
+            activeGameType = 'tiroAlArco'; // Setea antes de pedir nombre
+            showScreen('namePrompt');
             if (minigameNoticeElement) minigameNoticeElement.classList.remove('show');
         });
     }
-    if (startAfterTutorialTiroAlArco) startAfterTutorialTiroAlArco.addEventListener("click", () => { showScreen('tiroAlArcoContainer'); startTiroAlArcoGame(); });
+    if (startAfterTutorialTiroAlArco) startAfterTutorialTiroAlArco.addEventListener("click", () => { 
+        showScreen('tiroAlArcoContainer'); 
+        startTiroAlArcoGame(); 
+    });
     
     function startTiroAlArcoGame() {
         if (!tiroAlArcoContainer || !tiroAlArcoGameArea) return;
@@ -377,10 +429,10 @@ document.addEventListener('DOMContentLoaded', function() {
         wasMusicPlayingBeforeMinigame = musicPlaying; 
         if (musicPlaying && audioPlayer) {
             audioPlayer.pause();
-            // No cambiamos musicPlaying aquí, handleMinigameCompletion lo gestionará
             console.log("Música de fondo pausada para Tiro al Arco.");
         }
         
+        // activeGameType ya debería ser 'tiroAlArco' desde el clic en el botón principal
         ta_score = 0; ta_timeLeft = 30; ta_gameActive = true;
         if (tiroAlArcoScoreDisplay) tiroAlArcoScoreDisplay.textContent = ta_score;
         if (tiroAlArcoTimerDisplay) tiroAlArcoTimerDisplay.textContent = ta_timeLeft;
@@ -431,7 +483,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (dribblingProButton) {
         dribblingProButton.addEventListener("click", function() {
-            activeGameType = 'dribblingPro'; showScreen('namePrompt');
+            activeGameType = 'dribblingPro'; // Setea antes de pedir nombre
+            showScreen('namePrompt');
             if (minigameNoticeElement) minigameNoticeElement.classList.remove('show');
         });
     }
@@ -442,16 +495,14 @@ document.addEventListener('DOMContentLoaded', function() {
             
             if (dribblingProInstance && dribblingProInstance.startGame) {
                 wasMusicPlayingBeforeMinigame = musicPlaying;
-                if (musicPlaying && audioPlayer) {
+                if (musicPlaying && audioPlayer && activeGameType === 'dribblingPro') { // Asegurar que es Dribbling Pro
                     audioPlayer.volume = MAIN_VOLUME * MINIGAME_DP_VOLUME_FACTOR; 
                     console.log("Volumen de música reducido para Dribbling Pro.");
                 }
                 dribblingProInstance.startGame();
-                // activeGameType ya se seteó en el listener de dribblingProButton, 
-                // pero lo reconfirmamos aquí al iniciar el juego.
-                activeGameType = 'dribblingPro'; 
             } else { 
                 if (audioPlayer) audioPlayer.volume = MAIN_VOLUME; 
+                activeGameType = null; 
                 showScreen('invitacionContainer'); 
             }
         });
@@ -463,7 +514,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const dp_gameArea = gameModule.querySelector('#dp_gameArea'), dp_player = gameModule.querySelector('#dp_player'),
               dp_scoreDisplay = gameModule.querySelector('#dp_score'), dp_highScoreDisplay = gameModule.querySelector('#dp_highScore'),
               dp_startButton = gameModule.querySelector('#dp_startButton'), dp_gameOverMessage = gameModule.querySelector('#dp_gameOverMessage'),
-              dp_finalScoreDisplay = gameModule.querySelector('#dp_finalScore'), // Este es el span dentro del mensaje
+              dp_finalScoreDisplay = gameModule.querySelector('#dp_finalScore'), 
               dp_restartButton = gameModule.querySelector('#dp_restartButton'),
               dp_backButton = gameModule.querySelector('#dp_backToInvitationButton'), dp_moveLeftButton = gameModule.querySelector('#dp_moveLeftButton'),
               dp_moveRightButton = gameModule.querySelector('#dp_moveRightButton'), dp_instructionsText = gameModule.querySelector('.dp-instructions'),
@@ -548,58 +599,68 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // --- MANEJO GENERAL DE FIN DE MINIJUEGO ---
     function handleMinigameCompletion(score, gameName, scoreUnit, localStorageKey, showGeneralResultPopup, nameForDisplay = currentPlayerName) {
-        const previousActiveGameType = activeGameType; 
-        activeGameType = null; 
+        const gameJustFinished = activeGameType; // Guarda el tipo de juego que acaba de terminar
+        activeGameType = null; // Resetea el juego activo globalmente ANTES de cualquier lógica de audio
         
         showScreen('invitacionContainer'); 
 
-        if (audioPlayer) {
-            audioPlayer.volume = MAIN_VOLUME;
-            console.log("Volumen de música restaurado a principal.");
+        if (audioPlayer) { 
+            audioPlayer.volume = MAIN_VOLUME; // Siempre restaurar a volumen principal
+            console.log("Volumen de música restaurado a principal al salir de minijuego.");
         }
 
         if (powerUpElement) {
             powerUpElement.textContent = `+${score} ${scoreUnit.toUpperCase()}!`;
             powerUpElement.style.display = "block";
             powerUpElement.classList.add("animate");
-            console.log("Mostrando animación PowerUp.");
             setTimeout(() => { 
                 if (powerUpElement) { 
                     powerUpElement.style.display = "none"; 
                     powerUpElement.classList.remove("animate"); 
-                    console.log("Ocultando animación PowerUp.");
                 }
             }, 2500);
-        } else {
-            console.warn("powerUpElement no encontrado para la animación.");
         }
 
+        // Lógica para reanudar/actualizar música de fondo
         if (wasMusicPlayingBeforeMinigame && audioPlayer && audioPlayer.src) {
-            if (musicPlaying || (previousActiveGameType === 'tiroAlArco' && wasMusicPlayingBeforeMinigame)) {
-                 if (!audioPlayer.playing || (audioPlayer.paused && previousActiveGameType === 'tiroAlArco') ) { 
+            // musicPlaying refleja si el usuario la silenció con el botón
+            if (musicPlaying) { 
+                // Si la música DEBERÍA estar sonando (no fue silenciada por el usuario)
+                if (gameJustFinished === 'tiroAlArco' && audioPlayer.paused) {
+                    // Si Tiro al Arco la pausó, intentar reanudar.
+                    console.log("Intentando reanudar música después de Tiro al Arco (si no fue silenciada por usuario).");
                     const playPromise = audioPlayer.play();
                     if(playPromise !== undefined) {
                         playPromise.then(() => {
-                            musicPlaying = true; 
+                            // musicPlaying ya es true, solo asegurar botón
                             if(soundButton) soundButton.textContent = "🔊";
-                            console.log("Música reanudada post-minijuego (o continuada).");
+                            console.log("Música reanudada post-TiroAlArco.");
                         }).catch(e => {
+                            // Si falla, musicPlaying debería seguir true, pero el botón reflejará el fallo.
                             if(soundButton) soundButton.textContent = "🔇";
-                            console.error("Error al reanudar música post-minijuego:", e.message);
+                            console.error("Error al reanudar música post-TiroAlArco:", e.message);
                         });
                     }
-                 } else { // Ya sonando (caso Dribbling Pro)
-                    if(soundButton) soundButton.textContent = "🔊"; 
-                    console.log("Música ya sonando post-Dribbling Pro, botón actualizado.");
-                 }
-            } else { // El usuario la pausó durante el minijuego, o no estaba sonando antes.
-                 if(soundButton) soundButton.textContent = "🔇"; 
-                 console.log("Música no reanudada: fue pausada por el usuario o no sonaba antes.");
+                } else if (gameJustFinished === 'dribblingPro' && !audioPlayer.paused) {
+                    // Para Dribbling Pro, la música ya debería estar sonando (a volumen principal).
+                    // Solo asegurar el botón.
+                    if(soundButton) soundButton.textContent = "🔊";
+                    console.log("Música continuó después de Dribbling Pro, botón actualizado.");
+                } else if (audioPlayer.paused) { // Caso genérico si está pausada y debería sonar
+                     console.log("Música estaba pausada pero musicPlaying es true, intentando reanudar.");
+                     const playPromise = audioPlayer.play();
+                     if(playPromise !== undefined) { playPromise.then(() => { if(soundButton) soundButton.textContent = "🔊"; }).catch(e => { if(soundButton) soundButton.textContent = "🔇";});}
+                } else { // Ya sonando, asegurar botón
+                    if(soundButton) soundButton.textContent = "🔊";
+                }
+            } else { // musicPlaying es false (usuario la silenció o no estaba sonando antes)
+                 if(soundButton) soundButton.textContent = "🔇";
+                 console.log("Música no reanudada post-minijuego: musicPlaying es false.");
             }
         } else { 
-             if(soundButton) soundButton.textContent = "🔇"; 
-             if (!audioPlayer.src) console.log("Música no reanudada: audioPlayer sin src.");
-             else if (!wasMusicPlayingBeforeMinigame) console.log("Música no reanudada: no estaba sonando antes del minijuego.");
+             if(soundButton) soundButton.textContent = "🔇";
+             if (!wasMusicPlayingBeforeMinigame) console.log("Música no reanudada post-minijuego: wasMusicPlayingBeforeMinigame es false.");
+             else if (!audioPlayer || !audioPlayer.src) console.log("Música no reanudada post-minijuego: audioPlayer no disponible o sin src.");
         }
             
         if (showGeneralResultPopup && gameResultPopup) {
@@ -637,13 +698,11 @@ document.addEventListener('DOMContentLoaded', function() {
         targetList.innerHTML = "";
 
         if (gameName === 'Dribbling Pro') {
-            // Para Dribbling Pro, el nombre y score se muestran en su propio game over.
-            // Si se quisiera añadir al popup general (aunque actualmente no se usa para DP):
             const record = localStorage.getItem(storageKey) || 0; 
             const li = document.createElement("li");
             li.textContent = `${playerNameForDisplay}: ${currentScore} ${unit}. (Récord del juego: ${record} ${unit})`;
             targetList.appendChild(li);
-        } else { // Para Tiro al Arco
+        } else { 
             const highScores = JSON.parse(localStorage.getItem(storageKey)) || [];
             if (highScores.length === 0) { 
                 const li=document.createElement("li"); 
@@ -667,16 +726,12 @@ document.addEventListener('DOMContentLoaded', function() {
             minigameNoticeElement.classList.add('show'); 
             if(Math.random() < 0.5 && tiroAlArcoButton) tiroAlArcoButton.classList.add('highlight-game');
             else if(dribblingProButton) dribblingProButton.classList.add('highlight-game');
-            console.log("Mostrando minigameNotice.");
         }, 3500); 
          setTimeout(() => { 
             minigameNoticeElement.classList.remove('show'); 
             if(tiroAlArcoButton) tiroAlArcoButton.classList.remove('highlight-game'); 
             if(dribblingProButton) dribblingProButton.classList.remove('highlight-game');
-            console.log("Ocultando minigameNotice.");
         }, 9000); 
-    } else {
-        if (!minigameNoticeElement) console.warn("minigameNoticeElement no encontrado.");
     }
 
     showScreen('invitacionContainer');
