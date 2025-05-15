@@ -54,10 +54,6 @@
             <img id="dynamicSoccerGif" src="" alt="Animación de fútbol" class="dynamic-gif">
         </div>
 
-        <div class="animation-container"> <!-- Para la animación de puntos del minijuego desde la invitación -->
-            <div id="powerUp" class="power-up">+1 GOLAZO</div>
-        </div>
-
         <p class="footer-text">¡TU PRESENCIA ES CLAVE PARA LA VICTORIA! <span class="icon">🏆🎉⚽</span></p>
         
         <div class="minigame-buttons-container">
@@ -65,6 +61,11 @@
             <button id="dribblingProButton" class="action-button primary">¡DRIBBLING PRO!</button>
         </div>
         <div id="minigameNotice" class="minigame-notice">¡Hey! ¡Elige tu desafío! 👇</div>
+    </div> <!-- FIN DE .invitation-wrapper -->
+
+    <!-- Contenedor para animaciones globales como powerUp -->
+    <div class="global-animation-layer">
+        <div id="powerUp" class="power-up">+1 GOLAZO</div>
     </div>
 
     <!-- Popup para pedir nombre de jugador -->
@@ -153,7 +154,7 @@
             <button id="dp_startButton" class="dp-action-button">Iniciar Juego</button>
             <div id="dp_gameOverMessage" class="dp-message dp-hidden">
                 <p>¡Juego Terminado!</p>
-                <p>Tu puntuación: <span id="dp_finalScore">0</span></p>
+                <p>Tu puntuación: <span id="dp_finalScore">0</span></p> 
                 <button id="dp_restartButton" class="dp-action-button">Jugar de Nuevo</button>
                 <button id="dp_backToInvitationButton" class="dp-action-button dp-secondary" style="margin-top: 10px;">Volver a Invitación</button>
             </div>
@@ -161,7 +162,7 @@
         </div>
     </div>
 
-    <!-- Popup de Resultado de Juego (Generalizado) -->
+    <!-- Popup de Resultado de Juego (Generalizado para Tiro al Arco) -->
     <div id="gameResultPopup" class="popup-overlay" style="display:none;">
         <div class="popup-content game-result-content"> 
             <h3 id="gameResultTitle">¡PARTIDO FINALIZADO!</h3>
@@ -177,10 +178,8 @@
 
     <!-- Confeti (se genera con JS) -->
 
-    <script>
-    // --- COPIA AQUÍ EL CÓDIGO JAVASCRIPT COMPLETO Y CORREGIDO DE LA RESPUESTA ANTERIOR ---
-    // Este script ya maneja los dos minijuegos, popups, música y errores comunes.
-    document.addEventListener('DOMContentLoaded', function() {
+<script>
+document.addEventListener('DOMContentLoaded', function() {
 
     // --- ELEMENTOS DOM GENERALES ---
     const invitacionContainer = document.getElementById("invitacionContainer");
@@ -208,15 +207,15 @@
     const startAfterTutorialDribblingPro = document.getElementById("startAfterTutorialDribblingPro");
     const dribblingProContainer = document.getElementById("dribblingProContainer");
     
-    // --- Elementos Comunes de Resultado de Juego ---
-    const gameResultPopup = document.getElementById("gameResultPopup"); // Este es el popup GENERAL
+    // --- Elementos Comunes de Resultado de Juego (Popup General) ---
+    const gameResultPopup = document.getElementById("gameResultPopup");
     const gameResultTitle = document.getElementById("gameResultTitle");
     const finalScoreDisplay = document.getElementById("finalScoreDisplay");
     const scoreUnitDisplay = document.getElementById("scoreUnitDisplay");
     const resultMessage = document.getElementById("resultMessage");
     const highScoresTitle = document.getElementById("highScoresTitle");
     const highScoresList = document.getElementById("highScoresList");
-    const backToInvitationButton = document.getElementById("backToInvitationButton"); // Botón en el popup GENERAL
+    const backToInvitationButton = document.getElementById("backToInvitationButton");
 
     let currentPlayerName = "Jugador Estrella";
     let activeGameType = null; 
@@ -231,45 +230,112 @@
     let audioPlayer = new Audio(); 
     let musicPlaying = false;
     let wasMusicPlayingBeforeMinigame = false;
+    let userInteracted = false;
+
+    const MAIN_VOLUME = 0.15; 
+    const MINIGAME_DP_VOLUME_FACTOR = 0.3; 
 
     function initializeAudioPlayer() {
+        console.log("Inicializando Audio Player...");
         if (musicPlaylist.length === 0) {
-            if(soundButton) soundButton.disabled = true; return;
+            if(soundButton) soundButton.disabled = true; 
+            console.warn("Playlist de música vacía.");
+            return;
         }
         try {
             currentTrackIndex = Math.floor(Math.random() * musicPlaylist.length);
             audioPlayer.src = musicPlaylist[currentTrackIndex];
-            audioPlayer.volume = 0.15;
-            audioPlayer.loop = false;
+            audioPlayer.volume = MAIN_VOLUME;
+            audioPlayer.loop = false; 
             audioPlayer.onended = playNextTrack;
-            const playPromise = audioPlayer.play();
-            if (playPromise !== undefined) {
-                playPromise.then(_ => { musicPlaying = true; if (soundButton) soundButton.textContent = "🔊"; })
-                           .catch(error => { musicPlaying = false; if (soundButton) soundButton.textContent = "🔇"; console.log("Autoplay bloqueado:", error.message); });
-            }
-        } catch (e) { if(soundButton) soundButton.disabled = true; musicPlaying = false; if (soundButton) soundButton.textContent = "🔇"; }
+            if (soundButton) soundButton.textContent = "🔇"; 
+            console.log("Audio Player inicializado con pista:", musicPlaylist[currentTrackIndex]);
+        } catch (e) { 
+            console.error("Error inicializando audioPlayer:", e);
+            if(soundButton) soundButton.disabled = true; 
+            musicPlaying = false; 
+            if (soundButton) soundButton.textContent = "🔇";
+        }
     }
+    
+    function handleFirstInteraction() {
+        if (!userInteracted) {
+            userInteracted = true;
+            console.log("Primera interacción con el documento detectada. Audio desbloqueado para futuras acciones.");
+            document.removeEventListener('click', handleFirstInteraction, true);
+            document.removeEventListener('touchstart', handleFirstInteraction, true);
+        }
+    }
+    document.addEventListener('click', handleFirstInteraction, true);
+    document.addEventListener('touchstart', handleFirstInteraction, true);
+
+    initializeAudioPlayer(); 
+
     function playNextTrack() {
         currentTrackIndex = (currentTrackIndex + 1) % musicPlaylist.length;
-        audioPlayer.src = musicPlaylist[currentTrackIndex];
-        if (musicPlaying) audioPlayer.play().catch(e => console.error("Error siguiente pista:", e.message));
+        if (musicPlaylist[currentTrackIndex]) {
+            audioPlayer.src = musicPlaylist[currentTrackIndex];
+            console.log("Cambiando a siguiente pista:", musicPlaylist[currentTrackIndex]);
+            if (musicPlaying) { 
+                audioPlayer.play().catch(e => console.error("Error al reproducir siguiente pista:", e.message));
+            }
+        }
     }
-    initializeAudioPlayer();
+    
     if (soundButton) {
         soundButton.addEventListener("click", function() {
-            if (musicPlaylist.length === 0) return;
-            if (!audioPlayer.src && musicPlaylist.length > 0) {
-                currentTrackIndex = Math.floor(Math.random() * musicPlaylist.length);
-                audioPlayer.src = musicPlaylist[currentTrackIndex]; audioPlayer.volume = 0.15; audioPlayer.onended = playNextTrack;
+            console.log("Botón de sonido clickeado. UserInteracted:", userInteracted, "MusicPlaying:", musicPlaying);
+            if (!userInteracted) { 
+                userInteracted = true; 
+                console.log("Primera interacción fue el botón de sonido. Audio desbloqueado.");
+                document.removeEventListener('click', handleFirstInteraction, true);
+                document.removeEventListener('touchstart', handleFirstInteraction, true);
             }
-            if (musicPlaying) { audioPlayer.pause(); soundButton.textContent = "🔇"; musicPlaying = false; }
-            else { audioPlayer.play().then(() => { soundButton.textContent = "🔊"; musicPlaying = true; })
-                                     .catch(e => { soundButton.textContent = "🔇"; musicPlaying = false; }); }
+
+            if (musicPlaylist.length === 0) return;
+            
+            if (!audioPlayer.src && musicPlaylist.length > 0) { 
+                currentTrackIndex = Math.floor(Math.random() * musicPlaylist.length);
+                audioPlayer.src = musicPlaylist[currentTrackIndex];
+                audioPlayer.volume = (activeGameType === 'dribblingPro' && musicPlaying) ? MAIN_VOLUME * MINIGAME_DP_VOLUME_FACTOR : MAIN_VOLUME;
+                audioPlayer.onended = playNextTrack;
+                console.log("AudioPlayer src re-inicializado por botón de sonido.");
+            }
+            
+            if (musicPlaying) {
+                audioPlayer.pause();
+                musicPlaying = false;
+                soundButton.textContent = "🔇";
+                console.log("Música pausada por botón.");
+            } else {
+                if (userInteracted) {
+                    if (activeGameType === 'dribblingPro') {
+                        audioPlayer.volume = MAIN_VOLUME * MINIGAME_DP_VOLUME_FACTOR;
+                    } else {
+                        audioPlayer.volume = MAIN_VOLUME;
+                    }
+
+                    const playPromise = audioPlayer.play();
+                    if (playPromise !== undefined) {
+                        playPromise.then(() => {
+                            musicPlaying = true;
+                            soundButton.textContent = "🔊";
+                            console.log("Música reproducida por botón.");
+                        }).catch(e => {
+                            musicPlaying = false;
+                            soundButton.textContent = "🔇"; 
+                            console.warn("Error al reproducir música por clic en botón:", e.message);
+                        });
+                    }
+                } else {
+                    console.log("Intento de reproducir música, pero userInteracted es false. El usuario necesita tocar la pantalla primero (o este botón).");
+                }
+            }
         });
     }
+    
     function stopSoundEffect(soundInstance) { if (soundInstance && typeof soundInstance.pause === 'function') { soundInstance.pause(); soundInstance.currentTime = 0; }}
 
-    // --- NAVEGACIÓN GENERAL Y ESTADO DE PANTALLAS ---
     function showScreen(screenId) {
         const screens = [ invitacionContainer, tiroAlArcoContainer, dribblingProContainer, 
                           namePromptPopup, tutorialTiroAlArcoPopup, tutorialDribblingProPopup, gameResultPopup ];
@@ -278,7 +344,7 @@
         if (screenElement) {
             const displayType = (screenElement.classList.contains('popup-overlay') || screenElement.classList.contains('game-module-container')) ? 'flex' : 'block';
             screenElement.style.display = displayType;
-        } else { console.warn(`Elemento '${screenId}' no encontrado.`); }
+        } else { console.warn(`Elemento '${screenId}' no encontrado.`); if (invitacionContainer) invitacionContainer.style.display = 'block'; }
     }
     
     if (startWithNameButton) {
@@ -292,8 +358,9 @@
 
     // --- MINIJUEGO 1: TIRO AL ARCO ---
     let ta_score = 0, ta_timeLeft = 30, ta_gameInterval, ta_timerInterval, ta_gameActive = false;
-    let ta_gameStartSound, ta_scoreSound, ta_gameEndSound;
+    let ta_gameStartSound, ta_scoreSound, ta_gameEndSound; 
     const ta_gameItems = [ { emoji: "⚽", points: 1, speed: 2200 }, { emoji: "🎯", points: 2, speed: 1800 }, { emoji: "⭐", points: 5, speed: 1500, itemClass: "target-star" } ];
+    const LS_KEY_TA_HIGHSCORES = 'tiroAlArcoHighScores';
 
     if (tiroAlArcoButton) {
         tiroAlArcoButton.addEventListener("click", function() {
@@ -302,10 +369,18 @@
         });
     }
     if (startAfterTutorialTiroAlArco) startAfterTutorialTiroAlArco.addEventListener("click", () => { showScreen('tiroAlArcoContainer'); startTiroAlArcoGame(); });
+    
     function startTiroAlArcoGame() {
-        if (!tiroAlArcoContainer) return;
-        stopSoundEffect(ta_gameEndSound); wasMusicPlayingBeforeMinigame = musicPlaying; 
-        if (musicPlaying && audioPlayer) audioPlayer.pause();
+        if (!tiroAlArcoContainer || !tiroAlArcoGameArea) return;
+        stopSoundEffect(ta_gameEndSound); 
+        
+        wasMusicPlayingBeforeMinigame = musicPlaying; 
+        if (musicPlaying && audioPlayer) {
+            audioPlayer.pause();
+            // No cambiamos musicPlaying aquí, handleMinigameCompletion lo gestionará
+            console.log("Música de fondo pausada para Tiro al Arco.");
+        }
+        
         ta_score = 0; ta_timeLeft = 30; ta_gameActive = true;
         if (tiroAlArcoScoreDisplay) tiroAlArcoScoreDisplay.textContent = ta_score;
         if (tiroAlArcoTimerDisplay) tiroAlArcoTimerDisplay.textContent = ta_timeLeft;
@@ -314,7 +389,8 @@
         ta_timerInterval = setInterval(updateTiroAlArcoTimer, 1000);
         try { ta_gameStartSound = new Audio("audio/Mario-coin-sound.mp3"); ta_gameStartSound.volume = 0.4; ta_gameStartSound.play().catch(e => {}); } catch(e){}
     }
-    function createTiroAlArcoItem() {
+
+    function createTiroAlArcoItem() { 
         if (!ta_gameActive || !tiroAlArcoGameArea) return;
         const item = document.createElement("div"); const itemDetails = ta_gameItems[Math.floor(Math.random() * ta_gameItems.length)];
         item.className = "game-item " + (itemDetails.itemClass || ""); item.textContent = itemDetails.emoji; item.dataset.points = itemDetails.points;
@@ -338,17 +414,21 @@
         setTimeout(() => { if (item.parentNode) item.remove(); }, itemDetails.speed);
     }
     function updateTiroAlArcoTimer() { ta_timeLeft--; if (tiroAlArcoTimerDisplay) tiroAlArcoTimerDisplay.textContent = ta_timeLeft; if (ta_timeLeft <= 0) endTiroAlArcoGame(); }
+    
     function endTiroAlArcoGame() {
         if (!ta_gameActive) return;
         stopSoundEffect(ta_gameStartSound); stopSoundEffect(ta_scoreSound);
         clearInterval(ta_gameInterval); clearInterval(ta_timerInterval); ta_gameActive = false;
-        handleMinigameCompletion(ta_score, "Tiro al Arco", "Goles", 'soccerStarHighScores', true); // true para mostrar popup general
+        saveHighScoreList(LS_KEY_TA_HIGHSCORES, currentPlayerName, ta_score); 
+        handleMinigameCompletion(ta_score, "Tiro al Arco", "Goles", LS_KEY_TA_HIGHSCORES, true, currentPlayerName); 
         try { ta_gameEndSound = new Audio("audio/smb_stage_clear.mp3"); ta_gameEndSound.volume = 0.5; ta_gameEndSound.play().catch(e => {}); } catch(e){}
     }
     if (endTiroAlArcoButton) endTiroAlArcoButton.addEventListener("click", endTiroAlArcoGame);
 
     // --- MINIJUEGO 2: DRIBBLING PRO! ---
     let dribblingProInstance = null; 
+    const LS_KEY_DP_HIGHSCORE = 'dribblingProHighScoreMobile';
+
     if (dribblingProButton) {
         dribblingProButton.addEventListener("click", function() {
             activeGameType = 'dribblingPro'; showScreen('namePrompt');
@@ -359,191 +439,249 @@
         startAfterTutorialDribblingPro.addEventListener("click", function() {
             showScreen('dribblingProContainer');
             if (!dribblingProInstance) dribblingProInstance = initDribblingProGame('dribblingProContainer', handleMinigameCompletion);
+            
             if (dribblingProInstance && dribblingProInstance.startGame) {
                 wasMusicPlayingBeforeMinigame = musicPlaying;
-                if (musicPlaying && audioPlayer) audioPlayer.pause();
+                if (musicPlaying && audioPlayer) {
+                    audioPlayer.volume = MAIN_VOLUME * MINIGAME_DP_VOLUME_FACTOR; 
+                    console.log("Volumen de música reducido para Dribbling Pro.");
+                }
                 dribblingProInstance.startGame();
-            } else { showScreen('invitacionContainer'); }
+                // activeGameType ya se seteó en el listener de dribblingProButton, 
+                // pero lo reconfirmamos aquí al iniciar el juego.
+                activeGameType = 'dribblingPro'; 
+            } else { 
+                if (audioPlayer) audioPlayer.volume = MAIN_VOLUME; 
+                showScreen('invitacionContainer'); 
+            }
         });
     }
 
     function initDribblingProGame(containerId, onGameOverCallback) {
         const gameModule = document.getElementById(containerId);
-        if (!gameModule) { console.error("Contenedor DribblingPro no encontrado:", containerId); return null; }
-        const dp_gameArea = gameModule.querySelector('#dp_gameArea');
-        const dp_player = gameModule.querySelector('#dp_player');
-        const dp_scoreDisplay = gameModule.querySelector('#dp_score');
-        const dp_highScoreDisplay = gameModule.querySelector('#dp_highScore');
-        const dp_startButton = gameModule.querySelector('#dp_startButton');
-        const dp_gameOverMessage = gameModule.querySelector('#dp_gameOverMessage');
-        const dp_finalScoreDisplay = gameModule.querySelector('#dp_finalScore');
-        const dp_restartButton = gameModule.querySelector('#dp_restartButton');
-        const dp_backButton = gameModule.querySelector('#dp_backToInvitationButton');
-        const dp_moveLeftButton = gameModule.querySelector('#dp_moveLeftButton');
-        const dp_moveRightButton = gameModule.querySelector('#dp_moveRightButton');
-        const dp_instructionsText = gameModule.querySelector('.dp-instructions');
-        const dp_controls = gameModule.querySelector('.dp-controls');
+        if (!gameModule) { console.error("DP Contenedor no encontrado:", containerId); return null; }
+        const dp_gameArea = gameModule.querySelector('#dp_gameArea'), dp_player = gameModule.querySelector('#dp_player'),
+              dp_scoreDisplay = gameModule.querySelector('#dp_score'), dp_highScoreDisplay = gameModule.querySelector('#dp_highScore'),
+              dp_startButton = gameModule.querySelector('#dp_startButton'), dp_gameOverMessage = gameModule.querySelector('#dp_gameOverMessage'),
+              dp_finalScoreDisplay = gameModule.querySelector('#dp_finalScore'), // Este es el span dentro del mensaje
+              dp_restartButton = gameModule.querySelector('#dp_restartButton'),
+              dp_backButton = gameModule.querySelector('#dp_backToInvitationButton'), dp_moveLeftButton = gameModule.querySelector('#dp_moveLeftButton'),
+              dp_moveRightButton = gameModule.querySelector('#dp_moveRightButton'), dp_instructionsText = gameModule.querySelector('.dp-instructions'),
+              dp_controls = gameModule.querySelector('.dp-controls');
 
         if (!dp_gameArea || !dp_player || !dp_scoreDisplay || !dp_highScoreDisplay || !dp_startButton || !dp_gameOverMessage || !dp_finalScoreDisplay || !dp_restartButton || !dp_backButton || !dp_moveLeftButton || !dp_moveRightButton || !dp_instructionsText || !dp_controls) {
             console.error("Faltan elementos DOM para Dribbling Pro."); return null;
         }
-        let dp_gameAreaWidth = 0, dp_playerWidth = 0, dp_score = 0;
-        let dp_highScore = localStorage.getItem('dribblingProHighScoreMobile') || 0;
-        dp_highScoreDisplay.textContent = dp_highScore;
-        let dp_gameInterval, dp_coneInterval, dp_gameTimeIntervalId;
-        let dp_cones = [], dp_playerPosition = 0; const dp_playerStep = 25;
-        const DP_INITIAL_CONE_SPEED = 2.5, DP_INITIAL_CONE_SPAWN_RATE = 2200, DP_MAX_CONE_SPEED = 7, DP_MIN_CONE_SPAWN_RATE = 500;
-        const DP_TIME_DIFFICULTY_INTERVAL_MS = 7000, DP_TIME_SPEED_INCREMENT = 0.2, DP_TIME_SPAWN_DECREMENT = 100;
-        const DP_SCORE_SPEED_INCREMENT = 0.15, DP_SCORE_SPAWN_DECREMENT = 70;
-        let dp_coneSpeed = DP_INITIAL_CONE_SPEED, dp_coneSpawnRate = DP_INITIAL_CONE_SPAWN_RATE, dp_gameIsOver = false;
+        let dp_gAW = 0, dp_pW = 0, dp_s = 0, dp_hS = localStorage.getItem(LS_KEY_DP_HIGHSCORE) || 0;
+        dp_highScoreDisplay.textContent = dp_hS;
+        let dp_gI, dp_cI, dp_gTTI; let dp_cs = [], dp_pPos = 0; const dp_pStep = 25;
+        const DP_ICS = 2.5, DP_ICSR = 2200, DP_MCS = 7, DP_MCSR = 500, DP_TDI_MS = 7000, DP_TSI = 0.2, DP_TSD = 100, DP_SSI = 0.15, DP_SSD = 70;
+        let dp_cSp = DP_ICS, dp_cSR = DP_ICSR, dp_gO = false;
 
-        function dp_updatePlayerPosition() { if(dp_player) dp_player.style.left = `${dp_playerPosition}px`; }
-        function dp_movePlayer(direction) {
-            if (dp_gameIsOver || !dp_gameInterval || !dp_player || !dp_gameArea) return;
-            dp_gameAreaWidth = dp_gameArea.offsetWidth; dp_playerWidth = dp_player.offsetWidth || 35;
-            if (direction === 'left') dp_playerPosition -= dp_playerStep; else if (direction === 'right') dp_playerPosition += dp_playerStep;
-            if (dp_playerPosition < 0) dp_playerPosition = 0;
-            if (dp_playerPosition > dp_gameAreaWidth - dp_playerWidth) dp_playerPosition = dp_gameAreaWidth - dp_playerWidth;
-            dp_updatePlayerPosition();
+        function dp_uPP() { if(dp_player) dp_player.style.left = `${dp_pPos}px`; }
+        function dp_mP(dir) {
+            if (dp_gO || !dp_gI || !dp_player || !dp_gameArea) return;
+            dp_gAW = dp_gameArea.offsetWidth; dp_pW = dp_player.offsetWidth || 35;
+            if (dir==='left') dp_pPos-=dp_pStep; else if(dir==='right') dp_pPos+=dp_pStep;
+            dp_pPos = Math.max(0, Math.min(dp_pPos, dp_gAW - dp_pW)); dp_uPP();
         }
-        const eventType = (('ontouchstart' in window) || (navigator.maxTouchPoints > 0)) ? 'touchstart' : 'click';
-        dp_moveLeftButton.addEventListener(eventType, (e) => { if(e.cancelable) e.preventDefault(); dp_movePlayer('left'); });
-        dp_moveRightButton.addEventListener(eventType, (e) => { if(e.cancelable) e.preventDefault(); dp_movePlayer('right'); });
-        function dp_createCone() {
-            if (dp_gameIsOver || !dp_gameArea) return;
-            const coneElement = document.createElement('div'); coneElement.classList.add('dp-cone');
-            const currentGaWidth = dp_gameArea.offsetWidth || 300;
-            let cW = 28, cH = 38; 
-            // No es ideal crear elementos para medir, pero si las clases CSS son consistentes, esto es un fallback.
-            // Mejor sería definir estas dimensiones en JS como constantes si el CSS es complejo para getComputedStyle
-            // o si el elemento 'dp-cone' no está garantizado estar en el DOM de forma invisible para medir.
-            // Por simplicidad, asumimos que la clase '.dp-cone' tiene dimensiones fijas o que este método funciona.
-            try { 
-                const tempCone = document.createElement('div'); tempCone.classList.add('dp-cone'); 
-                tempCone.style.position = 'absolute'; tempCone.style.visibility = 'hidden'; tempCone.style.display = 'block'; // Asegurar que tenga layout
-                dp_gameArea.appendChild(tempCone); // Añadir al área de juego para dimensiones correctas
-                const cs = window.getComputedStyle(tempCone);
-                cW = parseInt(cs.width)||cW; cH = parseInt(cs.height)||cH;
-                dp_gameArea.removeChild(tempCone);
-            } catch(e) { /* Usar defaults si falla */ }
-
-            coneElement.style.left = `${Math.random()*(currentGaWidth-cW)}px`; coneElement.style.top = `-${cH}px`;
-            dp_gameArea.appendChild(coneElement); dp_cones.push({ element: coneElement, y: -cH });
-        }
-        function dp_resetConeSpawnInterval() { clearInterval(dp_coneInterval); if (!dp_gameIsOver) dp_coneInterval = setInterval(dp_createCone, dp_coneSpawnRate); }
-        function dp_increaseDifficultyOverTime() {
-            if (dp_gameIsOver) return;
-            if (dp_coneSpeed < DP_MAX_CONE_SPEED) { dp_coneSpeed = Math.min(DP_MAX_CONE_SPEED, dp_coneSpeed + DP_TIME_SPEED_INCREMENT); }
-            if (dp_coneSpawnRate > DP_MIN_CONE_SPAWN_RATE) { dp_coneSpawnRate = Math.max(DP_MIN_CONE_SPAWN_RATE, dp_coneSpawnRate - DP_TIME_SPAWN_DECREMENT); dp_resetConeSpawnInterval(); }
-        }
-        function dp_updateCones() {
-            if (dp_gameIsOver || !dp_gameArea || !dp_player) return;
-            for (let i = dp_cones.length - 1; i >= 0; i--) {
-                const coneObj = dp_cones[i]; coneObj.y += dp_coneSpeed; coneObj.element.style.top = `${coneObj.y}px`;
-                const pR = dp_player.getBoundingClientRect(); const cR = coneObj.element.getBoundingClientRect();
-                if (pR.width > 0 && cR.width > 0 && pR.left < cR.right && pR.right > cR.left && pR.top < cR.bottom && pR.bottom > cR.top) { dp_gameOver(); return; }
-                if (coneObj.y > dp_gameArea.offsetHeight) {
-                    coneObj.element.remove(); dp_cones.splice(i, 1); dp_score++; dp_scoreDisplay.textContent = dp_score;
-                    if (dp_score > 0 && dp_score % 5 === 0) {
-                        let spawnChanged = false;
-                        if (dp_coneSpeed < DP_MAX_CONE_SPEED) dp_coneSpeed = Math.min(DP_MAX_CONE_SPEED, dp_coneSpeed + DP_SCORE_SPEED_INCREMENT);
-                        if (dp_coneSpawnRate > DP_MIN_CONE_SPAWN_RATE) { dp_coneSpawnRate = Math.max(DP_MIN_CONE_SPAWN_RATE, dp_coneSpawnRate - DP_SCORE_SPAWN_DECREMENT); spawnChanged = true;}
-                        if(spawnChanged) dp_resetConeSpawnInterval();
-                    }
-                }
-            }
-        }
-        function dp_gameLoop() { dp_updateCones(); }
-        function dp_startGame() {
-            dp_gameIsOver = false; dp_score = 0; dp_coneSpeed = DP_INITIAL_CONE_SPEED; dp_coneSpawnRate = DP_INITIAL_CONE_SPAWN_RATE;
-            dp_scoreDisplay.textContent = dp_score;
-            if (!dp_gameArea || !dp_player) return;
-            dp_gameAreaWidth = dp_gameArea.offsetWidth; dp_playerWidth = dp_player.offsetWidth || 35;
-            dp_playerPosition = dp_gameAreaWidth / 2 - (dp_playerWidth / 2);
-            dp_updatePlayerPosition(); dp_cones.forEach(c => c.element.remove()); dp_cones = [];
-            dp_startButton.classList.add('dp-hidden'); dp_gameOverMessage.classList.add('dp-hidden');
-            dp_instructionsText.style.display = 'none'; dp_controls.style.display = 'flex';
-            clearInterval(dp_gameInterval); clearInterval(dp_coneInterval); clearInterval(dp_gameTimeIntervalId);
-            dp_gameInterval = setInterval(dp_gameLoop, 20); dp_resetConeSpawnInterval();
-            dp_gameTimeIntervalId = setInterval(dp_increaseDifficultyOverTime, DP_TIME_DIFFICULTY_INTERVAL_MS);
-        }
-        function dp_gameOver() {
-            dp_gameIsOver = true; clearInterval(dp_gameInterval); clearInterval(dp_coneInterval); clearInterval(dp_gameTimeIntervalId);
-            if(dp_finalScoreDisplay) dp_finalScoreDisplay.textContent = dp_score;
-            if (dp_score > parseInt(dp_highScore)) { // Asegurarse que dp_highScore es número para comparación
-                dp_highScore = dp_score; 
-                if(dp_highScoreDisplay) dp_highScoreDisplay.textContent = dp_highScore;
-                localStorage.setItem('dribblingProHighScoreMobile', dp_highScore.toString());
-            }
-            dp_gameOverMessage.classList.remove('dp-hidden'); dp_instructionsText.style.display = 'none'; dp_controls.style.display = 'none';
-        }
-        dp_startButton.addEventListener('click', dp_startGame);
-        dp_restartButton.addEventListener('click', dp_startGame);
-        dp_backButton.addEventListener('click', () => { onGameOverCallback(dp_score, "Dribbling Pro", "Puntos", 'dribblingProHighScoreMobile', false); });
+        const eT = (('ontouchstart' in window)||(navigator.maxTouchPoints>0))?'touchstart':'mousedown';
+        dp_moveLeftButton.addEventListener(eT, (e)=>{if(e.cancelable)e.preventDefault(); dp_mP('left');}, {passive:false});
+        dp_moveRightButton.addEventListener(eT, (e)=>{if(e.cancelable)e.preventDefault(); dp_mP('right');}, {passive:false});
         
-        dp_controls.style.display = 'none'; dp_instructionsText.style.display = 'block'; dp_startButton.classList.remove('dp-hidden'); dp_gameOverMessage.classList.add('dp-hidden');
-        if (dp_gameArea && dp_player) { dp_gameAreaWidth = dp_gameArea.offsetWidth; dp_playerWidth = dp_player.offsetWidth || 35; dp_playerPosition = dp_gameAreaWidth / 2 - (dp_playerWidth / 2); dp_updatePlayerPosition(); }
-        window.addEventListener('resize', () => { if (dribblingProContainer && dribblingProContainer.style.display === 'flex' && dp_gameArea && dp_player && !dp_gameIsOver) { dp_gameAreaWidth = dp_gameArea.offsetWidth; dp_playerPosition = dp_gameAreaWidth / 2 - (dp_player.offsetWidth || 35) / 2; dp_updatePlayerPosition(); }});
-        return { startGame: dp_startGame };
+        function dp_cC() {
+            if(dp_gO||!dp_gameArea)return; const cE=document.createElement('div');cE.classList.add('dp-cone');
+            const cGAW=dp_gameArea.offsetWidth||300; let cW=28,cH=38;
+            try{const tC=document.createElement('div');tC.classList.add('dp-cone');tC.style.position='absolute';tC.style.visibility='hidden';tC.style.display='block';dp_gameArea.appendChild(tC);const cs=window.getComputedStyle(tC);cW=parseInt(cs.width)||cW;cH=parseInt(cs.height)||cH;dp_gameArea.removeChild(tC);}catch(e){}
+            cE.style.left=`${Math.random()*(cGAW-cW)}px`;cE.style.top=`-${cH}px`;dp_gameArea.appendChild(cE);dp_cs.push({element:cE,y:-cH});
+        }
+        function dp_rCSI(){clearInterval(dp_cI);if(!dp_gO)dp_cI=setInterval(dp_cC,dp_cSR);}
+        function dp_iDOT(){if(dp_gO)return;if(dp_cSp<DP_MCS)dp_cSp=Math.min(DP_MCS,dp_cSp+DP_TSI);if(dp_cSR>DP_MCSR){dp_cSR=Math.max(DP_MCSR,dp_cSR-DP_TSD);dp_rCSI();}}
+        function dp_uCs(){
+            if(dp_gO||!dp_gameArea||!dp_player)return;
+            for(let i=dp_cs.length-1;i>=0;i--){const cO=dp_cs[i];cO.y+=dp_cSp;cO.element.style.top=`${cO.y}px`;
+            const pR=dp_player.getBoundingClientRect(),cR=cO.element.getBoundingClientRect();
+            if(pR.width>0&&cR.width>0&&pR.left<cR.right&&pR.right>cR.left&&pR.top<cR.bottom&&pR.bottom>cR.top){dp_gOver();return;}
+            if(cO.y>dp_gameArea.offsetHeight){cO.element.remove();dp_cs.splice(i,1);dp_s++;dp_scoreDisplay.textContent=dp_s;
+            if(dp_s>0&&dp_s%5===0){let sC=false;if(dp_cSp<DP_MCS)dp_cSp=Math.min(DP_MCS,dp_cSp+DP_SSI);if(dp_cSR>DP_MCSR){dp_cSR=Math.max(DP_MCSR,dp_cSR-DP_SSD);sC=true;}if(sC)dp_rCSI();}}}
+        }
+        function dp_gL(){dp_uCs();}
+        function dp_sG(){
+            dp_gO=false;dp_s=0;dp_cSp=DP_ICS;dp_cSR=DP_ICSR;dp_scoreDisplay.textContent=dp_s;
+            if(!dp_gameArea||!dp_player)return;dp_gAW=dp_gameArea.offsetWidth;dp_pW=dp_player.offsetWidth||35;dp_pPos=dp_gAW/2-(dp_pW/2);
+            dp_uPP();dp_cs.forEach(c=>{if(c.element.parentNode)c.element.remove()});dp_cs=[];
+            dp_startButton.classList.add('dp-hidden');dp_gameOverMessage.classList.add('dp-hidden');
+            dp_instructionsText.style.display='none';dp_controls.style.display='flex';
+            clearInterval(dp_gI);clearInterval(dp_cI);clearInterval(dp_gTTI);
+            dp_gI=setInterval(dp_gL,20);dp_rCSI();dp_gTTI=setInterval(dp_iDOT,DP_TDI_MS);
+        }
+        function dp_gOver(){
+            dp_gO=true;clearInterval(dp_gI);clearInterval(dp_cI);clearInterval(dp_gTTI);
+            
+            if(dp_finalScoreDisplay) dp_finalScoreDisplay.textContent = dp_s;
+            
+            const scoreParagraph = dp_gameOverMessage.querySelector('p:nth-child(2)');
+            if (scoreParagraph) {
+                 scoreParagraph.innerHTML = `${currentPlayerName}, tu puntuación: <span id="dp_finalScore">${dp_s}</span>`;
+            }
+
+            if(dp_s > parseInt(dp_hS)){
+                dp_hS = dp_s;
+                if(dp_highScoreDisplay) dp_highScoreDisplay.textContent = dp_hS;
+                localStorage.setItem(LS_KEY_DP_HIGHSCORE, dp_hS.toString());
+            }
+            dp_gameOverMessage.classList.remove('dp-hidden');
+            dp_instructionsText.style.display='none';
+            dp_controls.style.display='none';
+        }
+        dp_startButton.addEventListener('click',dp_sG);dp_restartButton.addEventListener('click',dp_sG);
+        
+        dp_backButton.addEventListener('click',()=>{
+            onGameOverCallback(dp_s, "Dribbling Pro", "Puntos", LS_KEY_DP_HIGHSCORE, false, currentPlayerName);
+        });
+
+        dp_controls.style.display='none';dp_instructionsText.style.display='block';dp_startButton.classList.remove('dp-hidden');dp_gameOverMessage.classList.add('dp-hidden');
+        if(dp_gameArea&&dp_player){dp_gAW=dp_gameArea.offsetWidth;dp_pW=dp_player.offsetWidth||35;dp_pPos=dp_gAW/2-(dp_pW/2);dp_uPP();}
+        window.addEventListener('resize',()=>{if(dribblingProContainer&&dribblingProContainer.style.display==='flex'&&dp_gameArea&&dp_player&&!dp_gO){dp_gAW=dp_gameArea.offsetWidth;dp_pPos=dp_gAW/2-(dp_player.offsetWidth||35)/2;dp_uPP();}});
+        return{startGame:dp_sG};
     }
 
-    function handleMinigameCompletion(score, gameName, scoreUnit, localStorageKey, showGeneralResultPopup) {
-        activeGameType = null;
+    // --- MANEJO GENERAL DE FIN DE MINIJUEGO ---
+    function handleMinigameCompletion(score, gameName, scoreUnit, localStorageKey, showGeneralResultPopup, nameForDisplay = currentPlayerName) {
+        const previousActiveGameType = activeGameType; 
+        activeGameType = null; 
+        
         showScreen('invitacionContainer'); 
+
+        if (audioPlayer) {
+            audioPlayer.volume = MAIN_VOLUME;
+            console.log("Volumen de música restaurado a principal.");
+        }
 
         if (powerUpElement) {
             powerUpElement.textContent = `+${score} ${scoreUnit.toUpperCase()}!`;
             powerUpElement.style.display = "block";
             powerUpElement.classList.add("animate");
-            setTimeout(() => { if (powerUpElement) { powerUpElement.style.display = "none"; powerUpElement.classList.remove("animate"); }}, 2500);
+            console.log("Mostrando animación PowerUp.");
+            setTimeout(() => { 
+                if (powerUpElement) { 
+                    powerUpElement.style.display = "none"; 
+                    powerUpElement.classList.remove("animate"); 
+                    console.log("Ocultando animación PowerUp.");
+                }
+            }, 2500);
+        } else {
+            console.warn("powerUpElement no encontrado para la animación.");
         }
 
         if (wasMusicPlayingBeforeMinigame && audioPlayer && audioPlayer.src) {
-            audioPlayer.play().catch(e => console.error("Error al reanudar música:", e.message));
+            if (musicPlaying || (previousActiveGameType === 'tiroAlArco' && wasMusicPlayingBeforeMinigame)) {
+                 if (!audioPlayer.playing || (audioPlayer.paused && previousActiveGameType === 'tiroAlArco') ) { 
+                    const playPromise = audioPlayer.play();
+                    if(playPromise !== undefined) {
+                        playPromise.then(() => {
+                            musicPlaying = true; 
+                            if(soundButton) soundButton.textContent = "🔊";
+                            console.log("Música reanudada post-minijuego (o continuada).");
+                        }).catch(e => {
+                            if(soundButton) soundButton.textContent = "🔇";
+                            console.error("Error al reanudar música post-minijuego:", e.message);
+                        });
+                    }
+                 } else { // Ya sonando (caso Dribbling Pro)
+                    if(soundButton) soundButton.textContent = "🔊"; 
+                    console.log("Música ya sonando post-Dribbling Pro, botón actualizado.");
+                 }
+            } else { // El usuario la pausó durante el minijuego, o no estaba sonando antes.
+                 if(soundButton) soundButton.textContent = "🔇"; 
+                 console.log("Música no reanudada: fue pausada por el usuario o no sonaba antes.");
+            }
+        } else { 
+             if(soundButton) soundButton.textContent = "🔇"; 
+             if (!audioPlayer.src) console.log("Música no reanudada: audioPlayer sin src.");
+             else if (!wasMusicPlayingBeforeMinigame) console.log("Música no reanudada: no estaba sonando antes del minijuego.");
         }
-        if (soundButton) soundButton.textContent = musicPlaying ? "🔊" : "🔇";
             
         if (showGeneralResultPopup && gameResultPopup) {
             if(gameResultTitle) gameResultTitle.textContent = `¡${gameName} Finalizado!`;
             if(finalScoreDisplay) finalScoreDisplay.textContent = score;
             if(scoreUnitDisplay) scoreUnitDisplay.textContent = scoreUnit;
-            if(resultMessage) resultMessage.textContent = score >= (gameName === "Tiro al Arco" ? 15 : (gameName === "Dribbling Pro" ? 20 : 10)) ? "¡QUÉ CRACK!" : (score >= (gameName === "Tiro al Arco" ? 8 : (gameName === "Dribbling Pro" ? 10 : 5)) ? "¡BUENA PARTIDA!" : "¡GRACIAS POR JUGAR!");
+            if(resultMessage) resultMessage.textContent = score >= (gameName === "Tiro al Arco" ? 15 : 20) ? "¡QUÉ CRACK!" : (score >= (gameName === "Tiro al Arco" ? 8 : 10) ? "¡BUENA PARTIDA!" : "¡GRACIAS POR JUGAR!");
             if(highScoresTitle) highScoresTitle.textContent = gameName === "Tiro al Arco" ? "TABLA DE GOLEADORES" : "RÉCORDS DE DRIBBLING";
-            updateHighScoresListGeneric(localStorageKey, scoreUnit, gameName); 
+            updateHighScoresListGeneric(localStorageKey, scoreUnit, gameName, score, nameForDisplay); 
             
             setTimeout(() => { 
                 if (gameResultPopup) gameResultPopup.style.display = "flex";
                 showConfetti();
             }, 300);
-        } else if (!showGeneralResultPopup) {
+        } else if (!showGeneralResultPopup) { 
             setTimeout(() => { showConfetti(); }, 100);
         }
     }
     
     if(backToInvitationButton) backToInvitationButton.addEventListener("click", () => { showScreen('invitacionContainer'); });
+    
     function showConfetti() { for (let i=0; i<100; i++) { const c=document.createElement("div");c.className="confetti";c.style.left=Math.random()*100+"vw";c.style.animationDelay=Math.random()*4+"s";c.style.backgroundColor=['var(--color-primary-pink)','var(--color-black)','var(--color-white)','var(--color-gold-star)'][Math.floor(Math.random()*4)];if(document.body)document.body.appendChild(c);setTimeout(()=>{if(c.parentNode===document.body)document.body.removeChild(c)},4000)}}
-    function updateHighScoresListGeneric(storageKey, unit, gameName) {
-        if (!gameResultPopup || gameResultPopup.style.display !== 'flex' || !highScoresList) { return; }
-        highScoresList.innerHTML = "";
+    
+    function saveHighScoreList(storageKey, name, scoreValue) { 
+        let highScores = JSON.parse(localStorage.getItem(storageKey)) || [];
+        highScores.push({ name: name, score: scoreValue, date: new Date().toLocaleDateString() });
+        highScores.sort((a, b) => b.score - a.score);
+        highScores = highScores.slice(0, 5); 
+        localStorage.setItem(storageKey, JSON.stringify(highScores));
+    }
+
+    function updateHighScoresListGeneric(storageKey, unit, gameName, currentScore, playerNameForDisplay) {
+        const targetList = gameResultPopup.querySelector('#highScoresList');
+        if (!targetList) { console.warn("Elemento highScoresList no encontrado en el popup general."); return;}
+        targetList.innerHTML = "";
 
         if (gameName === 'Dribbling Pro') {
-            const record = localStorage.getItem(storageKey) || 0; const li = document.createElement("li");
-            if (parseInt(record) > 0) li.textContent = `MEJOR RÉCORD: ${record} ${unit}`; else li.textContent = "¡Establece un récord!";
-            highScoresList.appendChild(li);
-        } else { 
+            // Para Dribbling Pro, el nombre y score se muestran en su propio game over.
+            // Si se quisiera añadir al popup general (aunque actualmente no se usa para DP):
+            const record = localStorage.getItem(storageKey) || 0; 
+            const li = document.createElement("li");
+            li.textContent = `${playerNameForDisplay}: ${currentScore} ${unit}. (Récord del juego: ${record} ${unit})`;
+            targetList.appendChild(li);
+        } else { // Para Tiro al Arco
             const highScores = JSON.parse(localStorage.getItem(storageKey)) || [];
-            if (highScores.length === 0) { const li=document.createElement("li"); li.textContent="¡Sé el primero en anotar!"; highScoresList.appendChild(li); }
-            else { highScores.forEach((record, index) => { const li=document.createElement("li");li.textContent=`${index+1}. ${record.name||'Jugador'}: ${record.score} ${unit}`;highScoresList.appendChild(li);});}
+            if (highScores.length === 0) { 
+                const li=document.createElement("li"); 
+                li.textContent=`${playerNameForDisplay}: ${currentScore} ${unit}. ¡Primer récord!`; 
+                targetList.appendChild(li); 
+            } else { 
+                highScores.forEach((record, index) => { 
+                    const li=document.createElement("li");
+                    li.textContent=`${index+1}. ${record.name || 'Crack Anónimo'}: ${record.score} ${unit}`;
+                    targetList.appendChild(li);
+                });
+            }
         }
     }
+    
     const dynamicGifsList = [ "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExc3RpdTc5YzFpcHhiZTF6c3ExeG15d3U2ODd3ZnM2eW5vbXNsbHlmNSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/waCWiXgm8dDkTggARm/giphy.gif", "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExajgzdXVodGFidWlhcjExMDZqZXg2ZzhpNzBneWtnM3k2cWR1MmZsYyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/pN3fM4bIDBeBVTY6Sn/giphy.gif"];
     if (dynamicSoccerGifElement && dynamicGifsList.length > 0) dynamicSoccerGifElement.src = dynamicGifsList[Math.floor(Math.random() * dynamicGifsList.length)]; else if (dynamicSoccerGifElement) dynamicSoccerGifElement.style.display = 'none';
+    
     if (minigameNoticeElement && (tiroAlArcoButton || dribblingProButton)) {
-         setTimeout(() => { minigameNoticeElement.classList.add('show'); if(tiroAlArcoButton) tiroAlArcoButton.classList.add('highlight-game'); }, 3500); 
-         setTimeout(() => { minigameNoticeElement.classList.remove('show'); if(tiroAlArcoButton) tiroAlArcoButton.classList.remove('highlight-game'); if(dribblingProButton) dribblingProButton.classList.remove('highlight-game');}, 9000); 
+         setTimeout(() => { 
+            minigameNoticeElement.classList.add('show'); 
+            if(Math.random() < 0.5 && tiroAlArcoButton) tiroAlArcoButton.classList.add('highlight-game');
+            else if(dribblingProButton) dribblingProButton.classList.add('highlight-game');
+            console.log("Mostrando minigameNotice.");
+        }, 3500); 
+         setTimeout(() => { 
+            minigameNoticeElement.classList.remove('show'); 
+            if(tiroAlArcoButton) tiroAlArcoButton.classList.remove('highlight-game'); 
+            if(dribblingProButton) dribblingProButton.classList.remove('highlight-game');
+            console.log("Ocultando minigameNotice.");
+        }, 9000); 
+    } else {
+        if (!minigameNoticeElement) console.warn("minigameNoticeElement no encontrado.");
     }
+
     showScreen('invitacionContainer');
+    console.log("Invitación mostrada. App lista.");
 });
-    </script>
+</script>
 </body>
 </html>
