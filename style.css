@@ -45,9 +45,11 @@ body {
     border: 3px solid var(--color-primary-pink);
     border-radius: var(--border-radius-medium);
     box-shadow: 0 5px 25px rgba(0,0,0,0.3), var(--box-shadow-pink);
-    padding: 0; /* El padding irá en las secciones internas */
+    padding: 0; 
     text-align: center;
-    overflow: hidden; /* Para bordes redondeados en imágenes internas */
+    overflow: hidden; /* Mantenemos hidden aquí para otros posibles desbordes internos del wrapper */
+    position: relative; /* Para que los z-index dentro funcionen como se espera */
+    z-index: 1; /* Base z-index para la invitación */
 }
 
 .invitation-header {
@@ -161,7 +163,7 @@ body {
     flex-direction: column;
     align-items: center;
     gap: 15px; 
-    padding: 10px 0 20px;
+    padding: 20px 0;
 }
 
 .action-button {
@@ -172,10 +174,12 @@ body {
     letter-spacing: 1px; display: inline-block;
     width: 80%; 
     max-width: 300px; 
+    box-sizing: border-box;
 }
 .action-button.primary {
     background-color: var(--color-primary-pink);
     box-shadow: 0 5px 0 var(--color-secondary-pink), 0 8px 15px rgba(0,0,0,0.3);
+    margin: 0;
 }
 .action-button.primary:hover {
     background-color: var(--color-secondary-pink); transform: translateY(-2px);
@@ -185,21 +189,45 @@ body {
     transform: translateY(2px);
     box-shadow: 0 3px 0 var(--color-secondary-pink), 0 5px 10px rgba(0,0,0,0.3);
 }
-.action-button.secondary {
+.action-button.secondary { 
     background-color: var(--color-grey-medium); color: var(--color-black);
     box-shadow: 0 4px 0 #999; font-size: 1rem; padding: 10px 20px;
+    max-width: 200px; 
 }
 .action-button.secondary:hover { background-color: #b3b3b3; box-shadow: 0 5px 0 #888; }
 .action-button.secondary:active { box-shadow: 0 2px 0 #888; }
+
 .action-button.highlight-game { animation: highlightPulseSoccer 1.5s infinite ease-in-out; }
 @keyframes highlightPulseSoccer { 0% { transform: scale(1); } 50% { transform: scale(1.05); filter: brightness(1.1); } 100% { transform: scale(1); } }
 
-.power-up {
-    display: none; position: absolute; font-family: var(--font-display);
-    color: var(--color-gold-star); font-size: 2rem; text-shadow: 2px 2px 0 var(--color-black);
-    left: 50%; transform: translateX(-50%); bottom: 45%;
+
+/* --- Capa Global para Animaciones --- */
+.global-animation-layer {
+    position: fixed; 
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none; /* No bloquea clics a elementos debajo */
+    z-index: 1001; /* Encima de la invitación, debajo de popups/minijuegos */
 }
-.power-up.animate { display: block; animation: flyUpScore 1.8s ease-out forwards; }
+
+.power-up {
+    display: none; 
+    position: absolute; 
+    font-family: var(--font-display);
+    color: var(--color-gold-star); 
+    font-size: 2rem; 
+    text-shadow: 2px 2px 0 var(--color-black);
+    left: 50%; 
+    transform: translateX(-50%); 
+    bottom: 45%; /* Relativo a global-animation-layer */
+    /* pointer-events: auto; si necesitara eventos, por defecto es none por el padre */
+}
+.power-up.animate { 
+    display: block; 
+    animation: flyUpScore 1.8s ease-out forwards; 
+}
 @keyframes flyUpScore { 0% { bottom: 45%; opacity: 0; transform: translateX(-50%) scale(0.8); } 20% { opacity: 1; transform: translateX(-50%) scale(1.1);} 80% { opacity: 1; transform: translateX(-50%) scale(1);} 100% { bottom: 85%; opacity: 0; transform: translateX(-50%) scale(0.5); } }
 
 /* --- Estilos Comunes para Popups (NamePrompt, Tutorial, GameResult) --- */
@@ -220,41 +248,39 @@ body {
     background-color: var(--color-grey-dark);
     border: 2px solid var(--color-primary-pink);
     box-shadow: 0 0 20px var(--color-primary-pink-glow);
-    padding: 30px; border-radius: var(--border-radius-medium);
+    padding: 25px; 
+    border-radius: var(--border-radius-medium);
     text-align: center; color: var(--color-white);
-    max-width: 500px; width: 90%; /* Ocupa el 90% del ancho en móviles, máximo 500px */
+    max-width: 500px; width: 90%;
 }
 .popup-content h3 {
     color: var(--color-primary-pink);
     font-family: var(--font-heading);
-    font-size: 1.6rem;
+    font-size: 1.5rem; 
     margin-top: 0;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
 }
-/* Input específico para el name-prompt */
 .name-prompt-content input { 
     background-color: rgba(255, 255, 255, 0.1); border: 2px solid var(--color-primary-pink);
-    color: var(--color-white); padding: 12px 15px; font-size: 1.1rem; margin: 20px 0;
+    color: var(--color-white); padding: 10px 12px; font-size: 1rem; margin: 15px 0; 
     border-radius: var(--border-radius-soft); font-family: 'Roboto', sans-serif;
-    width: 85%; box-sizing: border-box;
+    width: 80%; box-sizing: border-box;
 }
-/* Estilos para los pasos del tutorial */
 .tutorial-content .tutorial-step { 
-    display: flex; align-items: center; margin: 18px 0;
-    justify-content: center; font-size: 1.15rem;
+    display: flex; align-items: center; margin: 15px 0; 
+    justify-content: center; font-size: 1.1rem; 
 }
 .tutorial-content .tutorial-icon {
-    font-size: 2rem; margin-right: 15px;
+    font-size: 1.8rem; margin-right: 12px; 
     animation: pulseSoccer 1.5s infinite; color: var(--color-primary-pink);
 }
 @keyframes pulseSoccer { 0% { transform: scale(1); } 50% { transform: scale(1.15); } 100% { transform: scale(1); } }
 
-/* Estilos para el contenido del resultado del juego */
-.game-result-content p { font-size: 1.2rem; margin: 15px 0; }
-.game-result-content #finalScoreDisplay { color: var(--color-gold-star); font-size: 2rem; font-family: var(--font-display); }
-.high-scores { margin-top: 25px; border-top: 2px dashed var(--color-primary-pink); padding-top: 20px; }
-.high-scores h4 { color: var(--color-primary-pink); margin-bottom: 12px; font-family: 'Oswald', sans-serif; font-size: 1.3rem; }
-.high-scores ul { list-style: none; padding: 0; margin: 8px 0; font-size: 1rem; }
+.game-result-content p { font-size: 1.1rem; margin: 12px 0; } 
+.game-result-content #finalScoreDisplay { color: var(--color-gold-star); font-size: 1.8rem; font-family: var(--font-display); } 
+.high-scores { margin-top: 20px; border-top: 2px dashed var(--color-primary-pink); padding-top: 15px; } 
+.high-scores h4 { color: var(--color-primary-pink); margin-bottom: 10px; font-family: 'Oswald', sans-serif; font-size: 1.2rem; } 
+.high-scores ul { list-style: none; padding: 0; margin: 5px 0; font-size: 0.9rem; } 
 
 /* --- Estilos para Contenedores de Minijuegos --- */
 .game-module-container { 
@@ -264,278 +290,244 @@ body {
     width: 100%; height: 100%;
     background-color: var(--color-black-alt); 
     z-index: 1005; 
-    padding: 15px; /* Un poco de padding general */
+    padding: 10px; 
     box-sizing: border-box;
     display: flex; 
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    overflow-y: auto; /* Scroll si el contenido es muy alto */
+    overflow-y: auto; 
 }
 
 /* --- Estilos Minijuego 1: Tiro al Arco --- */
-/* Wrapper interno para centrar el contenido del juego si es más pequeño que el game-module-container */
 .tiro-al-arco-wrapper {
     width: 100%;
-    max-width: 600px; /* Ancho máximo del juego Tiro al Arco */
-    padding: 20px;
-    background-color: var(--color-grey-dark); /* Fondo interno del juego */
+    max-width: 550px; 
+    padding: 15px;
+    background-color: var(--color-grey-dark); 
     border-radius: var(--border-radius-soft);
     box-shadow: 0 0 15px rgba(0,0,0,0.5);
+    border: 2px solid var(--color-primary-pink); 
 }
 #tiroAlArcoContainer .game-header h3 {
     font-family: var(--font-heading); color: var(--color-primary-pink);
-    font-size: 1.8rem; margin: 0 0 15px; text-transform: uppercase;
+    font-size: 1.6rem; margin: 0 0 10px; text-transform: uppercase;
 }
 #tiroAlArcoContainer .game-stats {
     display: flex; justify-content: space-around; background-color: rgba(0,0,0,0.4);
-    border-radius: var(--border-radius-soft); padding: 12px; margin: 15px 0;
+    border-radius: var(--border-radius-soft); padding: 10px; margin: 10px 0;
 }
 #tiroAlArcoContainer .game-stats p {
-    margin: 0; font-size: 1.2rem; font-family: var(--font-heading); color: var(--color-white);
+    margin: 0; font-size: 1.1rem; font-family: var(--font-heading); color: var(--color-white);
 }
 #tiroAlArcoContainer .game-stats p span { color: var(--color-primary-pink); font-weight: 700; }
 
-#tiroAlArcoGameArea { /* Ajustado para el área de juego de Tiro al Arco */
+#tiroAlArcoGameArea { 
     background-color: #2a2a2a;
     background-image: 
         linear-gradient(rgba(255,255,255,0.07) 2px, transparent 2px),
         linear-gradient(90deg, rgba(255,255,255,0.07) 2px, transparent 2px);
-    background-size: 40px 40px; border: 4px solid var(--color-white);
+    background-size: 30px 30px; 
+    border: 3px solid var(--color-white); 
     border-radius: var(--border-radius-soft); width: 100%; 
-    height: 320px; /* Altura ajustada para móviles */
+    height: 300px; 
     margin: 10px auto; position: relative; overflow: hidden;
-    box-sizing: border-box; box-shadow: inset 0 0 15px rgba(0,0,0,0.5);
+    box-sizing: border-box; box-shadow: inset 0 0 10px rgba(0,0,0,0.4);
 }
-#tiroAlArcoContainer .game-item { /* Estilos de los objetivos */
+#tiroAlArcoContainer .game-item { 
     position: absolute; cursor: pointer; user-select: none;
     transition: transform 0.15s ease-out; filter: drop-shadow(2px 2px 3px rgba(0,0,0,0.5));
+    font-size: 2.5rem; 
 }
 #tiroAlArcoContainer .game-item:hover { transform: scale(1.15); }
 #tiroAlArcoContainer .game-item.target-ball { color: var(--color-white); }
 #tiroAlArcoContainer .game-item.target-diana { color: var(--color-primary-pink); }
 #tiroAlArcoContainer .game-item.target-star { color: var(--color-gold-star); animation: pulseGoldenBall 1s infinite alternate; }
 @keyframes pulseGoldenBall { from { transform: scale(1); } to { transform: scale(1.1); opacity: 0.8; } }
-#tiroAlArcoContainer .game-controls { margin: 20px 0 10px; }
-#tiroAlArcoContainer .points-animation { /* Animación de puntos */
+#tiroAlArcoContainer .game-controls { margin: 15px 0 5px; } 
+#tiroAlArcoContainer .points-animation { 
     position: absolute; font-family: var(--font-heading); font-weight: 700;
-    font-size: 1.4rem; animation: float-up-score 1.3s forwards ease-out;
+    font-size: 1.3rem; animation: float-up-score 1.3s forwards ease-out;
     z-index: 5; pointer-events: none; text-shadow: 1px 1px 0 var(--color-black);
     color: var(--color-primary-pink);
 }
-#tiroAlArcoContainer .points-animation.golden { color: var(--color-gold-star); font-size: 1.6rem; }
-@keyframes float-up-score {
+@keyframes float-up-score { /* Definición de la animación si no estaba antes */
     0% { opacity: 1; transform: translateY(0) scale(1); }
-    100% { opacity: 0; transform: translateY(-75px) scale(1.3); }
+    100% { opacity: 0; transform: translateY(-50px) scale(0.8); }
 }
-
+#tiroAlArcoContainer .points-animation.golden { color: var(--color-gold-star); font-size: 1.5rem; }
 
 /* --- ESTILOS ESPECÍFICOS PARA DRIBBLING PRO (Adaptados y Prefijados) --- */
 .dp-game-wrapper { 
-    background-color: var(--color-black); /* Fondo más oscuro para Dribbling Pro */
+    background-color: var(--color-black); 
     padding: 15px;
     border-radius: var(--border-radius-medium);
     border: 2px solid var(--color-primary-pink);
     box-shadow: 0 5px 15px rgba(0,0,0,0.4), var(--box-shadow-pink);
     text-align: center;
     width: 100%;
-    max-width: 360px; 
+    max-width: 340px; 
     font-family: var(--font-dribbling-pro); 
     color: var(--color-white);
 }
-
 .dp-game-wrapper .dp-h1 { 
     color: var(--color-primary-pink);
-    font-size: 2.2em;
-    margin-bottom: 10px;
+    font-size: 2em; 
+    margin-bottom: 8px;
     font-family: var(--font-dribbling-pro);
     text-shadow: 1px 1px 2px var(--color-black);
 }
-
 .dp-game-wrapper .dp-game-info {
-    font-size: 1.1em; /* Más pequeño para encajar */
-    margin-bottom: 10px;
+    font-size: 1em; 
+    margin-bottom: 8px;
     color: var(--color-grey-light);
-    font-family: var(--font-body); /* Fuente más legible para info */
+    font-family: var(--font-body); 
 }
-
 .dp-game-wrapper .dp-game-area {
     width: 100%;
-    max-width: 300px; 
-    height: 380px; 
+    max-width: 280px; 
+    height: 360px; 
     background-image: 
-        linear-gradient(rgba(247, 181, 205, 0.08) 1px, transparent 1px), /* Líneas rosas sutiles */
+        linear-gradient(rgba(247, 181, 205, 0.08) 1px, transparent 1px), 
         linear-gradient(90deg, rgba(247, 181, 205, 0.08) 1px, transparent 1px),
-        linear-gradient(var(--color-black-alt), #080808); /* Degradado oscuro */
-    background-size: 25px 25px, 25px 25px, auto; /* Patrón de cancha más pequeño */
+        linear-gradient(var(--color-black-alt), #080808); 
+    background-size: 20px 20px, 20px 20px, auto; 
     border: 3px solid var(--color-primary-pink);
     border-radius: var(--border-radius-soft);
     position: relative;
     overflow: hidden;
-    margin: 0 auto 12px auto;
+    margin: 0 auto 10px auto; 
     box-shadow: inset 0 0 8px rgba(0,0,0,0.4);
 }
-
 .dp-game-wrapper .dp-player {
-    width: 35px; 
-    height: 35px;
+    width: 32px; height: 32px; 
     background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="white"/><path d="M50,5 A45,45 0 0,1 50,95 A45,45 0 0,1 50,5 M22,35 Q50,25 78,35 M22,65 Q50,75 78,65 M35,22 Q25,50 35,78 M65,22 Q75,50 65,78" fill="none" stroke="black" stroke-width="6"/><circle cx="50" cy="50" r="15" fill="black"/></svg>');
-    background-size: cover;
-    position: absolute;
-    bottom: 12px;
-    left: 50%;
-    transform: translateX(-50%);
-    transition: left 0.05s linear;
+    background-size: cover; position: absolute; bottom: 10px; 
+    left: 50%; transform: translateX(-50%); transition: left 0.05s linear;
 }
-
 .dp-game-wrapper .dp-cone {
-    width: 28px; 
-    height: 38px;
+    width: 26px; height: 36px; 
     background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 60"><polygon points="25,0 0,60 50,60" fill="%23F7B5CD"/><rect x="0" y="40" width="50" height="7" fill="white" /><rect x="0" y="50" width="50" height="10" fill="white" /></svg>');
-    background-size: contain;
-    background-repeat: no-repeat;
-    position: absolute;
+    background-size: contain; background-repeat: no-repeat; position: absolute;
+    touch-action: none; 
 }
-
 .dp-game-wrapper .dp-controls {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-    max-width: 280px; /* Ajustar al ancho del game-area */
-    margin: 0 auto 12px auto;
+    display: flex; justify-content: space-between; width: 100%;
+    max-width: 260px; margin: 0 auto 10px auto; 
 }
-
 .dp-game-wrapper .dp-control-button {
-    background-color: var(--color-primary-pink);
-    color: var(--color-black);
-    border: none;
-    padding: 12px 0; 
-    font-size: 1.8em; 
-    font-family: 'Arial', sans-serif;
-    border-radius: var(--border-radius-soft);
-    cursor: pointer;
-    text-shadow: none;
-    box-shadow: 0 3px var(--color-secondary-pink);
-    flex-basis: 48%; 
-    user-select: none; 
+    background-color: var(--color-primary-pink); color: var(--color-black);
+    border: none; padding: 10px 0; font-size: 1.6em; 
+    font-family: 'Arial', sans-serif; border-radius: var(--border-radius-soft);
+    cursor: pointer; text-shadow: none; box-shadow: 0 3px var(--color-secondary-pink);
+    flex-basis: 48%; user-select: none; touch-action: manipulation;
 }
 .dp-game-wrapper .dp-control-button:active {
     background-color: var(--color-secondary-pink);
-    box-shadow: 0 1px var(--color-secondary-pink);
-    transform: translateY(2px);
+    box-shadow: 0 1px var(--color-secondary-pink); transform: translateY(2px);
 }
-
 .dp-game-wrapper .dp-action-button {
-    background-color: var(--color-gold-star);
-    color: var(--color-black);
-    border: none;
-    padding: 10px 20px; /* Más pequeño para Dribbling Pro */
-    font-size: 1.1em; /* Más pequeño */
-    font-family: var(--font-dribbling-pro);
-    border-radius: 25px; 
-    cursor: pointer;
-    margin-top: 12px;
+    background-color: var(--color-gold-star); color: var(--color-black);
+    border: none; padding: 8px 18px; font-size: 1em; 
+    font-family: var(--font-dribbling-pro); border-radius: 20px; 
+    cursor: pointer; margin-top: 10px; 
     transition: transform 0.1s ease, box-shadow 0.1s ease;
-    box-shadow: 0 3px #cca300; /* Sombra más oscura para dorado */
-    text-shadow: none;
-    width: auto; 
-    min-width: 160px;
+    box-shadow: 0 3px #cca300; text-shadow: none; width: auto; min-width: 150px; 
 }
-.dp-game-wrapper .dp-action-button.dp-secondary {
-    background-color: var(--color-grey-medium);
-    box-shadow: 0 3px #999;
-}
+.dp-game-wrapper .dp-action-button.dp-secondary { background-color: var(--color-grey-medium); box-shadow: 0 3px #999; }
 .dp-game-wrapper .dp-action-button:hover { filter: brightness(1.05); }
-.dp-game-wrapper .dp-action-button:active {
-    transform: translateY(1px);
-    box-shadow: 0 1px #cca300;
-}
+.dp-game-wrapper .dp-action-button:active { transform: translateY(1px); box-shadow: 0 1px #cca300; }
 .dp-game-wrapper .dp-action-button.dp-secondary:active { box-shadow: 0 1px #999; }
-
 .dp-game-wrapper .dp-message {
-    margin-top: 15px;
-    background-color: rgba(0,0,0,0.75);
-    padding: 12px;
-    border-radius: var(--border-radius-soft);
-    font-size: 1.1em;
-    color: var(--color-white);
+    margin-top: 12px; background-color: rgba(0,0,0,0.75); padding: 10px; 
+    border-radius: var(--border-radius-soft); font-size: 1em; color: var(--color-white);
 }
 .dp-game-wrapper .dp-hidden { display: none !important; }
 .dp-game-wrapper .dp-instructions {
-    font-size: 0.9em;
-    color: var(--color-grey-light);
-    margin-top: 8px;
-    font-family: var(--font-body);
+    font-size: 0.85em; color: var(--color-grey-light);
+    margin-top: 8px; font-family: var(--font-body);
 }
 
 /* --- Confeti y Sound Control (generales) --- */
-.confetti { position: fixed; width: 10px; height: 10px; top: -10px; border-radius: 50%; animation: confetti-fall 5s linear forwards; z-index: 1000; }
+.confetti { position: fixed; width: 10px; height: 10px; top: -10px; border-radius: 50%; animation: confetti-fall 5s linear forwards; z-index: 1050; }
 @keyframes confetti-fall { 0% { transform: translateY(0) rotate(0deg); opacity: 1; } 100% { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
-.sound-control { position: fixed; top: 25px; right: 25px; z-index: 1030; /* Más alto para estar sobre todo */}
+
+.sound-control { 
+    position: fixed; 
+    top: 20px; 
+    right: 20px; 
+    z-index: 1030; /* Asegurar que esté encima de la mayoría de los elementos */
+}
 .sound-button {
     background-color: var(--color-primary-pink); color: var(--color-black);
-    font-family: 'Anton', sans-serif; font-size: 1.6rem; padding: 0; border: none;
+    font-family: 'Anton', sans-serif; font-size: 1.5rem; padding: 0; border: none; 
     border-radius: 50%; cursor: pointer; transition: all 0.2s ease-in-out;
-    width: 50px; height: 50px; display: flex; align-items: center; justify-content: center;
-    box-shadow: 0 3px 8px rgba(0,0,0,0.4);
+    width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; 
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3); 
 }
 .sound-button:hover { background-color: var(--color-secondary-pink); transform: scale(1.1); }
 .sound-button:active { transform: scale(0.98) translateY(1px); }
+
 .minigame-notice {
-    position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
+    position: fixed; bottom: 70px; left: 50%; transform: translateX(-50%); 
     background-color: var(--color-primary-pink); color: var(--color-black);
-    padding: 12px 25px; border-radius: 30px;
-    font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 1rem; text-transform: uppercase;
-    box-shadow: 0 0 20px var(--color-primary-pink-glow); z-index: 1002; opacity: 0;
+    padding: 10px 20px; border-radius: 25px; 
+    font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 0.9rem; text-transform: uppercase; 
+    box-shadow: 0 0 15px var(--color-primary-pink-glow); 
+    z-index: 1002; /* Encima de global-animation-layer, debajo de popups/minijuegos */
+    opacity: 0;
     transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out; pointer-events: none;
 }
 .minigame-notice.show { opacity: 1; transform: translateX(-50%) translateY(-10px); }
 .minigame-notice::after {
-    content: ''; position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%);
-    width: 0; height: 0; border-left: 10px solid transparent; border-right: 10px solid transparent;
-    border-top: 10px solid var(--color-primary-pink);
+    content: ''; position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%); 
+    width: 0; height: 0; border-left: 8px solid transparent; border-right: 8px solid transparent;
+    border-top: 8px solid var(--color-primary-pink);
 }
-
 
 /* --- Media Queries (Ajustes finales) --- */
 @media (min-width: 600px) {
     .details-grid { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
-    .invitation-header h1 { font-size: 4rem; }
-    .player-name { font-size: 3rem; }
-    #tiroAlArcoGameArea { height: 400px; } 
-    .dp-game-wrapper .dp-game-area { height: 450px; max-width: 360px;} /* Un poco más de espacio para Dribbling Pro en desktop */
+    .invitation-header h1 { font-size: 3.5rem; } 
+    .player-name { font-size: 2.8rem; }
+    #tiroAlArcoGameArea { height: 380px; } 
+    .dp-game-wrapper .dp-game-area { height: 420px; max-width: 340px;}
     .minigame-buttons-container { flex-direction: row; justify-content: center; gap: 20px;}
-    .action-button { width: auto; padding: 15px 35px; }
+    .action-button { width: auto; padding: 15px 30px; } 
 }
 
 @media (max-width: 480px) {
-    body { padding: 10px 5px; } /* Menos padding en cuerpo */
-    .invitation-wrapper { margin: 15px auto; }
-    .invitation-header h1 { font-size: 2.2rem; }
-    .player-name { font-size: 1.8rem; }
+    body { padding: 10px; } 
+    .invitation-wrapper { margin: 20px auto; } 
+    .invitation-header h1 { font-size: 2rem; }
+    .player-name { font-size: 1.6rem; }
     .details-section h3, .activities-section h3, 
     #tiroAlArcoContainer .game-header h3, 
-    .dp-game-wrapper .dp-h1 { font-size: 1.4rem; }
+    .dp-game-wrapper .dp-h1 { font-size: 1.3rem; }
 
-    .main-text, .details-grid p, .activities-section li { font-size: 0.95rem; }
-    .action-button.primary { font-size: 1rem; padding: 10px 20px; }
-    .footer-text { font-size: 1.1rem; }
+    .main-text, .details-grid p, .activities-section li { font-size: 0.9rem; }
+    .action-button { font-size: 1rem; padding: 10px 18px; } 
+    .minigame-buttons-container .action-button.primary { font-size: 1.1rem; padding: 10px 20px; width: 90%;} 
     
-    #tiroAlArcoGameArea { height: 280px; }
-    .dp-game-wrapper .dp-game-area { height: 350px; max-width: 95%;} /* Hacer el área de Dribbling Pro más responsiva */
+    .footer-text { font-size: 1rem; }
+    
+    #tiroAlArcoGameArea { height: 260px; }
+    .dp-game-wrapper .dp-game-area { height: 330px; max-width: 90%;} 
 
-    #tiroAlArcoContainer .game-stats p, .dp-game-wrapper .dp-game-info { font-size: 1rem; }
-    .popup-content { padding: 15px; } /* Menos padding en popups */
-    .popup-content h3 { font-size: 1.3rem; }
-    .name-prompt-content input { font-size: 1rem; padding: 10px 12px; }
-    .tutorial-content .tutorial-step { font-size: 1rem; }
-    .tutorial-content .tutorial-icon { font-size: 1.5rem; }
+    #tiroAlArcoContainer .game-stats p, .dp-game-wrapper .dp-game-info { font-size: 0.9rem; }
+    .popup-content { padding: 20px; } 
+    .popup-content h3 { font-size: 1.2rem; }
+    .name-prompt-content input { font-size: 0.9rem; padding: 8px 10px; }
+    .tutorial-content .tutorial-step { font-size: 0.95rem; }
+    .tutorial-content .tutorial-icon { font-size: 1.4rem; }
     
-    .dp-game-wrapper { padding: 10px; }
-    .dp-game-wrapper .dp-h1 { font-size: 1.8em; }
-    .dp-game-wrapper .dp-control-button { font-size: 1.5em; padding: 10px 0; }
-    .dp-game-wrapper .dp-action-button { font-size: 1em; padding: 8px 15px; min-width: 140px; }
-    .dp-game-wrapper .dp-instructions { font-size: 0.85em;}
+    .dp-game-wrapper { padding: 10px; max-width: 95%; } 
+    .dp-game-wrapper .dp-h1 { font-size: 1.6em; }
+    .dp-game-wrapper .dp-control-button { font-size: 1.4em; padding: 8px 0; }
+    .dp-game-wrapper .dp-action-button { font-size: 0.9em; padding: 8px 15px; min-width: 130px; }
+    .dp-game-wrapper .dp-instructions { font-size: 0.8em;}
 
     .minigame-buttons-container { gap: 10px; }
+    .sound-control { top: 15px; right: 15px; }
+    .sound-button { width: 40px; height: 40px; font-size: 1.3rem;}
 }
